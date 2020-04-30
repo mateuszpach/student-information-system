@@ -11,6 +11,7 @@ create table osoby
     haslo       varchar(1000)        not null,
     nr_telefonu varchar(15)
 );
+
 create table nauczyciele
 (
     osoba         integer references osoby (id_osoby) primary key,
@@ -199,6 +200,52 @@ insert into zajecia (dzien_tygodnia, godzina_lekcyjna, przedmiot, klasa, prowadz
 (4, 1, 2, 4, 5, 101),
 (4, 2, 3, 4, 10, 201);
 
+insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ) values
+(4,1,'2018-03-14 12:30:40','Wzorowe zachowanie przy tablicy','P'),
+(2,10,'2018-02-04 09:25:14','Uczeń nie reagował na moje uwagi','N'),
+(3,5,'2017-11-23 14:16:34','Dobrze sprawował obowiązki dyżurnego','P'),
+(4,5,'2016-10-11 12:20:41','Dobrze sprawował obowiązki dyżurnego','P'),
+(8,1,'2017-05-20 08:35:10','Nie wywiązał się ze swoich obowiązków wobec klasy','N'),
+(9,10,'2016-03-12 08:20:11','Źle wykonał swoje obowiązki','N'),
+(4,1,'2017-03-01 09:34:30','Uczeń jadł na lekcji','N'),
+(7,1,'2015-04-27 10:28:36','Uczeń ochoczo zastąpił kolegę w obowiązkach','P');
+
+insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
+('2018-03-14', 1, 1, 1, 5, 101),
+('2016-10-11', 4, 1, 1, 1, 102),
+('2017-05-20', 2, 1, 1, 10, 201),
+('2015-04-27', 3, 1, 1, 10, 102),
+('2018-01-14', 2, 1, 1, 1, 202),
+('2017-03-01', 1, 1, 1, 10, 101),
+('2015-09-27', 3, 1, 1, 5, 102),
+('2018-02-14', 2, 1, 1, 5, 201),
+('2017-06-20', 4, 1, 1, 1, 101);
+
+insert into obecnosci (uczen, instancja_zajecia, status) values
+(4,1,'O'),
+(6,2,'N'),
+(3,3,'O'),
+(8,1,'Z'),
+(4,5,'O'),
+(2,4,'NU'),
+(9,1,'O'),
+(7,3,'N'),
+(2,2,'U'),
+(4,5,'O');
+
+insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
+(4,'2018-03-14 12:30:40',4,3.50,1,'kartkowka','kartkowka z trzech ostatnich lekcji'),
+(3,'2017-05-20 08:35:10',4,4.50,3,'sprawdzian','sprawdzian z 5. działu'),
+(4,'2018-02-04 09:25:14',4,2.50,1,'odpowiedz','odpowiedź z trzech ostatnich leckji'),
+(2,'2016-10-11 12:20:41',4,4.00,1,'odpowiedz','odpowiedź grupowa'),
+(8,'2018-03-14 12:30:40',4,2.50,2,'kartkowka','kartkowka z trzech ostatnich lekcji'),
+(6,'2018-02-04 09:25:14',4,1.50,1,'sprawdzian','sprawdzian z 4 dzialu'),
+(7,'2016-10-11 12:20:41',4,3.00,1,'odpowiedz','odpowiedź grupowa'),
+(4,'2017-05-20 08:35:10',4,4.50,1,'sprawdzian','sprawdzian z 3. działu'),
+(3,'2018-02-04 09:25:14',4,5.00,1,'kartkowka','kartkowka z trzech ostatnich lekcji'),
+(3,'2018-03-14 12:30:40',4,2.00,1,'sprawdzian','sprawdzian z 1. działu');
+
+
 create function fill_linkers()
 returns void as $$
     declare
@@ -225,4 +272,3 @@ $$ language 'plpgsql';
 
 select fill_linkers();
 drop function fill_linkers();
-
