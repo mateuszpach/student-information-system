@@ -10,6 +10,7 @@ Stąd też wynika pole data trzymające dokładny dzien w instancji_zajec i pole
 -Typ w tabeli uwagi pamięta czy uwaga była pozytywna czy negatywna.
 -Status w tabeli obecności może byś ustawiony na 'O'-obecny, 'N'-nieobecny, 'U'-ucieczka,
 'NU'-nieobecnosc usprawiedliwiona, 'Z'-zwolniony.
+-W godziny_lekcyjne planujemy zrobic trigger pilnujący by nie było nakładających się godzin
 
 Zarówno projekt bazy jak i implementacja została wykonana wspólnie podczas spotkania.
 Łukasz Gniecki
