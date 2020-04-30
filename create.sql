@@ -41,8 +41,8 @@ create table opiekunowie
 );
 create table uczniowie_opiekunowie
 (
-    uczen   integer references osoby (id_osoby) not null,
-    opiekun integer references osoby (id_osoby) not null,
+    uczen   integer references uczniowie (osoba) not null,
+    opiekun integer references opiekunowie (osoba) not null,
     primary key(uczen, opiekun)
 );
 create table uwagi
@@ -230,8 +230,7 @@ insert into obecnosci (uczen, instancja_zajecia, status) values
 (2,4,'NU'),
 (9,1,'O'),
 (7,3,'N'),
-(2,2,'U'),
-(4,5,'O');
+(2,2,'U');
 
 insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
 (4,'2018-03-14 12:30:40',4,3.50,1,'kartkowka','kartkowka z trzech ostatnich lekcji'),

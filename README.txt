@@ -12,3 +12,6 @@ Stąd też wynika pole data trzymające dokładny dzien w instancji_zajec i pole
 'NU'-nieobecnosc usprawiedliwiona, 'Z'-zwolniony.
 
 Zarówno projekt bazy jak i implementacja została wykonana wspólnie podczas spotkania.
+Łukasz Gniecki
+Mateusz Olszewski
+Mateusz Pach
