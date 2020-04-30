@@ -99,11 +99,11 @@ create table nauczyciele_przedmioty
 create table oceny
 (
     ocena            serial primary key,
-    uczen            integer references uczniowie (osoba)              not null,
-    data_wystawienia timestamp                                         not null,
-    zajecia          integer references instancje_zajec (id_instancji) not null,
-    wartosc          numeric(3, 2)                                     not null,
-    waga             numeric(1, 0)                                     not null,
+    uczen            integer references uczniowie (osoba)                not null,
+    data_wystawienia timestamp                                           not null,
+    zajecia          integer references instancje_zajec (id_instancji)   not null,
+    wartosc          numeric(3, 2) check (wartosc between 1.00 and 6.00) not null,
+    waga             numeric(1, 0)                                       not null,
     kategoria        varchar(1000),
     opis             varchar(1000)
 );
@@ -111,7 +111,7 @@ create table obecnosci
 (
     uczen             integer references uczniowie (osoba),
     instancja_zajecia integer references instancje_zajec (id_instancji),
-    status            varchar(2) check ( status = 'O' or status = 'N' or status = 'U' or status = 'NU' or status = 'Z' ),
+    status            varchar(2) check ( status = 'O' or status = 'N' or status = 'U' or status = 'NU' or status = 'Z' ) not null,
     primary key (uczen, instancja_zajecia)
 );
 
