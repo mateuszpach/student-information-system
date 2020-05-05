@@ -14,14 +14,9 @@ drop table klasy;
 drop table nauczyciele;
 drop table osoby;
 
+drop function if exists srednia_ucznia(integer) cascade;
+drop function if exists srednia_ucznia(integer, integer) cascade;
+drop function if exists srednia_klasy(integer) cascade;
+drop function if exists srednia_klasy(integer, integer) cascade;
 
-
-
-
-
-
-
-
-
-
-
+drop view if exists wyniki_w_nauce cascade;
