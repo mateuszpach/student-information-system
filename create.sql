@@ -12,6 +12,11 @@ create table osoby
     nr_telefonu varchar(15)
 );
 
+create table dyrektorstwo
+(
+    osoba         integer references osoby (id_osoby) primary key,
+    wyksztalcenie varchar(100)
+);
 create table nauczyciele
 (
     osoba         integer references osoby (id_osoby) primary key,
