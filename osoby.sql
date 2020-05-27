@@ -2,7 +2,7 @@
  Dodajemy do uczniowie / nauczyciele / opiekunowie tylko pod warunkiem, że mamy już takie id w osobach,
  i nie mamy takiego id jeszcze w żadnej z powyższych trzech grup.
  */
-create or replace function verifyOsoby() returns trigger as $$
+create or replace function verify_osoby() returns trigger as $$
 begin
     if (
         select id_osoby from osoby o where o.id_osoby = new.osoba
@@ -26,36 +26,36 @@ begin
 end
 $$ language 'plpgsql';
 
-create trigger onAddUczen before insert on uczniowie for each row execute procedure verifyOsoby();
-create trigger onAddNauczyciel before insert on nauczyciele for each row execute procedure verifyOsoby();
-create trigger onAddOpiekun before insert on opiekunowie for each row execute procedure verifyOsoby();
-create trigger onAddDyrektor before insert on dyrektorstwo for each row execute procedure verifyOsoby();
+create trigger on_add_uczen before insert on uczniowie for each row execute procedure verify_osoby();
+create trigger on_add_nauczyciel before insert on nauczyciele for each row execute procedure verify_osoby();
+create trigger on_add_opiekun before insert on opiekunowie for each row execute procedure verify_osoby();
+create trigger on_add_dyrektor before insert on dyrektorstwo for each row execute procedure verify_osoby();
 
 /*
  Poniższe widoki ułatwiają dodawanie do poszczególnych grup społecznych i wyświetlanie ich.
  Najpierw dodawana jest krotka do osób, następnie id do konkretnej grupy.
  */
 
-create or replace view uczniowieView as
+create or replace view uczniowie_view as
     select o.*, u.klasa
     from uczniowie u join osoby o on u.osoba = o.id_osoby;
 
-create or replace view nauczycieleView as
+create or replace view nauczyciele_view as
     select o.*, n.wyksztalcenie
     from nauczyciele n join osoby o on n.osoba = o.id_osoby;
 
-create or replace view opiekunowieView as
+create or replace view opiekunowie_view as
     select o.*
     from opiekunowie op join osoby o on op.osoba = o.id_osoby;
 
-create or replace view dyrektorstwoView as
+create or replace view dyrektorstwo_view as
     select o.*
     from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
 
 
-create type klasaSpoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'OPIEKUNOWIE', 'DYREKTORSTWO');
+create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'OPIEKUNOWIE', 'DYREKTORSTWO');
 
-create or replace function getKlasaSpoleczna(id_osoby integer) returns klasaSpoleczna as $$
+create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
 begin
     if (
         select osoba from dyrektorstwo

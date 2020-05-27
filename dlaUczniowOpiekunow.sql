@@ -4,10 +4,10 @@
  */
 ------------------------------------------------------------------------------------------------------------------------
 
-create or replace function klasaUcznia(id_ucz integer) returns integer as $$
+create or replace function klasa_ucznia(id_ucz integer) returns integer as $$
 begin
     return (
-        select klasa from uczniowieView
+        select klasa from uczniowie_view
         );
 end;
 $$ language 'plpgsql';
