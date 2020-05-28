@@ -1,3 +1,27 @@
+create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'OPIEKUNOWIE', 'DYREKTORSTWO');
+
+create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
+begin
+    if (
+        select osoba from dyrektorstwo where osoba = id_osoby
+        ) is not null then return 'DYREKTORSTWO';
+    end if;
+    if (
+        select osoba from nauczyciele where osoba = id_osoby
+        ) is not null then return 'NAUCZYCIELE';
+    end if;
+    if (
+        select osoba from opiekunowie where osoba = id_osoby
+        ) is not null then return 'OPIEKUNOWIE';
+    end if;
+    if (
+        select osoba from uczniowie where osoba = id_osoby
+        ) is not null then return 'UCZNIOWIE';
+    end if;
+    return default;
+end;
+$$ language 'plpgsql';
+
 /*
  Dodajemy do uczniowie / nauczyciele / opiekunowie tylko pod warunkiem, że mamy już takie id w osobach,
  i nie mamy takiego id jeszcze w żadnej z powyższych trzech grup.
@@ -18,9 +42,13 @@ begin
     end if;
     if (
         select n.osoba from nauczyciele n where n.osoba = new.osoba
-        ) is not null and (
+        ) is not null and tg_table_name::regclass::text != 'dyrektorstwo'
+        then raise exception 'Person already present in nauczyciele';
+    end if;
+    if  (
         select d.osoba from dyrektorstwo d where d.osoba = new.osoba
-        ) is not null then raise exception 'Person already present in ';
+        ) is not null and tg_table_name::regclass::text != 'nauczyciele'
+        then raise exception 'Person already present in dyrektorstwo';
     end if;
     return new;
 end
@@ -49,30 +77,5 @@ create or replace view opiekunowie_view as
     from opiekunowie op join osoby o on op.osoba = o.id_osoby;
 
 create or replace view dyrektorstwo_view as
-    select o.*
+    select o.*, d.wyksztalcenie
     from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
-
-
-create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'OPIEKUNOWIE', 'DYREKTORSTWO');
-
-create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
-begin
-    if (
-        select osoba from dyrektorstwo
-        ) is not null then return 'DYREKTORSTWO';
-    end if;
-    if (
-        select osoba from nauczyciele
-        ) is not null then return 'NAUCZYCIELE';
-    end if;
-    if (
-        select osoba from opiekunowie
-        ) is not null then return 'OPIEKUNOWIE';
-    end if;
-    if (
-        select osoba from uczniowie
-        ) is not null then return 'UCZNIOWIE';
-    end if;
-    return default;
-end;
-$$ language 'plpgsql';

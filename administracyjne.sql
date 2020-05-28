@@ -10,7 +10,7 @@
 create or replace function dodaj_ucznia(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
                                         nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), klasa_ integer) returns integer as $$
 declare
-    grupa klasa_spoleczna = get_klasa_spoleczna(id_wstawiajacego);
+    grupa klasa_spoleczna = klasa_spoleczna_osoby(id_wstawiajacego);
     id_os integer;
 begin
     if grupa = 'DYREKTORSTWO' or
@@ -30,7 +30,7 @@ begin
         insert into uczniowie (osoba, klasa) values (id_os, klasa_);
         return id_os;
     end if;
-    return null;
+    raise exception 'This person has no permission to add this student.';
 end;
 $$ language 'plpgsql';
 
@@ -40,7 +40,7 @@ $$ language 'plpgsql';
 create or replace function dodaj_opiekuna(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
                                          nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), dziecko_ integer) returns integer as $$
 declare
-    grupa klasa_spoleczna = get_klasa_spoleczna(id_wstawiajacego);
+    grupa klasa_spoleczna = klasa_spoleczna_osoby(id_wstawiajacego);
     id_os integer;
     klasa_dziecka integer;
 begin
@@ -65,7 +65,7 @@ begin
         insert into opiekunowie (osoba) values (id_os);
         return id_os;
     end if;
-    return null;
+    raise exception 'This person has no permission to add this patron.';
 end;
 $$ language 'plpgsql';
 
@@ -76,7 +76,7 @@ create or replace function dodaj_nauczyciela(id_wstawiajacego integer, pesel_ ch
                                             nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), wyksztalcenie_ varchar(100) = null)
                                             returns integer as $$
 declare
-    grupa klasa_spoleczna = get_klasa_spoleczna(id_wstawiajacego);
+    grupa klasa_spoleczna = klasa_spoleczna_osoby(id_wstawiajacego);
     id_os integer;
 begin
     if grupa = 'DYREKTORSTWO' then
@@ -92,6 +92,6 @@ begin
         insert into nauczyciele (osoba, wyksztalcenie) values (id_os, wyksztalcenie_);
         return id_os;
     end if;
-    return null;
+    raise exception 'This person has no permission to add this teacher.';
 end;
 $$ language 'plpgsql';
