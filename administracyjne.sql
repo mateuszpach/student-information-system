@@ -95,3 +95,26 @@ begin
     raise exception 'This person has no permission to add this teacher.';
 end;
 $$ language 'plpgsql';
+
+-- Edycja plany zajęć
+create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
+returns int as $$
+begin
+    if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
+        raise exception 'Ta osoba nie ma uprawnien do edycji planu zajec.';
+    end if;
+    insert into zajecia (dzien_tygodnia, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
+    (dz_tyg, godz_lek, przedm, klas, prow, sal);
+end;
+$$ language 'plpgsql';
+
+
+create or replace function usun_z_planu(id_dyr int, id_zaj int)
+returns int as $$
+begin
+    if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
+        raise exception 'Ta osoba nie ma uprawnien do edycji planu zajec.';
+    end if;
+    delete from zajecia where id_zajec = id_zaj;
+end;
+$$ language 'plpgsql';
