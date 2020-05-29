@@ -18,7 +18,7 @@ begin
         select osoba from uczniowie where osoba = id_osoby
         ) is not null then return 'UCZNIOWIE';
     end if;
-    return default;
+    return null;
 end;
 $$ language 'plpgsql';
 
