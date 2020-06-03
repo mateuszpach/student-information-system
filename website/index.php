@@ -32,17 +32,17 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Zajęcia <span class="sr-only">(current)</span></a>
+        <li class="nav-item">
+          <a class="nav-link" href="/zajecia.php">Zajęcia</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Plan</a>
+          <a class="nav-link" href="/plan.php">Plan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Klasy</a>
+          <a class="nav-link" href="/klasy.php">Klasy</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Uwagi</a>
+          <a class="nav-link" href="/uwagi.php">Uwagi</a>
         </li>
       </ul>
       <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
@@ -55,39 +55,6 @@
 
   <div class="container">
 
-    <div class="row">
-      <table class="table table-striped table-bordered" style="background-color: white">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email Address</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          require 'vendor/autoload.php';
-
-          use PostgreSQLPHP\Connection as Connection;
-
-          try {
-            $pdo = Connection::get()->connect();
-          } catch (\PDOException $e) {
-            echo 'Failed to connect to db.';
-            echo $e->getMessage();
-          }
-
-          $sql = 'SELECT * FROM osoby ORDER BY id_osoby DESC';
-          foreach ($pdo->query($sql) as $row) {
-            echo '<tr>';
-            echo '<td>' . $row['pesel'] . '</td>';
-            echo '<td>' . $row['imie'] . '</td>';
-            echo '</tr>';
-          }
-          ?>
-
-        </tbody>
-      </table>
-    </div>
   </div> <!-- /container -->
 
   <script src="cookies.js" crossorigin="anonymous"></script>

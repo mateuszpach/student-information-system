@@ -11,7 +11,6 @@ try {
 }
 
 $em = $_POST["email"];
-echo $em;
 
 // TODO: change to SQL function   
 $q = $pdo->prepare('SELECT count(*) as "A" FROM osoby WHERE email = :1');
@@ -19,8 +18,13 @@ $q->bindParam(':1', $em, PDO::PARAM_STR);
 $q->execute();
 $res = $q->fetch();
 if ($res['A'] >= 1) {
+    $q2 = $pdo->prepare('SELECT id_osoby as "A" FROM osoby WHERE email = :1');
+    $q2->bindParam(':1', $em, PDO::PARAM_STR);
+    $q2->execute();
+    $id = $q2->fetch()['A'];
 } else {
     $em = "";
+    $id = "";
 }
 ?>
 
@@ -32,9 +36,11 @@ if ($res['A'] >= 1) {
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
     var em = "<?php echo $em ?>";
+    var id = "<?php echo $id ?>";
     console.log(em);
     if (em != "") {
-        setCookie("user", em, 1);
+        setCookie("user", em, 50);
+        setCookie("user_id", id, 50);
         location.replace("index.php");
     } else {
         location.replace("login.php");

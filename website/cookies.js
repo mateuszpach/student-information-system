@@ -31,6 +31,7 @@ setInterval(checkCookie, 5000);
 
 function logout() {
   setCookie("user", "", 0);
+  setCookie("user_id", "", 0);
   checkCookie();
 }
 
