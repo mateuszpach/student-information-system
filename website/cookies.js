@@ -21,7 +21,17 @@ function setCookie(cname, cvalue, exminutes) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-setCookie("user","1",1);
-if(getCookie("user") == ""){
-    setInterval(location.replace("login.php"), 5000);
+function checkCookie() {
+  if (getCookie("user") == "") {
+    location.replace("login.php");
+  }
 }
+
+setInterval(checkCookie, 5000);
+
+function logout() {
+  setCookie("user", "", 0);
+  checkCookie();
+}
+
+document.getElementById("name").innerHTML = getCookie("user");
