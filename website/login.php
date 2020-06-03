@@ -13,12 +13,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="js/login.js" crossorigin="anonymous"></script>
 
     <title>E-dziennik</title>
 
     <style type="text/css">
-        body{
+        body {
             background-image: url(img/book.jpg);
         }
 
@@ -57,19 +56,20 @@
     </nav>
 
     <div class="login-form">
-        <form method="post">
+        <form action="authenticate.php" method="post">
             <h2 class="text-center">Logowanie</h2>
             <div class="form-group">
-                <input id="email" type="text" class="form-control" placeholder="Email" required="required">
+                <input type="text" name="email" class="form-control" placeholder="Email" required="required">
             </div>
             <div class="form-group">
-                <input id="password" type="password" class="form-control" placeholder="Hasło" required="required">
+                <input type="password" name="password" class="form-control" placeholder="Hasło" required="required">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block" onclick="validate()" >Zaloguj</button>
+                <button type="submit" class="btn btn-primary btn-block">Zaloguj</button>
             </div>
         </form>
     </div>
+
 </body>
 
 </html>
