@@ -39,7 +39,7 @@
           <a class="nav-link active" href="/plan.php">Plan <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/klasy.php">Klasy</a>
+          <a class="nav-link" href="/klasa.php">Klasa</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/uwagi.php">Uwagi</a>
