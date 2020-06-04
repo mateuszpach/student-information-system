@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
@@ -69,73 +69,8 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php
-                    require 'vendor/autoload.php';
-
-                    use PostgreSQLPHP\Connection as Connection;
-
-                    try {
-                        $pdo = Connection::get()->connect();
-                    } catch (\PDOException $e) {
-                        echo 'Failed to connect to db.';
-                        echo $e->getMessage();
-                    }
-
-                    //TODO: query
-                    try {
-                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                        $q->execute();
-                        $res = $q->fetchAll();
-                    } catch (PDOException $exception) {
-                        return $exception->getMessage();
-                    }
-
-                    //   foreach ($res as $row) {
-                    //     echo '<tr>';
-                    //     echo '<td>' . $row['godzina'] . '</td>';
-                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                    //     echo '<td>' . $row['sroda'] . '</td>';
-                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                    //     echo '<td>' . $row['piatek'] . '</td>';
-                    //     echo '</tr>';
-                    //   }
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    ?>
+                <tbody id="nowe">
+                    <!-- zajecia__nowe.php -->
                 </tbody>
             </table>
             <table class="table table-striped table-bordered table-responsive{-xl} text-center mt-5" style="background-color: white">
@@ -152,73 +87,90 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php
-                    try {
-                        $pdo = Connection::get()->connect();
-                    } catch (\PDOException $e) {
-                        echo 'Failed to connect to db.';
-                        echo $e->getMessage();
-                    }
-
-                    //TODO: query
-                    try {
-                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                        $q->execute();
-                        $res = $q->fetchAll();
-                    } catch (PDOException $exception) {
-                        return $exception->getMessage();
-                    }
-
-                    //   foreach ($res as $row) {
-                    //     echo '<tr>';
-                    //     echo '<td>' . $row['godzina'] . '</td>';
-                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                    //     echo '<td>' . $row['sroda'] . '</td>';
-                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                    //     echo '<td>' . $row['piatek'] . '</td>';
-                    //     echo '</tr>';
-                    //   }
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo '<td class="align-middle">' . '2018-03-14' . '</td>';
-                    echo '<td class="align-middle">' . '08:00:00 - 09:00:00' . '</td>';
-                    echo '<td class="align-middle">' . 'Matematyka' . '</td>';
-                    echo '<td class="align-middle">' . '2A' . '</td>';
-                    echo '<td class="align-middle">' . '210' . '</td>';
-                    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
-                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
-                                                        </form>' . '</td>';
-                    echo '</tr>';
-                    ?>
+                <tbody id="dawne">
+                    <!-- zajecia__dawne.php -->
                 </tbody>
             </table>
         </div>
+
+        <!-- Error Modal -->
+        <div class="modal fade" id="errormodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Błąd</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Operacja niedozwolona.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Wróć</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div> <!-- /container -->
+
+    <script type="text/javascript">
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(";");
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == " ") {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var id_osoby = getCookie("user_id");
+        var id_oceny;
+
+        $("#errormodal").modal('hide');
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "zajecia__dawne.php",
+                type: "post",
+                data: values
+            });
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dawne").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "zajecia__nowe.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#nowe").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+    </script>
 
     <script src="cookies.js" crossorigin="anonymous"></script>
 </body>
