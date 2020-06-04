@@ -36,7 +36,7 @@
           <a class="nav-link" href="/zajecia.php">Zajęcia</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/plan.php">Plan <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/plan.php">Plan</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/klasy.php">Klasy</a>
@@ -54,57 +54,11 @@
   </nav>
 
   <div class="container">
+    <?php
+      echo "TEST";
+      echo $_POST['id_zajec'];
+    ?>
 
-    <div class="row">
-      <table class="table table-striped table-bordered table-responsive{-xl} mt-5" style="background-color: white">
-        <thead>
-          <tr>
-            <th>Godzina</th>
-            <th>Poniedziałek</th>
-            <th>Wtorek</th>
-            <th>Środa</th>
-            <th>Czwartek</th>
-            <th>Piątek</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          require 'vendor/autoload.php';
-
-          use PostgreSQLPHP\Connection as Connection;
-
-          try {
-            $pdo = Connection::get()->connect();
-          } catch (\PDOException $e) {
-            echo 'Failed to connect to db.';
-            echo $e->getMessage();
-          }
-
-          //TODO: replace with function plan(nauczyciel)
-          try {
-            $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-            //$q->bindParam(':1', $em, PDO::PARAM_STR);
-            $q->execute();
-            $res = $q->fetchAll();
-          } catch (PDOException $exception) {
-            return $exception->getMessage();
-          }
-
-          foreach ($res as $row) {
-            echo '<tr>';
-            echo '<td>' . $row['godzina'] . '</td>';
-            echo '<td>' . $row['poniedzialek'] . '</td>';
-            echo '<td>' . $row['wtorek'] . '</td>';
-            echo '<td>' . $row['sroda'] . '</td>';
-            echo '<td>' . $row['czwartek'] . '</td>';
-            echo '<td>' . $row['piatek'] . '</td>';
-            echo '</tr>';
-          }
-          ?>
-
-        </tbody>
-      </table>
-    </div>
   </div> <!-- /container -->
 
   <script src="cookies.js" crossorigin="anonymous"></script>
