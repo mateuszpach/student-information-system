@@ -1,3 +1,13 @@
+-- Przedmiot
+create or replace function nazwa_przedmiotu(id int) returns varchar as $$
+begin
+    return (
+        select nazwa
+        from przedmioty where id_przedmiotu = id
+    );
+end;
+$$ language 'plpgsql';
+
 -- Edycja planu zajęć
 create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
 returns int as $$
