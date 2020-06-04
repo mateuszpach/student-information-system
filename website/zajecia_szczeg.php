@@ -39,7 +39,7 @@
           <a class="nav-link" href="/plan.php">Plan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/klasy.php">Klasy</a>
+          <a class="nav-link" href="/klasa.php">Klasa</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/uwagi.php">Uwagi</a>
@@ -82,7 +82,7 @@
         </form>
         <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#obecmodal">Obecność</button>
         <form class="form-inline btn" action="oceny.php" method="post">
-          <input type="hidden" name="id_zajec" value="<?php echo $_POST['id_zajec']?>">
+          <input type="hidden" name="id_zajec" value="<?php echo $_POST['id_zajec'] ?>">
           <button class="btn btn-primary" type="submit">Oceny</button>
         </form>
         <div class="btn-group float-right mt-2"><a href="zajecia.php" class="btn btn-danger">Wróć</a></div>
@@ -204,12 +204,30 @@
   </div> <!-- /container -->
 
   <script type="text/javascript">
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    var id_osoby = getCookie("user_id");
+    var id_oceny;
+
     $("#errormodal").modal('hide');
     $("#temat").submit(function(event) {
       var ajaxRequest;
       event.preventDefault();
       var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-      var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec;
+      var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
       ajaxRequest = $.ajax({
         url: "temat.php",
@@ -222,7 +240,6 @@
       });
 
       ajaxRequest.fail(function() {
-        $("#temat-input").val("");
         $("#errormodal").modal('show');
       });
     });
@@ -231,7 +248,7 @@
       var ajaxRequest;
       event.preventDefault();
       var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-      var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec;
+      var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
       console.log(values);
 
       ajaxRequest = $.ajax({

@@ -25,7 +25,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">E-dziennik</a>
+    <a class="navbar-brand" href="/index.php">E-dziennik</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,8 +39,7 @@
           <a class="nav-link" href="/plan.php">Plan</a>
         </li>
         <li class="nav-item">
-          <!-- TODO check if has class in every file -->
-          <a class="nav-link" href="/klasa.php">Klasa</a>
+          <a class="nav-link active" href="/klasa.php">Klasa</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/uwagi.php">Uwagi</a>
@@ -55,7 +54,7 @@
   </nav>
 
   <div class="container">
-
+    
   </div> <!-- /container -->
 
   <script src="cookies.js" crossorigin="anonymous"></script>
