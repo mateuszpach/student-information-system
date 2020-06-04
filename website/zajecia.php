@@ -39,7 +39,7 @@
                     <a class="nav-link" href="/plan.php">Plan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/klasy.php">Klasy</a>
+                    <a class="nav-link" href="/klasa.php">Klasa</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/uwagi.php">Uwagi</a>
@@ -215,7 +215,7 @@
                                                         </form>' . '</td>';
                     echo '</tr>';
                     ?>
-                </tbody> 
+                </tbody>
             </table>
         </div>
     </div> <!-- /container -->

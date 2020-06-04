@@ -40,7 +40,7 @@
                     <a class="nav-link" href="/plan.php">Plan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/klasy.php">Klasy</a>
+                    <a class="nav-link" href="/klasa.php">Klasa</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/uwagi.php">Uwagi</a>
@@ -336,7 +336,7 @@
                             <div class="form-group">
                                 <label for="wartosc">Ocena</label>
                                 <select class="form-control" id="wartosc" name="wartosc">
-                                <?php
+                                    <?php
                                     //TODO: query tylko jedna selected ta co w bazie
                                     try {
                                         $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
@@ -368,27 +368,27 @@
                             <div class="form-group">
                                 <label for="waga">Waga</label>
                                 <?php
-                                    //TODO: query value ma byc jak w bazie
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
+                                //TODO: query value ma byc jak w bazie
+                                try {
+                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
+                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+                                    $q->execute();
+                                    $res = $q->fetchAll();
+                                } catch (PDOException $exception) {
+                                    return $exception->getMessage();
+                                }
 
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-                                    ?>
+                                //   foreach ($res as $row) {
+                                //     echo '<tr>';
+                                //     echo '<td>' . $row['godzina'] . '</td>';
+                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
+                                //     echo '<td>' . $row['wtorek'] . '</td>';
+                                //     echo '<td>' . $row['sroda'] . '</td>';
+                                //     echo '<td>' . $row['czwartek'] . '</td>';
+                                //     echo '<td>' . $row['piatek'] . '</td>';
+                                //     echo '</tr>';
+                                //   }
+                                ?>
                                 <input type="number" min="0" max="9" id="waga" name="waga" class="form-control" value="4">
                                 <small id="passwordHelpBlock" class="form-text text-muted">
                                     Poprawny zakres: 0-9
@@ -398,27 +398,27 @@
                             <div class="form-group">
                                 <label for="kategoria">Kategoria</label>
                                 <?php
-                                    //TODO: query tylko jedna selected
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
+                                //TODO: query tylko jedna selected
+                                try {
+                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
+                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+                                    $q->execute();
+                                    $res = $q->fetchAll();
+                                } catch (PDOException $exception) {
+                                    return $exception->getMessage();
+                                }
 
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-                                    ?>
+                                //   foreach ($res as $row) {
+                                //     echo '<tr>';
+                                //     echo '<td>' . $row['godzina'] . '</td>';
+                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
+                                //     echo '<td>' . $row['wtorek'] . '</td>';
+                                //     echo '<td>' . $row['sroda'] . '</td>';
+                                //     echo '<td>' . $row['czwartek'] . '</td>';
+                                //     echo '<td>' . $row['piatek'] . '</td>';
+                                //     echo '</tr>';
+                                //   }
+                                ?>
                                 <select class="form-control" id="kategoria" name="kategoria">
                                     <option value="sprawdzian">Sprawdzian</option>
                                     <option value="kartkowka">Kartkówka</option>
@@ -432,27 +432,27 @@
                                 <label for="opis">Opis</label>
                                 <textarea class="form-control" id="opis" name="opis" rows="3">
                                 <?php
-                                    //TODO: query opis z bazy
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
+                                //TODO: query opis z bazy
+                                try {
+                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
+                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+                                    $q->execute();
+                                    $res = $q->fetchAll();
+                                } catch (PDOException $exception) {
+                                    return $exception->getMessage();
+                                }
 
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-                                    ?>
+                                //   foreach ($res as $row) {
+                                //     echo '<tr>';
+                                //     echo '<td>' . $row['godzina'] . '</td>';
+                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
+                                //     echo '<td>' . $row['wtorek'] . '</td>';
+                                //     echo '<td>' . $row['sroda'] . '</td>';
+                                //     echo '<td>' . $row['czwartek'] . '</td>';
+                                //     echo '<td>' . $row['piatek'] . '</td>';
+                                //     echo '</tr>';
+                                //   }
+                                ?>
                                 </textarea>
                                 <small id="passwordHelpBlock" class="form-text text-muted">
                                     Nie może przkraczać x znaków.
@@ -472,6 +472,22 @@
     </div> <!-- /container -->
 
     <script type="text/javascript">
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(";");
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == " ") {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var id_osoby = getCookie("user_id");
         var id_oceny;
 
         $("#errormodal").modal('hide');
@@ -479,7 +495,7 @@
             var ajaxRequest;
             event.preventDefault();
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec;
+            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
                 url: "temat.php",
