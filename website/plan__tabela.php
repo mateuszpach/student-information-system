@@ -10,10 +10,9 @@
             echo $e->getMessage();
           }
 
-          //TODO: replace with function plan(nauczyciel)
           try {
-            $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-            //$q->bindParam(':1', $em, PDO::PARAM_STR);
+            $q = $pdo->prepare('SELECT * FROM plan_nauczyciela(:1)');
+            $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
             $q->execute();
             $res = $q->fetchAll();
           } catch (PDOException $exception) {

@@ -7,4 +7,6 @@ Follow steps in the tutorial to setup lapp for local app testing:
 Instead of step 9 do the following (probably second answer):
 [https://stackoverflow.com/questions/5891802/how-do-i-change-the-root-directory-of-an-apache-server](https://stackoverflow.com/questions/5891802/how-do-i-change-the-root-directory-of-an-apache-server)
 
-Change filename database_template.php to database.php and adjust it accordingly to your postgres setup.
+In folder connection adjust file database.ini accordingly to your postgres setup.
+It's preferred to pass credentials to database.ini from your computer user account instead using postgres account.
+It is also preferred to use the same name for login, password and database name.
