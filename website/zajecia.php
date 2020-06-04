@@ -215,7 +215,7 @@
                                                         </form>' . '</td>';
                     echo '</tr>';
                     ?>
-                </tbody>
+                </tbody> 
             </table>
         </div>
     </div> <!-- /container -->
