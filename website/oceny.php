@@ -58,116 +58,15 @@
 
         <div class="card mt-5">
             <div class="card-header">
-                <div class="row">
-                    <div class="col">
-                        <h1>Matematyka</h1>
-                        <h3>Klasa 3a</h3>
-                    </div>
-                    <div class="col text-right">
-                        <h5>2013-12-24</h5>
-                        <h5>8:00-9:00</h5>
-                        <h5>Sala 102</h5>
-                    </div>
+                <div class="row" id="dane">
+                    <!-- oceny__dane.php -->
                 </div>
             </div>
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div style="overflow-x: auto">
-                        <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3" style="background-color: white">
-                            <?php
-                            require 'vendor/autoload.php';
-
-                            use PostgreSQLPHP\Connection as Connection;
-
-                            try {
-                                $pdo = Connection::get()->connect();
-                            } catch (\PDOException $e) {
-                                echo 'Failed to connect to db.';
-                                echo $e->getMessage();
-                            }
-
-                            echo '<thead>';
-
-                            echo '<tr>';
-                            echo  '<th colspan="100" class="align-middle">Oceny</th>';
-                            echo '</tr>';
-
-                            //TODO: query
-                            try {
-                                $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                $q->execute();
-                                $res = $q->fetchAll();
-                            } catch (PDOException $exception) {
-                                return $exception->getMessage();
-                            }
-
-
-                            //TODO: query
-                            try {
-                                $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                $q->execute();
-                                $res = $q->fetchAll();
-                            } catch (PDOException $exception) {
-                                return $exception->getMessage();
-                            }
-
-                            //   foreach ($res as $row) {
-                            //     echo '<tr>';
-                            //     echo '<td>' . $row['godzina'] . '</td>';
-                            //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                            //     echo '<td>' . $row['wtorek'] . '</td>';
-                            //     echo '<td>' . $row['sroda'] . '</td>';
-                            //     echo '<td>' . $row['czwartek'] . '</td>';
-                            //     echo '<td>' . $row['piatek'] . '</td>';
-                            //     echo '</tr>';
-                            //   }
-
-                            //id w td to id_oceny
-
-                            echo '<tr>';
-                            echo     '<th>Uczeń</th>';
-                            echo     '<th>Mnożenie do 100</th>';
-                            echo     '<th>Zestaw 10.</th>';
-                            echo     '<th>Trygynometria</th>';
-                            echo     '<th>Mnożenie do 100</th>';
-                            echo     '<th>Zestaw 10.</th>';
-                            echo     '<th>Trygynometria</th>';
-                            echo     '<th>Średnia</th>';
-                            echo     '<th>Końcowa</th>';
-                            echo '</tr>';
-
-                            echo '</thead>';
-                            echo '<tbody>';
-
-                            echo '<tr>';
-                            echo '<td class="align-middle">' . 'Jan Kowalski' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="mt-1">3.24</h4></div>' . '</td>';
-                            echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-                            echo '</tr>';
-                            echo '</tbody>';
-                            ?>
+                        <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3" style="background-color: white" id="tabela">
+                            <!-- oceny__tabela.php -->
                         </table>
                     </div>
                 </div>
@@ -205,82 +104,15 @@
         <div class="modal fade" id="dodajmodal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form id="dodaj">
+                    <form id="dodajform">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Dodaj ocenę</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-
-                            <div class="form-group">
-                                <label for="imie">Uczeń</label>
-                                <select class="form-control" id="wartosc" name="imie">
-                                    <?php
-                                    //TODO: query
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
-
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-
-                                    echo '<option>Jan Kowalski</option>';
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="wartosc">Ocena</label>
-                                <select class="form-control" id="wartosc" name="wartosc">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="waga">Waga</label>
-                                <input type="number" min="0" max="9" id="waga" name="waga" class="form-control">
-                                <small id="passwordHelpBlock" class="form-text text-muted">
-                                    Poprawny zakres: 0-9
-                                    <!-- TODO ile dokaldnie -->
-                                </small>
-                            </div>
-                            <div class="form-group">
-                                <label for="kategoria">Kategoria</label>
-                                <select class="form-control" id="kategoria" name="kategoria">
-                                    <option value="sprawdzian">Sprawdzian</option>
-                                    <option value="kartkowka">Kartkówka</option>
-                                    <option value="odpowiedz">Odpowiedź</option>
-                                    <option value="zadanie">Zadanie</option>
-                                    <option value="aktywnosc">Aktywność</option>
-                                    <option value="inne">Inne</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="opis">Opis</label>
-                                <textarea class="form-control" id="opis" name="opis" rows="3"></textarea>
-                                <small id="passwordHelpBlock" class="form-text text-muted">
-                                    Nie może przkraczać x znaków.
-                                    <!-- TODO ile dokaldnie -->
-                                </small>
-                            </div>
-
+                        <div class="modal-body" id="dodaj">
+                            <!-- oceny__dodaj.php -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Porzuć</button>
@@ -302,164 +134,8 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-
-                            <div class="form-group">
-                                <label for="imie">Uczeń</label>
-                                <select class="form-control" id="wartosc" name="imie">
-                                    <?php
-                                    //TODO: query tylko jeden selected
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
-
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-
-                                    echo '<option>Jan Kowalski</option>';
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="wartosc">Ocena</label>
-                                <select class="form-control" id="wartosc" name="wartosc">
-                                    <?php
-                                    //TODO: query tylko jedna selected ta co w bazie
-                                    try {
-                                        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                        //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                        $q->execute();
-                                        $res = $q->fetchAll();
-                                    } catch (PDOException $exception) {
-                                        return $exception->getMessage();
-                                    }
-
-                                    //   foreach ($res as $row) {
-                                    //     echo '<tr>';
-                                    //     echo '<td>' . $row['godzina'] . '</td>';
-                                    //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                    //     echo '<td>' . $row['wtorek'] . '</td>';
-                                    //     echo '<td>' . $row['sroda'] . '</td>';
-                                    //     echo '<td>' . $row['czwartek'] . '</td>';
-                                    //     echo '<td>' . $row['piatek'] . '</td>';
-                                    //     echo '</tr>';
-                                    //   }
-                                    ?>
-                                    <option>1</option>
-                                    <option selected="selected">2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="waga">Waga</label>
-                                <?php
-                                //TODO: query value ma byc jak w bazie
-                                try {
-                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                    $q->execute();
-                                    $res = $q->fetchAll();
-                                } catch (PDOException $exception) {
-                                    return $exception->getMessage();
-                                }
-
-                                //   foreach ($res as $row) {
-                                //     echo '<tr>';
-                                //     echo '<td>' . $row['godzina'] . '</td>';
-                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                //     echo '<td>' . $row['wtorek'] . '</td>';
-                                //     echo '<td>' . $row['sroda'] . '</td>';
-                                //     echo '<td>' . $row['czwartek'] . '</td>';
-                                //     echo '<td>' . $row['piatek'] . '</td>';
-                                //     echo '</tr>';
-                                //   }
-                                ?>
-                                <input type="number" min="0" max="9" id="waga" name="waga" class="form-control" value="4">
-                                <small id="passwordHelpBlock" class="form-text text-muted">
-                                    Poprawny zakres: 0-9
-                                    <!-- TODO ile dokaldnie -->
-                                </small>
-                            </div>
-                            <div class="form-group">
-                                <label for="kategoria">Kategoria</label>
-                                <?php
-                                //TODO: query tylko jedna selected
-                                try {
-                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                    $q->execute();
-                                    $res = $q->fetchAll();
-                                } catch (PDOException $exception) {
-                                    return $exception->getMessage();
-                                }
-
-                                //   foreach ($res as $row) {
-                                //     echo '<tr>';
-                                //     echo '<td>' . $row['godzina'] . '</td>';
-                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                //     echo '<td>' . $row['wtorek'] . '</td>';
-                                //     echo '<td>' . $row['sroda'] . '</td>';
-                                //     echo '<td>' . $row['czwartek'] . '</td>';
-                                //     echo '<td>' . $row['piatek'] . '</td>';
-                                //     echo '</tr>';
-                                //   }
-                                ?>
-                                <select class="form-control" id="kategoria" name="kategoria">
-                                    <option value="sprawdzian">Sprawdzian</option>
-                                    <option value="kartkowka">Kartkówka</option>
-                                    <option value="odpowiedz" selected="selected">Odpowiedź</option>
-                                    <option value="zadanie">Zadanie</option>
-                                    <option value="aktywnosc">Aktywność</option>
-                                    <option value="inne">Inne</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="opis">Opis</label>
-                                <textarea class="form-control" id="opis" name="opis" rows="3">
-                                <?php
-                                //TODO: query opis z bazy
-                                try {
-                                    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-                                    //$q->bindParam(':1', $em, PDO::PARAM_STR);
-                                    $q->execute();
-                                    $res = $q->fetchAll();
-                                } catch (PDOException $exception) {
-                                    return $exception->getMessage();
-                                }
-
-                                //   foreach ($res as $row) {
-                                //     echo '<tr>';
-                                //     echo '<td>' . $row['godzina'] . '</td>';
-                                //     echo '<td>' . $row['poniedzialek'] . '</td>';
-                                //     echo '<td>' . $row['wtorek'] . '</td>';
-                                //     echo '<td>' . $row['sroda'] . '</td>';
-                                //     echo '<td>' . $row['czwartek'] . '</td>';
-                                //     echo '<td>' . $row['piatek'] . '</td>';
-                                //     echo '</tr>';
-                                //   }
-                                ?>
-                                </textarea>
-                                <small id="passwordHelpBlock" class="form-text text-muted">
-                                    Nie może przkraczać x znaków.
-                                    <!-- TODO ile dokaldnie -->
-                                </small>
-                            </div>
-
+                        <div class="modal-body" id="edytuj">
+                            <!-- oceny__edytuj.php -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Porzuć</button>
@@ -514,7 +190,7 @@
         });
 
         $("#dodajmodal").modal('hide');
-        $("#dodaj").submit(function(event) {
+        $("#dodajform").submit(function(event) {
             var ajaxRequest;
             event.preventDefault();
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
@@ -565,6 +241,86 @@
 
         $(".withid").click(function(event) {
             id_oceny = this.id;
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__tabela.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#tabela").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__dane.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dane").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__dodaj.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dodaj").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__edytuj.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#edytuj").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
         });
     </script>
 
