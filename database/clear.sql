@@ -43,9 +43,27 @@ drop function if exists dodaj_nauczyciela(id_wstawiajacego integer, pesel_ char,
 
 --dla uczniow opiekunow
 drop function if exists klasa_ucznia(id_ucz integer) cascade;
+drop function if exists nazwa_klasy(id integer);
+drop function if exists plan_ucznia(id_ucz integer);
+drop function if exists przyszle_zajecia_ucznia(id_ucz integer);
+drop function if exists przeszle_zajecia_ucznia(id_ucz integer);
 
 --dla nauczycieli
 drop function if exists wychowywane_klasy(id_wych integer) cascade;
 drop type if exists funkcja_w_klasie cascade;
 drop function if exists przydziel_funkcje(id_wych integer, id_ucz integer, funkcja funkcja_w_klasie) cascade;
+drop function if exists plan_nauczyciela(id_naucz integer);
+drop function if exists przyszle_zajecia_nauczyciela(id_naucz integer);
+drop function if exists przeszle_zajecia_nauczyciela(id_naucz integer);
 
+
+--zajecia
+drop function if exists nazwa_przedmiotu(id integer);
+drop function if exists dodaj_do_planu(id_dyr integer, dz_tyg integer, godz_lek integer, przedm integer, klas integer, prow integer, sal integer);
+drop function if exists dodaj_instancje(id_wst integer, dat date, godz_lek integer, przedm integer, klas integer, prow integer, sal integer);
+drop function if exists odwolaj_instancje(id_odw integer, id_ins integer);
+drop function if exists usun_z_planu(id_dyr integer, id_zaj integer);
+
+drop function if exists brak_kolizji_instancje();
+drop function if exists brak_kolizji_plan();
+drop function if exists brak_kolizji_godz();

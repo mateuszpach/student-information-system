@@ -86,7 +86,7 @@ begin
 end
 $$ language 'plpgsql';
 
-create or replace function przysle_zajecia_nauczyciela(id_naucz int) returns table (
+create or replace function przyszle_zajecia_nauczyciela(id_naucz int) returns table (
     data date,
     czas text,
     przedmiot varchar,

@@ -65,7 +65,7 @@ begin
 end
 $$ language 'plpgsql';
 
-create or replace function przysle_zajecia_ucznia(id_ucz int) returns table (
+create or replace function przyszle_zajecia_ucznia(id_ucz int) returns table (
     data date,
     czas text,
     przedmiot varchar,
@@ -88,7 +88,7 @@ end
 $$ language 'plpgsql';
 
 
-create or replace function przeszle_zajecia_ucznia(id_naucz int) returns table (
+create or replace function przeszle_zajecia_ucznia(id_ucz int) returns table (
     data date,
     czas text,
     przedmiot varchar,
@@ -104,7 +104,7 @@ begin
         join klasy k on iz.klasa = k.id_klasy
         join przedmioty p on iz.przedmiot = p.id_przedmiotu
         where
-        iz.klasa = klasa_ucznia(id_ucz := ) and iz.data::timestamp + gl."do" < now()
+        iz.klasa = klasa_ucznia(id_ucz) and iz.data::timestamp + gl."do" < now()
         and iz.data >= now()::date - 14
         order by iz.data, czas
     );
