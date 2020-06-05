@@ -11,15 +11,14 @@ try {
 }
 
 $id_zajec = $_POST['id_zajec'];
+$id_osoba = $_POST['id_osoba'];
 
-
-$liczba_uczniow;
-//TODO: adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('select count(*) from lista_uczniow_zajecia(:1, :2)');
+    $q->bindParam(':1', $id_osoba, PDO::PARAM_STR);
+    $q->bindParam(':2', $id_zajec, PDO::PARAM_STR);
     $q->execute();
-    $res = $q->fetchAll();
+    $liczba_uczniow = $q->fetchColumn();
 } catch (PDOException $exception) {
     die(header("HTTP/1.0 400 Bad Request"));
 }
@@ -27,10 +26,10 @@ try {
 for ($i = 0; $i < $liczba_uczniow; $i++) {
     $id_obecnosci = $_POST['id'.$i];
     $status = $_POST[$i];
-    //TODO: adjust
     try {
-        $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-        //$q->bindParam(':1', $em, PDO::PARAM_STR);
+        $q = $pdo->prepare('select wstaw_obecnosc(:1, :2)');
+        $q->bindParam(':1', $id_obecnosci, PDO::PARAM_STR);
+        $q->bindParam(':2', $status, PDO::PARAM_STR);
         $q->execute();
         $res = $q->fetchAll();
     } catch (PDOException $exception) {
