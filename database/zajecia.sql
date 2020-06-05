@@ -151,3 +151,40 @@ begin
         );
 end
 $$ language 'plpgsql';
+
+
+-- listowanie uczniow
+
+
+create or replace function dostep_do_zajec(id_naucz int, id_zajec int) returns void as $$
+declare
+    prow int;
+begin
+    prow := coalesce((
+        select prowadzacy
+        from instancje_zajec iz where id_zajec = iz.id_instancji
+    ), -2);
+    if prow != id_naucz then
+        raise exception 'Nauczyciel nie prowadził tych zajęć.';
+    end if;
+end
+$$ language 'plpgsql';
+
+
+create or replace function lista_uczniow_zajecia(id_naucz int, id_zajec int)
+returns table (
+    id int,
+    imie varchar,
+    nazwisko varchar
+) as $$
+declare
+begin
+    perform dostep_do_zajec(id_naucz, id_zajec);
+    return query (
+        select uv.id_osoby, uv.imie, uv.nazwisko
+        from instancje_zajec iz
+        join uczniowie_view uv on iz.klasa = uv.klasa
+        where iz.id_instancji = id_zajec
+    );
+end
+$$ language 'plpgsql';

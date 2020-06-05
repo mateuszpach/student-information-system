@@ -55,15 +55,8 @@ create or replace function dostep_do_oceny(id_naucz int, id_ucz int, id_zajec in
 declare
     kl_u int = coalesce(klasa_ucznia(id_ucz), -1);
     kl_i int;
-    prow int;
 begin
-    prow := coalesce((
-        select prowadzacy
-        from instancje_zajec iz where id_zajec = iz.id_instancji
-    ), -2);
-    if prow != id_naucz then
-        raise exception 'Nauczyciel nie prowadził tych zajęć.';
-    end if;
+    perform dostep_do_zajec(id_naucz, id_zajec);
     kl_i := coalesce((
         select klasa
         from instancje_zajec iz where id_zajec = iz.id_instancji
@@ -167,3 +160,12 @@ create trigger rowna_waga_upd after update on oceny
 
 create trigger rowna_waga_ins after insert on oceny
     for each row execute procedure insert_waga();
+
+
+-- dane oceny
+/*select uv.imie, uv.nazwisko, p.nazwa, o.wartosc, o.kategoria, o.opis, o.waga, o.data_wystawienia
+from oceny o
+join uczniowie_view uv on o.uczen = uv.id_osoby
+join instancje_zajec iz on o.zajecia = iz.id_instancji
+join przedmioty p on iz.przedmiot = p.id_przedmiotu
+where o.ocena = 'Tu argument';*/
