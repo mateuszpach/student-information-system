@@ -54,8 +54,393 @@
     </nav>
 
     <div class="container">
+        <div class="card mt-5">
+            <div class="card-header">
+                <div class="row" id="dane">
+                    <!-- klasa__dane.php -->
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="przewform">
+                    <div class="input-group mb-3" id="przew">
+                        <!-- klasa__przew.php -->
+                    </div>
+                </form>
+                <form id="wiceprzewform">
+                    <div class="input-group mb-3" id="wiceprzew">
+                        <!-- klasa__wiceprzew.php -->
+                    </div>
+                </form>
+                <form id="skarbform">
+                    <div class="input-group mb-3" id="skarb">
+                        <!-- klasa__skarb.php -->
+                    </div>
+                </form>
 
+                <form class="mt-5" id="ocenyform">
+                    <div class="input-group mb-3" id="oceny">
+                        <!-- klasa__oceny.php -->
+                    </div>
+                </form>
+
+                <form id="nieobform" action="nieobecnosci.php">
+                    <div class="input-group mb-3" id="nieob">
+                        <!-- klasa__nieob.php -->
+                    </div>
+                </form>
+
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grocenmodal">Zestawienie grupowe ocen</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grobecmodal">Zestawienie grupowe obecności</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#uwagimodal">Uwagi</button>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div class="modal fade" id="errormodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Błąd</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Operacja niedozwolona.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Wróć</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grocen Modal -->
+        <div class="modal fade" id="grocenmodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Zestawienie grupowe ocen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white" id="grocen">
+                            <!-- klasa__grocen.php -->
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Wróć</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grobec Modal -->
+        <div class="modal fade" id="grobecmodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Zestawienie grupowe obecności</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white">
+                            <thead>
+                                <tr>
+                                    <th>Uczeń</th>
+                                    <th>Liczba zajęć</th>
+                                    <th>Obecność w %</th>
+                                    <th>Obecności</th>
+                                    <th>Nieobecności</th>
+                                    <th>Ucieczki</th>
+                                    <th>Nieobecności uspr.</th>
+                                    <th>Zwolnienia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="grobec">
+                                <!-- klasa__grobec.php -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Wróć</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uwagi Modal -->
+        <div class="modal fade" id="uwagimodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Uwagi</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white">
+                            <thead>
+                                <tr>
+                                    <th>Uczeń</th>
+                                    <th>Wystawiający</th>
+                                    <th>Data Wystawienia</th>
+                                    <th>Treść</th>
+                                    <th>Typ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="uwagi">
+                                <!-- klasa__uwagi.php -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Wróć</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div> <!-- /container -->
+
+    <script type="text/javascript">
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(";");
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == " ") {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var id_osoby = getCookie("user_id");
+
+        $("#errormodal").modal('hide');
+        $("#przewform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__updprzew.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+                // location.reload();
+            });
+        });
+
+        $("#wiceprzewform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__updwiceprzew.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+                // location.reload();
+            });
+        });
+
+        $("#skarbform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__updskarb.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+                // location.reload();
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__przew.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#przew").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__wiceprzew.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#wiceprzew").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__skarb.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#skarb").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__oceny.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#oceny").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__nieob.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#nieob").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__uwagi.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#uwagi").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__grocen.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#grocen").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__grobec.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#grobec").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+    </script>
 
     <script src="cookies.js" crossorigin="anonymous"></script>
 </body>

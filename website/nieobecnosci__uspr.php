@@ -10,16 +10,14 @@ try {
     echo $e->getMessage();
 }
 
-$id_zajec = $_POST['id_zajec'];
-$temat = $_POST['temat-input'];
+$id_obec = $_POST['id_obec'];
 
-//TODO: query
+//TODO adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * FROM przyszle_zajecia_nauczyciela(:1)');
+    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
-    die(header("HTTP/1.0 400 Bad Request"));
+    return $exception->getMessage();
 }
-?>

@@ -122,7 +122,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Anuluj i Wróć</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="window.location.reload();">Anuluj i Wróć</button>
               <button type="submit" class="btn btn-primary">Zapisz i wróć</button>
             </div>
           </form>
@@ -158,7 +158,7 @@
       var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
       ajaxRequest = $.ajax({
-        url: "temat.php",
+        url: "zajecia_szczeg__updtemat.php",
         type: "post",
         data: values
       });
@@ -180,7 +180,7 @@
       console.log(values);
 
       ajaxRequest = $.ajax({
-        url: "obecnosc.php",
+        url: "zajecia_szczeg__updobecnosc.php",
         type: "post",
         data: values
       });
