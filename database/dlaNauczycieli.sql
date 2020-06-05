@@ -133,3 +133,51 @@ begin
     );
 end
 $$ language 'plpgsql';
+
+
+-- klasa wychowawcy
+
+create or replace function klasa_wychowawcy(id_wych int) returns int as $$
+declare
+begin
+    return
+        (
+            select id_klasy
+            from klasy
+            where wychowawca = id_wych
+            limit 1
+            );
+end
+$$ language 'plpgsql';
+
+create or replace function nazwa_klasy_wychowawcy(id_wych int) returns varchar as $$
+declare
+begin
+    return nazwa_klasy(klasa_wychowawcy(id_wych));
+end
+$$ language 'plpgsql';
+
+--lista uczniow klasy
+--tryb: 0 -> nie wyróżniaj nikogo, 1 -> wyróżnij przewodniczącego, 2 -> wice, 3 -> skarbnika
+
+create or replace function lista_uczniow_klasy(id_wych int, tryb int = 0)
+returns table (
+    imie varchar,
+    nazwisko varchar,
+    aktualny bool
+) as $$
+begin
+    return query (
+        select uv.imie, uv.nazwisko,
+        case
+        when tryb = 1 and uv.id_osoby = k.przewodniczacy then true
+        when tryb = 2 and uv.id_osoby = k.wiceprzewodniczacy then true
+        when tryb = 3 and uv.id_osoby = k.skarbnik then true
+        else false end
+        from uczniowie_view uv
+        join klasy k on uv.klasa = k.id_klasy
+        where klasa_wychowawcy(id_wych) = k.id_klasy
+        order by uv.nazwisko
+    );
+end
+$$ language 'plpgsql';
