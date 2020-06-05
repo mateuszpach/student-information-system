@@ -12,22 +12,18 @@ try {
 
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
-$imie = $_POST['imie'];
+$id_ucz = $_POST['id_ucz'];
 $wartosc = $_POST['wartosc'];
 $waga = $_POST['waga'];
 $kategoria = $_POST['kategoria'];
-$id_oceny = $_POST['id_oceny'];
 $opis = $_POST['opis'];
 
-//TODO: test
+//TODO: adjust n test
 try {
-    $q = $pdo->prepare('SELECT wstaw_ocene(:1, :2, :3, :4, :5, :6)');
+    $q = $pdo->prepare('SELECT wstaw_ocene_konc(:1, :2, :3)');
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
-    $q->bindParam(':2', $id_oceny, PDO::PARAM_STR);
+    $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->bindParam(':3', $wartosc, PDO::PARAM_STR);
-    $q->bindParam(':4', $waga, PDO::PARAM_STR);
-    $q->bindParam(':5', $kategoria, PDO::PARAM_STR);
-    $q->bindParam(':6', $opis, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {

@@ -67,28 +67,13 @@ echo '<tbody>';
 
 echo '<tr>';
 echo '<td class="align-middle">' . 'Jan Kowalski' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="mt-1">3.24</h4></div>' . '</td>';
-echo '<td class="align-middle">' . '<div><h4 class="float-left ml-2 mt-1 mr-3">5</h4>
-                                <button type="button" class="withid btn btn-warning btn-sm" data-toggle="modal" data-target="#edytujmodal" id="1"><span class="material-icons align-middle md-18">create</span></button>
-                                </div>' . '</td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
+echo '<td class="align-middle">' . '<div><h4 class="">3.24</h4></div>' . '</td>';
+echo '<td class="align-middle">' . '<div><h4 class="">5</h4></td>';
 echo '</tr>';
 echo '</tbody>';
-?>
