@@ -119,8 +119,7 @@
 
     $(function() {
       var ajaxRequest;
-      var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-      var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+      var values = "id_osoby=" + id_osoby;
 
       ajaxRequest = $.ajax({
         url: "plan__tabela.php",
