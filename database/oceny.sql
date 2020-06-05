@@ -47,3 +47,123 @@ $$ language 'plpgsql';
 create or replace view wyniki_w_nauce as
 select k.nazwa as klasa, srednia_klasy(k.id_klasy) as srednia
 from klasy k order by k.nazwa;
+
+
+-- wstawianie ocen
+
+create or replace function dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int) returns void as $$
+declare
+    kl_u int = coalesce(klasa_ucznia(id_ucz), -1);
+    kl_i int;
+    prow int;
+begin
+    prow := coalesce((
+        select prowadzacy
+        from instancje_zajec iz where id_zajec = iz.id_instancji
+    ), -2);
+    if prow != id_naucz then
+        raise exception 'Nauczyciel nie prowadził tych zajęć.';
+    end if;
+    kl_i := coalesce((
+        select klasa
+        from instancje_zajec iz where id_zajec = iz.id_instancji
+    ), -3);
+    if kl_u != kl_i then
+        raise exception 'Uczen nie należy do tej klasy.';
+    end if;
+end
+$$ language 'plpgsql';
+
+
+create or replace function wstaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric,
+                                        waga numeric, kategoria kategoriaoceny, opis varchar) returns void as $$
+begin
+    perform dostep_do_oceny(id_naucz, id_ucz, id_zajec);
+    insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
+    (id_ucz, now(), id_zajec, wstaw_ocene.wartosc, wstaw_ocene.waga, wstaw_ocene.kategoria, wstaw_ocene.opis);
+end
+$$ language 'plpgsql';
+
+
+create or replace function zmien_ocene(id_naucz int, id_oceny int, wartosc numeric,
+                                        waga numeric, kategoria kategoriaoceny, opis varchar) returns void as $$
+declare
+    id_ucz int;
+    id_zajec int;
+begin
+    id_ucz := (
+        select uczen
+        from oceny where id_oceny = ocena
+    );
+    id_zajec := (
+        select zajecia
+        from oceny where id_oceny = ocena
+    );
+    perform dostep_do_oceny(id_naucz, id_ucz, id_zajec);
+    update oceny set wartosc = zmien_ocene.wartosc, waga = zmien_ocene.waga,
+                     kategoria = zmien_ocene.kategoria, opis = zmien_ocene.opis
+    where id_oceny = ocena;
+end
+$$ language 'plpgsql';
+
+
+
+-- waga ma byc ta sama dla odpowiednich ocen
+create or replace function update_waga() returns trigger as $$
+declare
+    row record;
+    przedm int;
+begin
+    if new.waga = old.waga then
+        return new;
+    end if;
+
+    przedm := (
+        select iz.przedmiot
+        from instancje_zajec iz
+        where iz.id_instancji = new.zajecia
+                 );
+
+    update oceny o set waga = new.waga
+    where new.opis = o.opis
+    and new.ocena != o.ocena
+    and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
+    and (
+        select iz.przedmiot
+        from instancje_zajec iz
+        where iz.id_instancji = o.zajecia
+        ) = przedm;
+    return new;
+end
+$$ language 'plpgsql';
+
+
+create or replace function insert_waga() returns trigger as $$
+declare
+    row record;
+    przedm int;
+begin
+    przedm := (
+        select iz.przedmiot
+        from instancje_zajec iz
+        where iz.id_instancji = new.zajecia
+                 );
+
+    update oceny o set waga = new.waga
+    where new.opis = o.opis
+    and new.ocena != o.ocena
+    and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
+    and (
+        select iz.przedmiot
+        from instancje_zajec iz
+        where iz.id_instancji = o.zajecia
+        ) = przedm;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger rowna_waga_upd after update on oceny
+    for each row execute procedure update_waga();
+
+create trigger rowna_waga_ins after insert on oceny
+    for each row execute procedure insert_waga();
