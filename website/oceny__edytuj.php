@@ -17,6 +17,7 @@ echo '<select class="form-control" id="wartosc" name="imie">';
 
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
+$id_oceny = $_POST['id_oceny'];
 
 $id_osoby = 5;
 $id_zajec = 1;
@@ -30,8 +31,7 @@ try {
         join instancje_zajec iz on o.zajecia = iz.id_instancji
         join przedmioty p on iz.przedmiot = p.id_przedmiotu
         where o.ocena = id_oceny');
-    $q2->bindParam(':1', $id_osoby, PDO::PARAM_STR);
-    $q2->bindParam(':2', $id_zajec, PDO::PARAM_STR);
+    $q2->bindParam(':1', $id_oceny, PDO::PARAM_STR);
     $q2->execute();
     $res2 = $q2->fetchAll();
 } catch (PDOException $exception) {

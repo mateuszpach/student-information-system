@@ -306,7 +306,8 @@
         $(function() {
             var ajaxRequest;
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+            var id_oceny = $(this);
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby + '&' + "id_oceny=" + id_oceny;
 
             ajaxRequest = $.ajax({
                 url: "oceny__edytuj.php",
