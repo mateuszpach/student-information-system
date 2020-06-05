@@ -27,6 +27,10 @@ try {
      echo '<td>' . $row['przedmiot'] . '</td>';
      echo '<td>' . $row['klasa'] . '</td>';
      echo '<td>' . $row['sala'] . '</td>';
-     echo '</tr>';
+       echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
+                                                        <input type="hidden" name="id_zajec" value="123">
+                                                        <button type="submit" class="btn btn-primary">Szczegóły</button>
+                                                        </form>' . '</td>';
+       echo '</tr>';
    }
 ?>
