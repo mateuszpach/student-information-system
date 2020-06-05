@@ -11,18 +11,20 @@ try {
     echo $e->getMessage();
 }
 
-$id_zajec = $_POST['id_zajec'];
-
-//TODO: adjust
+//TODO: test
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT nazwa_klasy_wychowawcy(:1)');
+    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
     $q->execute();
-    $res = $q->fetchAll();
+    $res = $q->fetchColumn();
 } catch (PDOException $exception) {
-    die(header("HTTP/1.0 400 Bad Request"));
+    return $exception->getMessage();
 }
 
+echo '<div class="col">';
 foreach ($res as $row) {
-    echo $row['temat'];
+    echo '<h1>Klasa ' . $row . '</h1';
 }
+echo '</div>';
+
+?>

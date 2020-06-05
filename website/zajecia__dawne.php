@@ -10,7 +10,6 @@ try {
     echo $e->getMessage();
 }
 
-//TODO: this is for teachers. Also need for student
 try {
     $q = $pdo->prepare('SELECT * FROM przeszle_zajecia_nauczyciela(:1)');
     $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
@@ -20,17 +19,18 @@ try {
     return $exception->getMessage();
 }
 
-   foreach ($res as $row) {
-     echo '<tr>';
-     echo '<td>' . $row['data'] . '</td>';
-     echo '<td>' . $row['czas'] . '</td>';
-     echo '<td>' . $row['przedmiot'] . '</td>';
-     echo '<td>' . $row['klasa'] . '</td>';
-     echo '<td>' . $row['sala'] . '</td>';
-       echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
-                                                        <input type="hidden" name="id_zajec" value="123">
+foreach ($res as $row) {
+    echo '<tr>';
+    echo '<td>' . $row['data'] . '</td>';
+    echo '<td>' . $row['czas'] . '</td>';
+    echo '<td>' . $row['przedmiot'] . '</td>';
+    echo '<td>' . $row['klasa'] . '</td>';
+    echo '<td>' . $row['sala'] . '</td>';
+    echo '<td class="align-middle">' . '<form class="justify-content-center form-inline" action="zajecia_szczeg.php" method="post">
+                                                        <input type="hidden" name="id_zajec" value=' . $row['id_zajec'] . '>
                                                         <button type="submit" class="btn btn-primary">Szczegóły</button>
                                                         </form>' . '</td>';
-       echo '</tr>';
-   }
+    echo '</tr>';
+}
+
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 require 'vendor/autoload.php';
 
 use PostgreSQLPHP\Connection as Connection;
@@ -12,6 +11,7 @@ try {
 }
 
 $id_zajec = $_POST['id_zajec'];
+$temat = $_POST['temat-input'];
 
 //TODO: adjust
 try {
@@ -22,7 +22,4 @@ try {
 } catch (PDOException $exception) {
     die(header("HTTP/1.0 400 Bad Request"));
 }
-
-foreach ($res as $row) {
-    echo $row['temat'];
-}
+?>

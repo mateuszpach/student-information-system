@@ -4,56 +4,68 @@ require 'vendor/autoload.php';
 use PostgreSQLPHP\Connection as Connection;
 
 try {
-    $pdo = Connection::get()->connect();
+  $pdo = Connection::get()->connect();
 } catch (\PDOException $e) {
-    echo 'Failed to connect to db.';
-    echo $e->getMessage();
+  echo 'Failed to connect to db.';
+  echo $e->getMessage();
 }
 
-//TODO: query
+//TODO: adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
-    $q->execute();
-    $res = $q->fetchAll();
+  $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
+  //$q->bindParam(':1', $em, PDO::PARAM_STR);
+  $q->execute();
+  $res = $q->fetchAll();
 } catch (PDOException $exception) {
-    return $exception->getMessage();
+  return $exception->getMessage();
 }
 
-//   foreach ($res as $row) {
-//     echo '<tr>';
-//     echo '<td>' . $row['godzina'] . '</td>';
-//     echo '<td>' . $row['poniedzialek'] . '</td>';
-//     echo '<td>' . $row['wtorek'] . '</td>';
-//     echo '</tr>';
-//   }
-//<select name="tu dej id ucznia" class="custom-select">
-echo '<tr>';
-echo '<td class="align-middle">' . 'Jan' . '</td>';
-echo '<td class="align-middle">' . 'Kowalski' . '</td>';
-echo '<td class="align-middle">' . '<div class="input-group input-group-sm">
-                                                      <select name="1" class="custom-select">
-                                                        <option selected></option>
-                                                        <option value="O">O</option>
-                                                        <option value="N">N</option>
-                                                        <option value="U">U</option>
-                                                        <option value="NU">NU</option>
-                                                        <option value="Z">Z</option>
-                                                      </select>
-                                                    </div>' . '</td>';
-echo '</tr>';
-echo '<tr>';
-echo '<td class="align-middle">' . 'Jan' . '</td>';
-echo '<td class="align-middle">' . 'Kowalski' . '</td>';
-echo '<td class="align-middle">' . '<div class="input-group input-group-sm">
-                                                      <select name="2" class="custom-select">
-                                                        <option selected></option>
-                                                        <option value="O">O</option>
-                                                        <option value="N">N</option>
-                                                        <option value="U">U</option>
-                                                        <option value="NU">NU</option>
-                                                        <option value="Z">Z</option>
-                                                      </select>
-                                                    </div>' . '</td>';
-echo '</tr>';
-?>
+$i = 0;
+foreach ($res as $row) {
+  echo '<tr>';
+  echo '<td class="align-middle">' . $row['imie'] . '</td>';
+  echo '<td class="align-middle">' . $row['nazwisko'] . '</td>';
+  echo '<td class="align-middle">' . '<div class="input-group input-group-sm">
+                                                      <input type="number" name="id' . $i . '" type="hidden" value="' . $row['id_obecnosci'] . '"></input>
+                                                      <select class="custom-select" name="' . $i . '">';
+  $status = $row['status'];
+  if ($status = "") {
+    echo '<option selected></option>';
+  } else {
+    echo '<option></option>';
+  }
+
+  if ($status = "O") {
+    echo '<option value="O" selected>Obecność</option>';
+  } else {
+    echo '<option value="O">Obecność</option>';
+  }
+
+  if ($status = "N") {
+    echo '<option selected>Nieobecność</option>';
+  } else {
+    echo '<option>Nieobecność</option>';
+  }
+
+  if ($status = "U") {
+    echo '<option value="U" selected>Ucieczka</option>';
+  } else {
+    echo '<option value="U">Ucieczka</option>';
+  }
+
+  if ($status = "NU") {
+    echo '<option value="NU" selected>Nieobecność uspr.</option>';
+  } else {
+    echo '<option value="NU">Nieobecność uspr.</option>';
+  }
+
+  if ($status = "Z") {
+    echo '<option value="Z" selected>Zwolnienie</option>';
+  } else {
+    echo '<option value="Z">Zwolnienie</option>';
+  }
+  echo '</select></div></td>';
+  echo '</tr>';
+
+  $i++;
+}
