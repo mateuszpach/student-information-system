@@ -55,7 +55,9 @@ drop function if exists przydziel_funkcje(id_wych integer, id_ucz integer, funkc
 drop function if exists plan_nauczyciela(id_naucz integer);
 drop function if exists przyszle_zajecia_nauczyciela(id_naucz integer);
 drop function if exists przeszle_zajecia_nauczyciela(id_naucz integer);
-
+drop function if exists klasa_wychowawcy(id_wych int);
+drop function if exists lista_uczniow_klasy(id_wych int, tryb int);
+drop function if exists nazwa_klasy_wychowawcy(id_wych int);
 
 --zajecia
 drop function if exists nazwa_przedmiotu(id integer);
