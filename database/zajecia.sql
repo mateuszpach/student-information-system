@@ -133,3 +133,21 @@ $$ language 'plpgsql';
 
 create trigger instancje_kolizje before insert or update on instancje_zajec
     for each row execute procedure brak_kolizji_instancje();
+
+-- obecnosci
+create or replace function pokaz_obecnosc(id_zajec int)
+returns table (
+    imie varchar,
+    nazwisko varchar,
+    status statusobecnosci
+) as $$
+begin
+    return query (
+        select uv.imie, uv.nazwisko, o.status
+        from obecnosci o
+        join uczniowie_view uv
+        on o.uczen = uv.id_osoby
+        where o.instancja_zajecia = id_zajec
+        );
+end
+$$ language 'plpgsql';
