@@ -10,10 +10,11 @@ try {
   echo $e->getMessage();
 }
 
-//TODO: adjust
+$id_zajec = $_POST['id_zajec'];
+
 try {
-  $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-  //$q->bindParam(':1', $em, PDO::PARAM_STR);
+  $q = $pdo->prepare('select * from pokaz_wszystkie_obecnosci(:1)');
+  $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
   $q->execute();
   $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -22,6 +23,7 @@ try {
 
 $i = 0;
 foreach ($res as $row) {
+  
   echo '<tr>';
   echo '<td class="align-middle">' . $row['imie'] . '</td>';
   echo '<td class="align-middle">' . $row['nazwisko'] . '</td>';
@@ -29,37 +31,37 @@ foreach ($res as $row) {
                                                       <input type="hidden" name="id' . $i . '" type="hidden" value="' . $row['id_obecnosci'] . '"></input>
                                                       <select class="custom-select" name="' . $i . '">';
   $status = $row['status'];
-  if ($status = "") {
+  if ($status == "") {
     echo '<option selected></option>';
   } else {
     echo '<option></option>';
   }
 
-  if ($status = "O") {
+  if ($status == "O") {
     echo '<option value="O" selected>Obecność</option>';
   } else {
     echo '<option value="O">Obecność</option>';
   }
 
-  if ($status = "N") {
+  if ($status == "N") {
     echo '<option selected>Nieobecność</option>';
   } else {
     echo '<option>Nieobecność</option>';
   }
 
-  if ($status = "U") {
+  if ($status == "U") {
     echo '<option value="U" selected>Ucieczka</option>';
   } else {
     echo '<option value="U">Ucieczka</option>';
   }
 
-  if ($status = "NU") {
+  if ($status == "NU") {
     echo '<option value="NU" selected>Nieobecność uspr.</option>';
   } else {
     echo '<option value="NU">Nieobecność uspr.</option>';
   }
 
-  if ($status = "Z") {
+  if ($status == "Z") {
     echo '<option value="Z" selected>Zwolnienie</option>';
   } else {
     echo '<option value="Z">Zwolnienie</option>';

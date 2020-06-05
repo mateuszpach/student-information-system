@@ -10,10 +10,16 @@ try {
     echo $e->getMessage();
 }
 
-//TODO adjust
+$id_zajec = $_POST['id_zajec'];
+
 try {
-    $q = $pdo->prepare('SELECT * FROM przyszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare("select p.nazwa as nazwa, concat('Klasa ', nazwa_klasy(iz.klasa)) as klasa, iz.data as data, 
+        concat(gl.od, '-', gl.\"do\") as czas, concat('Sala ', iz.sala) as sala
+        from instancje_zajec iz
+        join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+        where iz.id_instancji = :1");
+    $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -22,12 +28,12 @@ try {
 
 foreach ($res as $row) {
     echo '<div class="col">';
-    echo '<h1>' . 'Matematyka' . '</h1>';
-    echo '<h3>' . 'Klasa 3a' . '</h3>';
+    echo '<h1>' . $row['nazwa'] . '</h1>';
+    echo '<h3>' . $row['klasa'] . '</h3>';
     echo '</div>';
     echo '<div class="col text-right">';
-    echo '<h5>' . '2013-12-24' . '</h5>';
-    echo '<h5>' . '8:00-9:00' . '</h5>';
-    echo '<h5>' . 'Sala 102' . '</h5>';
+    echo '<h5>' . $row['data'] . '</h5>';
+    echo '<h5>' . $row['czas'] . '</h5>';
+    echo '<h5>' . $row['sala'] . '</h5>';
     echo '</div>';
 }

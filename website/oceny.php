@@ -70,15 +70,14 @@
                         </table>
                     </div>
                 </div>
-                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#dodajmodal">Dodaj ocenę</button>
-
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#dodajmodal">Ustaw ocenę</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#dodajkoncmodal">Ustaw ocenę końcową</button>
                 <form id="back" class="form-inline btn float-right mr-n3" action="zajecia_szczeg.php" method="post">
                     <input type="hidden" name="id_zajec" value="<?php echo $_POST['id_zajec'] ?>">
                     <button class="btn btn-danger" type="submit">Wróć</button>
                 </form>
             </div>
         </div>
-
 
         <!-- Error Modal -->
         <div class="modal fade" id="errormodal" tabindex="-1" role="dialog">
@@ -106,7 +105,7 @@
                 <div class="modal-content">
                     <form id="dodajform">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Dodaj ocenę</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Ustaw ocenę</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -123,19 +122,19 @@
             </div>
         </div>
 
-        <!-- edytuj Modal -->
-        <div class="modal fade" id="edytujmodal" tabindex="-1" role="dialog">
+        <!-- dodajkonc Modal -->
+        <div class="modal fade" id="dodajkoncmodal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form id="edytuj">
+                    <form id="dodajkoncform">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Edytuj ocenę</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Ustaw ocenę końcową</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body" id="edytuj">
-                            <!-- oceny__edytuj.php -->
+                        <div class="modal-body" id="dodajkonc">
+                            <!-- oceny__dodajkonc.php -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Porzuć</button>
@@ -213,36 +212,7 @@
                 $("#errormodal").modal('show');
             });
         });
-
-        $("#edytujmodal").modal('hide');
-        $("#edytuj").submit(function(event) {
-            var ajaxRequest;
-            event.preventDefault();
-            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_oceny=" + id_oceny;
-            console.log(values);
-
-            ajaxRequest = $.ajax({
-                url: "edytujocene.php",
-                type: "post",
-                data: values
-            });
-
-            ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#edytujmodal").modal('hide');
-                location.reload();
-            });
-
-            ajaxRequest.fail(function() {
-                $("#edytujmodal").modal('hide');
-                $("#errormodal").modal('show');
-            });
-        });
-
-        $(".withid").click(function(event) {
-            id_oceny = this.id;
-        });
-
+        
         $(function() {
             var ajaxRequest;
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
@@ -306,17 +276,16 @@
         $(function() {
             var ajaxRequest;
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var id_oceny = $(this);
-            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby + '&' + "id_oceny=" + id_oceny;
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
-                url: "oceny__edytuj.php",
+                url: "oceny__dodajkonc.php",
                 type: "post",
                 data: values
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#edytuj").html(response);
+                $("#dodajkonc").html(response);
             });
 
             ajaxRequest.fail(function() {
