@@ -71,6 +71,8 @@ drop function if exists usun_z_planu(id_dyr integer, id_zaj integer);
 drop function if exists brak_kolizji_instancje();
 drop function if exists brak_kolizji_plan();
 drop function if exists brak_kolizji_godz();
+drop function if exists dostep_do_zajec(id_naucz int, id_zajec int);
+drop function if exists lista_uczniow_zajecia(id_naucz int, id_zajec int);
 
 --oceny
 drop function if exists dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int);
