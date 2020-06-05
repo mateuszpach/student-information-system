@@ -108,22 +108,24 @@
           </div>
           <form id="obecnoscform">
             <div class="modal-body">
-              <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white">
-                <thead>
-                  <tr>
-                    <th>Imię</th>
-                    <th>Nazwisko</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="obecnosc">
-                  <!-- zajecia_szczeg__obecnosc.php -->
-                </tbody>
-              </table>
+              <div style="height:600px;  overflow-y: scroll;">
+                <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white">
+                  <thead>
+                    <tr>
+                      <th>Imię</th>
+                      <th>Nazwisko</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="obecnosc">
+                    <!-- zajecia_szczeg__obecnosc.php -->
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="window.location.reload();">Anuluj i Wróć</button>
-              <button type="submit" class="btn btn-primary">Zapisz i wróć</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="window.location.reload();">Anuluj</button>
+              <button type="submit" class="btn btn-primary">Zapisz</button>
             </div>
           </form>
         </div>
@@ -234,7 +236,7 @@
         $("#errormodal").modal('show');
       });
     });
-    
+
     $(function() {
       var ajaxRequest;
       var id_zajec = "<?php echo $_POST['id_zajec'] ?>";

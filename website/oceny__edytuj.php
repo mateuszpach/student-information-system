@@ -1,159 +1,103 @@
 <?php
-// <div class="form-group">
-// <label for="imie">Uczeń</label>
-// <select class="form-control" id="wartosc" name="imie">
-//     <?php
-//     //TODO: query tylko jeden selected
-//     try {
-//         $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-//         //$q->bindParam(':1', $em, PDO::PARAM_STR);
-//         $q->execute();
-//         $res = $q->fetchAll();
-//     } catch (PDOException $exception) {
-//         return $exception->getMessage();
-//     }
 
-//     //   foreach ($res as $row) {
-//     //     echo '<tr>';
-//     //     echo '<td>' . $row['godzina'] . '</td>';
-//     //     echo '<td>' . $row['poniedzialek'] . '</td>';
-//     //     echo '<td>' . $row['wtorek'] . '</td>';
-//     //     echo '<td>' . $row['sroda'] . '</td>';
-//     //     echo '<td>' . $row['czwartek'] . '</td>';
-//     //     echo '<td>' . $row['piatek'] . '</td>';
-//     //     echo '</tr>';
-//     //   }
+require 'vendor/autoload.php';
 
-//     echo '<option>Jan Kowalski</option>';
-//     ?>
-// </select>
-// </div>
-// <div class="form-group">
-// <label for="wartosc">Ocena</label>
-// <select class="form-control" id="wartosc" name="wartosc">
-//     <?php
-//     //TODO: query tylko jedna selected ta co w bazie
-//     try {
-//         $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-//         //$q->bindParam(':1', $em, PDO::PARAM_STR);
-//         $q->execute();
-//         $res = $q->fetchAll();
-//     } catch (PDOException $exception) {
-//         return $exception->getMessage();
-//     }
+use PostgreSQLPHP\Connection as Connection;
 
-//     //   foreach ($res as $row) {
-//     //     echo '<tr>';
-//     //     echo '<td>' . $row['godzina'] . '</td>';
-//     //     echo '<td>' . $row['poniedzialek'] . '</td>';
-//     //     echo '<td>' . $row['wtorek'] . '</td>';
-//     //     echo '<td>' . $row['sroda'] . '</td>';
-//     //     echo '<td>' . $row['czwartek'] . '</td>';
-//     //     echo '<td>' . $row['piatek'] . '</td>';
-//     //     echo '</tr>';
-//     //   }
-//     ?>
-//     <option>1</option>
-//     <option selected="selected">2</option>
-//     <option>3</option>
-//     <option>4</option>
-//     <option>5</option>
-// </select>
-// </div>
-// <div class="form-group">
-// <label for="waga">Waga</label>
-// <?php
-// //TODO: query value ma byc jak w bazie
-// try {
-//     $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-//     //$q->bindParam(':1', $em, PDO::PARAM_STR);
-//     $q->execute();
-//     $res = $q->fetchAll();
-// } catch (PDOException $exception) {
-//     return $exception->getMessage();
-// }
+try {
+    $pdo = Connection::get()->connect();
+} catch (\PDOException $e) {
+    echo 'Failed to connect to db.';
+    echo $e->getMessage();
+}
 
-// //   foreach ($res as $row) {
-// //     echo '<tr>';
-// //     echo '<td>' . $row['godzina'] . '</td>';
-// //     echo '<td>' . $row['poniedzialek'] . '</td>';
-// //     echo '<td>' . $row['wtorek'] . '</td>';
-// //     echo '<td>' . $row['sroda'] . '</td>';
-// //     echo '<td>' . $row['czwartek'] . '</td>';
-// //     echo '<td>' . $row['piatek'] . '</td>';
-// //     echo '</tr>';
-// //   }
-// ?>
-// <input type="number" min="0" max="9" id="waga" name="waga" class="form-control" value="4">
-// <small id="passwordHelpBlock" class="form-text text-muted">
-//     Poprawny zakres: 0-9
-//     <!-- TODO ile dokaldnie -->
-// </small>
-// </div>
-// <div class="form-group">
-// <label for="kategoria">Kategoria</label>
-// <?php
-// //TODO: query tylko jedna selected
-// try {
-//     $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-//     //$q->bindParam(':1', $em, PDO::PARAM_STR);
-//     $q->execute();
-//     $res = $q->fetchAll();
-// } catch (PDOException $exception) {
-//     return $exception->getMessage();
-// }
+echo '<div class="form-group">';
+echo '<label for="imie">Uczeń</label>';
+echo '<select class="form-control" id="wartosc" name="imie">';
 
-// //   foreach ($res as $row) {
-// //     echo '<tr>';
-// //     echo '<td>' . $row['godzina'] . '</td>';
-// //     echo '<td>' . $row['poniedzialek'] . '</td>';
-// //     echo '<td>' . $row['wtorek'] . '</td>';
-// //     echo '<td>' . $row['sroda'] . '</td>';
-// //     echo '<td>' . $row['czwartek'] . '</td>';
-// //     echo '<td>' . $row['piatek'] . '</td>';
-// //     echo '</tr>';
-// //   }
-// ?>
-// <select class="form-control" id="kategoria" name="kategoria">
-//     <option value="sprawdzian">Sprawdzian</option>
-//     <option value="kartkowka">Kartkówka</option>
-//     <option value="odpowiedz" selected="selected">Odpowiedź</option>
-//     <option value="zadanie">Zadanie</option>
-//     <option value="aktywnosc">Aktywność</option>
-//     <option value="inne">Inne</option>
-// </select>
-// </div>
-// <div class="form-group">
-// <label for="opis">Opis</label>
-// <textarea class="form-control" id="opis" name="opis" rows="3">
-// <?php
-// //TODO: query opis z bazy
-// try {
-//     $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-//     //$q->bindParam(':1', $em, PDO::PARAM_STR);
-//     $q->execute();
-//     $res = $q->fetchAll();
-// } catch (PDOException $exception) {
-//     return $exception->getMessage();
-// }
+$id_osoby = $_POST['id_osoby'];
+$id_zajec = $_POST['id_zajec'];
+$id_oceny = $_POST['id_oceny'];
 
-// //   foreach ($res as $row) {
-// //     echo '<tr>';
-// //     echo '<td>' . $row['godzina'] . '</td>';
-// //     echo '<td>' . $row['poniedzialek'] . '</td>';
-// //     echo '<td>' . $row['wtorek'] . '</td>';
-// //     echo '<td>' . $row['sroda'] . '</td>';
-// //     echo '<td>' . $row['czwartek'] . '</td>';
-// //     echo '<td>' . $row['piatek'] . '</td>';
-// //     echo '</tr>';
-// //   }
-// ?>
-// </textarea>
-// <small id="passwordHelpBlock" class="form-text text-muted">
-//     Nie może przkraczać x znaków.
-//     <!-- TODO ile dokaldnie -->
-// </small>
-// </div>
+$id_osoby = 5;
+$id_zajec = 1;
 
-?>
+// TODO: test n remove
 
+try {
+    $q2 = $pdo->prepare('select uv.imie, uv.nazwisko, p.nazwa, o.wartosc, o.kategoria, o.opis, o.waga, o.data_wystawienia
+        from oceny o
+        join uczniowie_view uv on o.uczen = uv.id_osoby
+        join instancje_zajec iz on o.zajecia = iz.id_instancji
+        join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        where o.ocena = id_oceny');
+    $q2->bindParam(':1', $id_oceny, PDO::PARAM_STR);
+    $q2->execute();
+    $res2 = $q2->fetchAll();
+} catch (PDOException $exception) {
+    return $exception->getMessage();
+}
+
+try {
+    $q = $pdo->prepare('SELECT * FROM lista_uczniow_zajecia(:1, :2)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
+    $q->bindParam(':2', $id_zajec, PDO::PARAM_STR);
+    $q->execute();
+    $res = $q->fetchAll();
+} catch (PDOException $exception) {
+    return $exception->getMessage();
+}
+
+foreach ($res as $row) {
+    echo '<option>' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
+}
+
+echo '</select>';
+echo '</div>';
+
+echo '<div class="form-group">
+    <label for="wartosc">Ocena</label>
+    <select class="form-control" id="wartosc" name="wartosc">';
+echo '  <option>1</option>
+        <option>1.5</option>
+        <option>2</option>
+        <option>2.5</option>
+        <option>3</option>
+        <option>3.5</option>
+        <option>4</option>
+        <option>4.5</option>
+        <option>5</option>
+        <option>5.5</option>
+        <option>6</option>';
+echo ' </select> </div>
+<div class="form-group">
+    <label for="waga">Waga</label>
+    <input type="number" min="0" max="9" id="waga" name="waga" class="form-control">
+    <small id="passwordHelpBlock" class="form-text text-muted">
+        Poprawny zakres: 0-9. Ustawia wagę dla wszystkich ocen o tym opisie.
+        
+       <!-- TODO ile dokaldnie -->
+        </small>
+    </div>
+<div class="form-group">
+    <label for="kategoria">Kategoria</label>
+    <select class="form-control" id="kategoria" name="kategoria">';
+echo '
+        <option value="sprawdzian">Sprawdzian</option>
+        <option value="kartkowka">Kartkówka</option>
+        <option value="odpowiedz">Odpowiedź</option>
+        <option value="zadanie">Zadanie</option>
+        <option value="aktywnosc">Aktywność</option>
+        <option value="inne">Inne</option>
+        ';
+echo ' </select>
+    </div>
+<div class="form-group">
+    <label for="opis">Opis</label>
+    <textarea class="form-control" id="opis" name="opis" rows="3"></textarea>
+    <small id="passwordHelpBlock" class="form-text text-muted">
+        Nie może przkraczać x znaków.
+        
+        <!-- TODO ile dokaldnie -->
+        </small>
+    </div>';
