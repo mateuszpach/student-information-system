@@ -74,6 +74,11 @@ drop function if exists brak_kolizji_godz();
 drop function if exists dostep_do_zajec(id_naucz int, id_zajec int);
 drop function if exists lista_uczniow_zajecia(id_naucz int, id_zajec int);
 
+drop function if exists pokaz_wszystkie_obecnosci(id_zajec integer);
+drop function if exists wstaw_obecnosc(id_obecnosci integer, wstaw_status statusobecnosci);
+drop function if exists usprawiedliw_ucznia(id_obecnosci integer);
+drop function if exists wypisz_nieobecnych(id_wychowawcy integer);
+
 --oceny
 drop function if exists dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int);
 drop function if exists wstaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric, waga numeric, kategoria kategoriaoceny, opis varchar);
