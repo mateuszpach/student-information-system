@@ -14,6 +14,8 @@ drop table if exists klasy cascade;
 drop table if exists nauczyciele cascade;
 drop table if exists dyrektorstwo cascade;
 drop table if exists osoby cascade;
+drop table if exists oceny_koncowe cascade;
+drop type if exists kategoriaOceny cascade;
 drop type if exists statusobecnosci cascade;
 drop type if exists typuwagi cascade;
 
