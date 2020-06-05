@@ -26,7 +26,7 @@ foreach ($res as $row) {
   echo '<td class="align-middle">' . $row['imie'] . '</td>';
   echo '<td class="align-middle">' . $row['nazwisko'] . '</td>';
   echo '<td class="align-middle">' . '<div class="input-group input-group-sm">
-                                                      <input type="number" name="id' . $i . '" type="hidden" value="' . $row['id_obecnosci'] . '"></input>
+                                                      <input type="hidden" name="id' . $i . '" type="hidden" value="' . $row['id_obecnosci'] . '"></input>
                                                       <select class="custom-select" name="' . $i . '">';
   $status = $row['status'];
   if ($status = "") {

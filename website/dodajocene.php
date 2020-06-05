@@ -10,17 +10,24 @@ try {
     echo $e->getMessage();
 }
 
+$id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
-$imie = $_POST['imie'];
+$id_ucz = $_POST['id_ucz'];
 $wartosc = $_POST['wartosc'];
 $waga = $_POST['waga'];
 $kategoria = $_POST['kategoria'];
 $opis = $_POST['opis'];
 
-//TODO: query
+//TODO: test
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT wstaw_ocene(:1, :2, :3, :4, :5, :6, :7)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
+    $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
+    $q->bindParam(':3', $id_zajec, PDO::PARAM_STR);
+    $q->bindParam(':4', $wartosc, PDO::PARAM_STR);
+    $q->bindParam(':5', $waga, PDO::PARAM_STR);
+    $q->bindParam(':6', $kategoria, PDO::PARAM_STR);
+    $q->bindParam(':7', $opis, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {

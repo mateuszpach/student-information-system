@@ -194,7 +194,7 @@
             var ajaxRequest;
             event.preventDefault();
             var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec;
+            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
             console.log(values);
 
             ajaxRequest = $.ajax({
