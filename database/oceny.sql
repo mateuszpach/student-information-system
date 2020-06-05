@@ -101,13 +101,13 @@ $$ language 'plpgsql';
 
 
 
--- waga ma byc ta sama dla odpowiednich ocen
-create or replace function update_waga() returns trigger as $$
+-- waga i kategoria mają byc te same dla odpowiednich ocen
+create or replace function update_waga_kategoria() returns trigger as $$
 declare
     row record;
     przedm int;
 begin
-    if new.waga = old.waga then
+    if new.waga = old.waga and new.kategoria = old.kategoria then
         return new;
     end if;
 
@@ -117,7 +117,7 @@ begin
         where iz.id_instancji = new.zajecia
                  );
 
-    update oceny o set waga = new.waga
+    update oceny o set waga = new.waga, kategoria = new.kategoria
     where new.opis = o.opis
     and new.ocena != o.ocena
     and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
@@ -131,7 +131,7 @@ end
 $$ language 'plpgsql';
 
 
-create or replace function insert_waga() returns trigger as $$
+create or replace function insert_waga_kategoria() returns trigger as $$
 declare
     row record;
     przedm int;
@@ -142,7 +142,7 @@ begin
         where iz.id_instancji = new.zajecia
                  );
 
-    update oceny o set waga = new.waga
+    update oceny o set waga = new.waga, kategoria = new.kategoria
     where new.opis = o.opis
     and new.ocena != o.ocena
     and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
@@ -156,10 +156,10 @@ end
 $$ language 'plpgsql';
 
 create trigger rowna_waga_upd after update on oceny
-    for each row execute procedure update_waga();
+    for each row execute procedure update_waga_kategoria();
 
 create trigger rowna_waga_ins after insert on oceny
-    for each row execute procedure insert_waga();
+    for each row execute procedure insert_waga_kategoria();
 
 
 -- dane oceny
