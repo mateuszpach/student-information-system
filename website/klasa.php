@@ -83,7 +83,7 @@
                     </div>
                 </form>
 
-                <form id="nieobform" >
+                <form id="nieobform" action="nieobecnosci.php">
                     <div class="input-group mb-3" id="nieob">
                         <!-- klasa__nieob.php -->
                     </div>
@@ -92,10 +92,8 @@
                 <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grocenmodal">Zestawienie grupowe ocen</button>
                 <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grobecmodal">Zestawienie grupowe obecności</button>
                 <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#uwagimodal">Uwagi</button>
-                <div class="btn-group float-right mt-2"><a href="index.php" class="btn btn-danger">Wróć</a></div>
             </div>
         </div>
-
 
         <!-- Error Modal -->
         <div class="modal fade" id="errormodal" tabindex="-1" role="dialog">
@@ -228,14 +226,13 @@
         var id_osoby = getCookie("user_id");
 
         $("#errormodal").modal('hide');
-        $("#temat").submit(function(event) {
+        $("#przewform").submit(function(event) {
             var ajaxRequest;
             event.preventDefault();
-            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
-                url: "temat.php",
+                url: "klasa__updprzew.php",
                 type: "post",
                 data: values
             });
@@ -245,8 +242,50 @@
             });
 
             ajaxRequest.fail(function() {
-                $("#temat-input").val("");
                 $("#errormodal").modal('show');
+                // location.reload();
+            });
+        });
+
+        $("#wiceprzewform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__updwiceprzew.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+                // location.reload();
+            });
+        });
+
+        $("#skarbform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__updskarb.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+                // location.reload();
             });
         });
 

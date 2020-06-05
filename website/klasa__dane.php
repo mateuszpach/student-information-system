@@ -11,21 +11,19 @@ try {
     echo $e->getMessage();
 }
 
-// nazwa klasy
-// rows: string nazwa_klasy np."3a"
+//TODO: test
 try {
-    $q = $pdo->prepare('SELECT * FROM przeszle_zajecia_nauczyciela(:1)');
+    $q = $pdo->prepare('SELECT nazwa_klasy_wychowawcy(:1)');
     $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
     $q->execute();
-    $res = $q->fetchAll();
+    $res = $q->fetchColumn();
 } catch (PDOException $exception) {
     return $exception->getMessage();
 }
 
 echo '<div class="col">';
 foreach ($res as $row) {
-    echo '<h1>Klasa ' . $row['nazwa_klasy'] . '</h1';
-  
+    echo '<h1>Klasa ' . $row . '</h1';
 }
 echo '</div>';
 
