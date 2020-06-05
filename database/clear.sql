@@ -71,7 +71,3 @@ drop function if exists usun_z_planu(id_dyr integer, id_zaj integer);
 drop function if exists brak_kolizji_instancje();
 drop function if exists brak_kolizji_plan();
 drop function if exists brak_kolizji_godz();
-
-drop function if exists pokaz_wszystkie_obecnosci();
-drop function if exists wstaw_obecnosc();
-drop function if exists usprawiedliw_ucznia();
