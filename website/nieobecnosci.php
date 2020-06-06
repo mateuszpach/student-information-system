@@ -48,7 +48,7 @@
             <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
             <label id="name" class="my-2 my-sm-0 mr-4">undefined</label>
 
-            <button class="btn btn-outline my-2 my-sm-0">Moje konto</button>
+            <a href="/mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
             <button class="btn btn-outline my-2 my-sm-0" onclick="logout()">Wyloguj</button>
         </div>
     </nav>

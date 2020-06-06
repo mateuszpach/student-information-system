@@ -123,6 +123,7 @@ begin
         select z.id_instancji from
         instancje_zajec z where z.data = new.data and z.godzina_lekcyjna = new.godzina_lekcyjna
         and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
+        and z.id_instancji != new.id_instancji
         limit 1
     ) is not null then
         raise exception 'Proba wstawienia kolidujacych zajec';

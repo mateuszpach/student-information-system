@@ -13,10 +13,10 @@ try {
 $id_zajec = $_POST['id_zajec'];
 $temat = $_POST['temat-input'];
 
-//TODO: adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT zapisz_temat(:1, :2)');
+    $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
+    $q->bindParam(':2', $temat, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
