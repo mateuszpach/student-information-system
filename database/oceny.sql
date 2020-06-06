@@ -1,6 +1,6 @@
 create or replace function srednia_ucznia(ucz integer, przedm integer) returns numeric(3, 2) as $$
 begin
-    return round((select sum(o.wartosc * o.waga) / sum(o.waga)
+    return round((select sum(o.wartosc * o.waga) / greatest(sum(o.waga), 1)
     from oceny o join instancje_zajec iz on o.zajecia = iz.id_instancji
     where o.uczen = ucz and iz.przedmiot = przedm), 2);
 end;
@@ -9,7 +9,7 @@ $$ language 'plpgsql';
 create or replace function srednia_ucznia(ucz integer) returns numeric(3, 2) as $$
 begin
     return round((
-        select sum(sr) / count(*)
+        select sum(sr) / greatest(count(*), 1)
         from (
             select iz.przedmiot, srednia_ucznia(ucz, iz.przedmiot) as sr
             from oceny o
@@ -24,7 +24,7 @@ $$ language 'plpgsql';
 create or replace function srednia_klasy(kl integer, przedm integer) returns numeric(3, 2) as $$
 begin
     return round((
-        select sum(srednia_ucznia(u.osoba, przedm)) / count(*)
+        select sum(srednia_ucznia(u.osoba, przedm)) / greatest(count(*), 1)
         from klasy k join uczniowie u on k.id_klasy = u.klasa
         where k.id_klasy = kl
     ), 2);
@@ -34,7 +34,7 @@ $$ language 'plpgsql';
 create or replace function srednia_klasy(kl integer) returns numeric(3, 2) as $$
 begin
     return round((
-        select sum(srednia_ucznia(u.osoba)) / count(*)
+        select sum(srednia_ucznia(u.osoba)) / greatest(count(*), 1)
         from klasy k join uczniowie u on k.id_klasy = u.klasa
         where k.id_klasy = kl
     ), 2);
@@ -231,6 +231,27 @@ begin
         from uczniowie_view uv
         left join oceny_koncowe ok on ok.uczen = uv.id_osoby
         where uv.klasa = (select klasa from instancje_zajec where id_instancji = id_zajec)
+    );
+end
+$$ language 'plpgsql';
+
+-- srednie z poszczegolnych przedmiotów i całościowa średnia
+create or replace function wyniki_klasy(id_wych int)
+returns table (
+    przedmiot varchar,
+    srednia numeric(3, 2)
+              ) as $$
+declare
+begin
+    return query (
+        select przedm, sredn from (
+                   select 'a', p.nazwa as przedm, srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) as sredn
+                   from przedmioty p
+                   --where srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) is not null
+                   union
+                   select 'z', 'Średnia', srednia_klasy(klasa_wychowawcy(id_wych))
+                   order by 1, 2
+               ) s
     );
 end
 $$ language 'plpgsql';
