@@ -1,11 +1,7 @@
-create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'DYREKTORSTWO');
+create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE');
 
 create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
 begin
-    if (
-        select osoba from dyrektorstwo where osoba = id_osoby
-        ) is not null then return 'DYREKTORSTWO';
-    end if;
     if (
         select osoba from nauczyciele where osoba = id_osoby
         ) is not null then return 'NAUCZYCIELE';
@@ -34,13 +30,7 @@ begin
     end if;
     if (
         select n.osoba from nauczyciele n where n.osoba = new.osoba
-        ) is not null and tg_table_name::regclass::text != 'dyrektorstwo'
-        then raise exception 'Person already present in nauczyciele';
-    end if;
-    if  (
-        select d.osoba from dyrektorstwo d where d.osoba = new.osoba
-        ) is not null and tg_table_name::regclass::text != 'nauczyciele'
-        then raise exception 'Person already present in dyrektorstwo';
+        ) is not null then raise exception 'Person already present in nauczyciele';
     end if;
     return new;
 end
@@ -48,7 +38,6 @@ $$ language 'plpgsql';
 
 create trigger on_add_uczen before insert on uczniowie for each row execute procedure verify_osoby();
 create trigger on_add_nauczyciel before insert on nauczyciele for each row execute procedure verify_osoby();
-create trigger on_add_dyrektor before insert on dyrektorstwo for each row execute procedure verify_osoby();
 
 /*
  Poniższe widoki ułatwiają dodawanie do poszczególnych grup społecznych i wyświetlanie ich.
@@ -62,10 +51,6 @@ create or replace view uczniowie_view as
 create or replace view nauczyciele_view as
     select o.*, n.wyksztalcenie
     from nauczyciele n join osoby o on n.osoba = o.id_osoby;
-
-create or replace view dyrektorstwo_view as
-    select o.*, d.wyksztalcenie
-    from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
 
 
 create or replace function pesel_check() returns trigger as $pesel_check$

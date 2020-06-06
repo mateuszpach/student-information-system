@@ -9,7 +9,7 @@ end;
 $$ language 'plpgsql';
 
 -- Edycja planu zajęć
-create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
+/*create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
 returns int as $$
 begin
     if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
@@ -34,7 +34,7 @@ begin
     end if;
     delete from zajecia where id_zajec = id_zaj;
 end;
-$$ language 'plpgsql';
+$$ language 'plpgsql';*/
 
 -- Kolizja w godzinach lekcyjnych występuje gdy: jakieś interwały czasowe niepusto się przecinają
 create or replace function brak_kolizji_godz()
@@ -78,14 +78,14 @@ create trigger plan_kolizje before insert or update on zajecia
 create or replace function dodaj_instancje(id_wst int, dat date, godz_lek int, przedm int, klas int, prow int, sal int)
 returns int as $$
 begin
-    if klasa_spoleczna_osoby(id_wst) != 'DYREKTORSTWO' and id_wst != prow then
+    /*if klasa_spoleczna_osoby(id_wst) != 'DYREKTORSTWO' and id_wst != prow then
         raise exception 'Ta osoba nie moze zaplanowac tych zajec.';
     end if;
     if (
         select nauczyciel
         from nauczyciele_przedmioty where nauczyciel = prow and przedmiot = przedm
     ) is null then raise exception 'Ta osoba nie moze prowadzic tych zajec';
-    end if;
+    end if;*/
 
     insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
     (dat, godz_lek, przedm, klas, prow, sal);
@@ -102,13 +102,13 @@ $$ language 'plpgsql';
 create or replace function odwolaj_instancje(id_odw int, id_ins int)
 returns void as $$
 begin
-    if klasa_spoleczna_osoby(id_odw) != 'DYREKTORSTWO' and id_odw != (
+    /*if klasa_spoleczna_osoby(id_odw) != 'DYREKTORSTWO' and id_odw != (
         select prowadzacy
         from instancje_zajec
         where id_instancji = id_ins
     )
     then raise exception 'Ta osoba nie moze odwolac tych zajec.';
-    end if;
+    end if;*/
 
     delete from instancje_zajec where id_instancji = id_ins;
 end;

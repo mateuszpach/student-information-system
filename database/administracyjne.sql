@@ -1,12 +1,4 @@
----------------------------------------------------------------------------------------
 /*
- Funkcje służące do czynności związanych z administracją. Wstawianie nowych osób etc.
- */
----------------------------------------------------------------------------------------
-
-/*
- Ucznia może dodać dyrektor lub wychowawca jego klasy.
- */
 create or replace function dodaj_ucznia(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
                                         nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), klasa_ integer) returns integer as $$
 declare
@@ -34,9 +26,7 @@ begin
 end;
 $$ language 'plpgsql';
 
-/*
- Nauczyciela może dodać jedynie ktoś z dyrekcji
- */
+
 create or replace function dodaj_nauczyciela(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
                                             nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), wyksztalcenie_ varchar(100) = null)
                                             returns integer as $$
@@ -59,4 +49,4 @@ begin
     end if;
     raise exception 'This person has no permission to add this teacher.';
 end;
-$$ language 'plpgsql';
+$$ language 'plpgsql';*/
