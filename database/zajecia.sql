@@ -281,6 +281,7 @@ $$ language 'plpgsql';
 create or replace function zestawienie_obecnosci(id_wych int)
 returns table (
     uczen text,
+    liczba_zajec int,
     obecnosc_proc numeric,
     obecnosci int,
     nieobecnosci int,
@@ -292,6 +293,7 @@ declare
 begin
     return query (
         select concat(uv.imie, ' ', uv.nazwisko),
+               liczba_zajec(uv.id_osoby),
                liczba_status(uv.id_osoby, 'O')::numeric / greatest(liczba_zajec(uv.id_osoby), 1)::numeric * 100,
                liczba_status(uv.id_osoby, 'O'),
                liczba_status(uv.id_osoby, 'N'),
