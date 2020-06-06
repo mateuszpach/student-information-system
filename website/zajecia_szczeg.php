@@ -159,6 +159,8 @@
       var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
       var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
+      console.log(values);
+
       ajaxRequest = $.ajax({
         url: "zajecia_szczeg__updtemat.php",
         type: "post",
@@ -166,7 +168,7 @@
       });
 
       ajaxRequest.done(function(response, textStatus, jqXHR) {
-
+        $("#temat-input").value = response;
       });
 
       ajaxRequest.fail(function() {

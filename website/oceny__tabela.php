@@ -41,4 +41,5 @@ foreach ($res as $row) {
     echo     '<td>' . $row['ocena_koncowa'] . '</td>';
     echo '</tr>';
 }
+
 echo '</tbody>';

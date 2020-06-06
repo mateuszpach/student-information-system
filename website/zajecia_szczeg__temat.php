@@ -13,16 +13,21 @@ try {
 
 $id_zajec = $_POST['id_zajec'];
 
-//TODO: adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM osoby ORDER BY id_osoby DESC');
-    //$q->bindParam(':1', $em, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * FROM dostan_temat(:1)');
+    $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
     die(header("HTTP/1.0 400 Bad Request"));
 }
 
+echo '<div class="input-group-prepend">';
+echo '<span class="input-group-text">Temat</span>';
+echo '</div>';
 foreach ($res as $row) {
-    echo $row['temat'];
+    echo '<input class="form-control" type="text" maxlength="100" name="temat-input" value="' . $row['dostan_temat'] . '">';
 }
+echo '<div class="input-group-append">';
+echo '<button class="btn btn-primary" type="submit">Aktualizuj</button>';
+echo '</div>';
