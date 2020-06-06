@@ -112,6 +112,7 @@ $$ language 'plpgsql';
 
 
 create or replace function przeszle_zajecia_nauczyciela(id_naucz int) returns table (
+    id_zajec int,
     data date,
     czas text,
     przedmiot varchar,
@@ -122,7 +123,7 @@ declare
     today_date date = now()::date;
 begin
     return query (
-        select iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
+        select iz.id_instancji, iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
         from instancje_zajec iz
         join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
         join klasy k on iz.klasa = k.id_klasy

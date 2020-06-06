@@ -150,7 +150,7 @@
       return "";
     }
     var id_osoby = getCookie("user_id");
-    var id_oceny;
+    var id_zajec = <?php echo $_POST['id_zajec']; ?>
 
     $("#errormodal").modal('hide');
     $("#tematform").submit(function(event) {
