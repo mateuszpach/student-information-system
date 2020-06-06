@@ -83,7 +83,7 @@
                     </div>
                 </form>
 
-                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grocenmodal">Zestawienie grupowe ocen</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grocenmodal">Wyniki w nauce</button>
                 <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#grobecmodal">Zestawienie grupowe obecności</button>
                 <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#uwagimodal">Uwagi</button>
             </div>
@@ -114,7 +114,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Zestawienie grupowe ocen</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Wyniki w nauce</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -181,11 +181,11 @@
                         <table class="table table-striped table-bordered table-responsive{-xl} text-center" style="background-color: white">
                             <thead>
                                 <tr>
-                                    <th>Uczeń</th>
-                                    <th>Wystawiający</th>
                                     <th>Data Wystawienia</th>
+                                    <th>Uczeń</th>
                                     <th>Treść</th>
                                     <th>Typ</th>
+                                    <th>Wystawiający</th>
                                 </tr>
                             </thead>
                             <tbody id="uwagi">

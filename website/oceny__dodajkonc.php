@@ -13,13 +13,11 @@ try {
 
 echo '<div class="form-group">';
 echo '<label for="imie">Uczeń</label>';
-echo '<select class="form-control" id="wartosc" name="imie">';
+echo '<select class="form-control" id="wartosc" name="id_ucz">';
 
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
 
-$id_zajec=0;
-$id_osoby=1;
 
 // TODO: test and remove
 try {
@@ -33,7 +31,7 @@ try {
 }
 
 foreach ($res as $row) {
-    echo '<option>' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
+    echo '<option value="'. $row['id'] .'">' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
 }
 
 echo '</select>';
