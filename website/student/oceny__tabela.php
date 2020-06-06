@@ -14,7 +14,7 @@ $id_osoby = $_POST['id_osoby'];
 
 //adjust
 try {
-    $q = $pdo->prepare('SELECT * from tabela_ocen_ucznia(:1)');
+    $q = $pdo->prepare('SELECT * from zestawienie_ocen_ucznia(:1)');
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
@@ -29,7 +29,6 @@ echo     '<th>Oceny</th>';
 echo     '<th>Średnia</th>';
 echo     '<th>Ocena końcowa</th>';
 echo '</tr>';
-
 echo '</thead>';
 echo '<tbody>';
 

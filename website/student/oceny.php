@@ -51,11 +51,51 @@
     </nav>
 
     <div class="container">
-        <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3" style="background-color: white" id="tabela">
+        <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3 mt-5" style="background-color: white" id="tabela">
             <!-- oceny__tabela.php -->
         </table>
     </div> <!-- /container -->
 
+
+    <script type="text/javascript">
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(";");
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == " ") {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var id_osoby = getCookie("user_id");
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_osoby=" + id_osoby;
+            console.log(values);
+
+            ajaxRequest = $.ajax({
+                url: "oceny__tabela.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#tabela").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+
+            });
+        });
+    </script>
     <script src="cookies.js" crossorigin="anonymous"></script>
 </body>
 
