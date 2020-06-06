@@ -234,15 +234,15 @@ values (4, 1, '2018-03-14 12:30:40', 'Wzorowe zachowanie przy tablicy', 'P'),
        (7, 1, '2015-04-27 10:28:36', 'Uczeń ochoczo zastąpił kolegę w obowiązkach', 'P');
 
 insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala, temat)
-values ('2018-03-14', 1, 1, 1, 5, 101, 'A'),
-       ('2016-10-11', 4, 1, 1, 1, 102, 'B'),
-       ('2017-05-20', 2, 1, 1, 10, 201, 'A'),
-       ('2015-04-27', 3, 1, 1, 10, 102, 'B'),
-       ('2018-01-14', 2, 1, 1, 1, 202, 'A'),
-       ('2017-03-01', 1, 1, 1, 10, 101, 'B'),
-       ('2015-09-27', 3, 1, 1, 5, 102, 'C'),
-       ('2018-02-14', 2, 1, 1, 5, 201, 'D'),
-       ('2017-06-20', 4, 1, 1, 1, 101, 'E');
+values (now()::date-1, 1, 1, 1, 5, 101, 'A'),
+       (now()::date-2, 4, 1, 1, 1, 102, 'B'),
+       (now()::date-1, 2, 1, 1, 10, 201, 'A'),
+       (now()::date-2, 3, 1, 1, 10, 102, 'B'),
+       (now()::date-3, 2, 1, 1, 1, 202, 'A'),
+       (now()::date-3, 1, 1, 1, 10, 101, 'B'),
+       (now()::date-4, 3, 1, 1, 5, 102, 'C'),
+       (now()::date-4, 2, 1, 1, 5, 201, 'D'),
+       (now()::date-5, 4, 1, 1, 1, 101, 'E');
 
 insert into obecnosci (uczen, instancja_zajecia, status)
 values (4, 1, 'O'),
