@@ -35,7 +35,7 @@
         <li class="nav-item">
           <a class="nav-link" href="oceny.php">Oceny</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="plan.php">Plan</a>
         </li>
         <li class="nav-item">
@@ -52,7 +52,63 @@
 
   <div class="container">
 
+    <div class="row">
+      <table class="table table-striped table-bordered table-responsive{-xl} mt-5" style="background-color: white">
+        <thead>
+          <tr>
+            <th>Godzina</th>
+            <th>Poniedziałek</th>
+            <th>Wtorek</th>
+            <th>Środa</th>
+            <th>Czwartek</th>
+            <th>Piątek</th>
+          </tr>
+        </thead>
+        <tbody id="tabela">
+          <!-- plan__tabela.php -->
+        </tbody>
+      </table>
+    </div>
+
   </div> <!-- /container -->
+
+  <script type="text/javascript">
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    var id_osoby = getCookie("user_id");
+    var id_oceny;
+
+    $(function() {
+      var ajaxRequest;
+      var values = "id_osoby=" + id_osoby;
+
+      ajaxRequest = $.ajax({
+        url: "plan__tabela.php",
+        type: "post",
+        data: values
+      });
+
+      ajaxRequest.done(function(response, textStatus, jqXHR) {
+        $("#tabela").html(response);
+      });
+
+      ajaxRequest.fail(function() {
+      });
+    });
+  </script>
 
   <script src="cookies.js" crossorigin="anonymous"></script>
 </body>

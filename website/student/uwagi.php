@@ -39,7 +39,7 @@
           <a class="nav-link" href="plan.php">Plan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="uwagi.php">Uwagi</a>
+          <a class="nav-link active" href="uwagi.php">Uwagi</a>
         </li>
       </ul>
       <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
