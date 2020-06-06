@@ -163,13 +163,14 @@ $$ language 'plpgsql';
 
 create or replace function lista_uczniow_klasy(id_wych int, tryb int = 0)
 returns table (
+    id integer,
     imie varchar,
     nazwisko varchar,
     aktualny bool
 ) as $$
 begin
     return query (
-        select uv.imie, uv.nazwisko,
+        select uv.id_osoby, uv.imie, uv.nazwisko,
         case
         when tryb = 1 and uv.id_osoby = k.przewodniczacy then true
         when tryb = 2 and uv.id_osoby = k.wiceprzewodniczacy then true

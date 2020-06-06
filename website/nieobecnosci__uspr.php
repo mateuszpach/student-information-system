@@ -12,10 +12,9 @@ try {
 
 $id_obec = $_POST['id_obec'];
 
-//TODO adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM przyszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT usprawiedliw_ucznia(:1)');
+    $q->bindParam(':1', $_POST["id_obec"], PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {

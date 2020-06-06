@@ -25,7 +25,7 @@ try {
 echo '<div class="input-group-prepend">';
 echo '<span class="input-group-text" style="width:180px">Skarbnik</span>';
 echo '</div>';
-echo '<select class="form-control" id="id_ucz">';
+echo '<select class="form-control" name="id_ucz">';
 
 echo '<option value="-1"></option>';
 
