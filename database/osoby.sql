@@ -79,3 +79,72 @@ create or replace view opiekunowie_view as
 create or replace view dyrektorstwo_view as
     select o.*, d.wyksztalcenie
     from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
+
+
+create or replace function pesel_check() returns trigger as $pesel_check$
+declare
+    sum integer = 0;
+    i integer = 1;
+    numbah integer;
+    ar integer[];
+begin
+    if character_length(new.pesel) != 11 then
+        raise exception 'Niepoprawny PESEL';
+    end if;
+    if substring(new.pesel, 5, 2)::integer > 31 then
+        raise exception 'Niepoprawny PESEL';
+    end if;
+    numbah := substring(new.pesel, 3, 2)::integer;
+    numbah :=
+    case when numbah > 80 then numbah - 80
+         when numbah > 60 and numbah < 80 then numbah - 60
+         when numbah > 40 and numbah < 60 then numbah - 40
+         when numbah > 20 and numbah < 40 then numbah - 20
+         else numbah
+    end;
+    if numbah > 12 then
+        raise exception 'Niepoprawny PESEL';
+    end if;
+    ar := array[9, 7, 3, 1, 9 ,7, 3, 1, 9, 7];
+    loop exit when i = 11;
+        sum :=  sum + ar[i] * substring(new.pesel, i, 1)::integer;
+        i := i + 1;
+    end loop;
+    if sum % 10 != substring(new.pesel, 11, 1)::integer then
+        raise exception 'Niepoprawny PESEL';
+    end if;
+    return new;
+end;
+$pesel_check$ language 'plpgsql';
+
+create trigger pesel_check before insert or update on osoby
+for each row execute procedure pesel_check();
+
+
+create or replace function telefon_check() returns trigger as $$
+declare
+begin
+    if new.nr_telefonu !~ '\+[0-9]+$' then
+        raise exception 'Niepoprawny nr telefonu.';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+
+create trigger telefon before insert or update on osoby
+    for each row execute procedure telefon_check();
+
+
+create or replace function email_check() returns trigger as $$
+declare
+begin
+    if new.email !~ '.*@.*' then
+        raise exception 'Niepoprawny email.';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger email before insert or update on osoby
+    for each row execute procedure email_check();

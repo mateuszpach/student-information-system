@@ -34,6 +34,10 @@ drop view if exists uczniowie_view cascade;
 drop view if exists nauczyciele_view cascade;
 drop view if exists opiekunowie_view cascade;
 drop view if exists dyrektorstwo_view cascade;
+drop function if exists email_check();
+drop function if exists pesel_check();
+drop function if exists student_lesson_check();
+drop function if exists telefon_check();
 
 --administracyjne
 drop function if exists dodaj_ucznia(id_wstawiajacego integer, pesel_ char, email_ varchar, imie_ varchar, drugie_imie_ varchar,
@@ -81,5 +85,11 @@ drop function if exists wypisz_nieobecnych(id_wychowawcy integer);
 
 --oceny
 drop function if exists dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int);
-drop function if exists wstaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric, waga numeric, kategoria kategoriaoceny, opis varchar);
-drop function if exists zmien_ocene(id_naucz int, id_oceny int, wartosc numeric, waga numeric, kategoria kategoriaoceny, opis varchar);
+drop function if exists liczba_zajec(id_ucznia int);
+drop function if exists poczatek_semestru();
+drop function if exists przedmiot_instancji(id_zajec int);
+drop function if exists ustaw_ocene_koncowa(id_zajec int, id_ucznia int, ocena int);
+drop function if exists ustaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric, waga numeric, kategoria kategoriaoceny, opis varchar);
+drop function if exists  zestawienie_obecnosci(id_wych int);
+drop function if exists update_waga_kategoria();
+drop function if exists insert_waga_kategoria();

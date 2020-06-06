@@ -49,6 +49,16 @@ select k.nazwa as klasa, srednia_klasy(k.id_klasy) as srednia
 from klasy k order by k.nazwa;
 
 
+-- taki util
+create or replace function przedmiot_instancji(id_zajec int) returns int as $$
+begin
+    return (
+        select przedmiot
+        from instancje_zajec where id_instancji = id_zajec
+        );
+end
+$$ language 'plpgsql';
+
 -- wstawianie ocen
 
 create or replace function dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int) returns void as $$
@@ -68,81 +78,66 @@ end
 $$ language 'plpgsql';
 
 
-create or replace function wstaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric,
-                                        waga numeric, kategoria kategoriaoceny, opis varchar) returns void as $$
-begin
-    perform dostep_do_oceny(id_naucz, id_ucz, id_zajec);
-    insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
-    (id_ucz, now(), id_zajec, wstaw_ocene.wartosc, wstaw_ocene.waga, wstaw_ocene.kategoria, wstaw_ocene.opis);
-end
-$$ language 'plpgsql';
-
-
-create or replace function zmien_ocene(id_naucz int, id_oceny int, wartosc numeric,
+create or replace function ustaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric,
                                         waga numeric, kategoria kategoriaoceny, opis varchar) returns void as $$
 declare
-    id_ucz int;
-    id_zajec int;
-begin
-    id_ucz := (
-        select uczen
-        from oceny where id_oceny = ocena
-    );
-    id_zajec := (
-        select zajecia
-        from oceny where id_oceny = ocena
-    );
-    perform dostep_do_oceny(id_naucz, id_ucz, id_zajec);
-    update oceny set wartosc = zmien_ocene.wartosc, waga = zmien_ocene.waga,
-                     kategoria = zmien_ocene.kategoria, opis = zmien_ocene.opis
-    where id_oceny = ocena;
-end
-$$ language 'plpgsql';
-
-
-
--- waga ma byc ta sama dla odpowiednich ocen
-create or replace function update_waga() returns trigger as $$
-declare
-    row record;
     przedm int;
 begin
-    if new.waga = old.waga then
+
+    przedm = przedmiot_instancji(id_zajec);
+
+    perform dostep_do_oceny(id_naucz, id_ucz, id_zajec);
+
+    if (
+        select o.ocena
+        from oceny o
+        where o.uczen = id_ucz
+        and o.opis = ustaw_ocene.opis
+        and przedmiot_instancji(o.zajecia) = przedm
+        ) is not null then
+
+            update oceny o set wartosc = ustaw_ocene.wartosc, waga = ustaw_ocene.waga,
+                             kategoria = ustaw_ocene.kategoria
+            where o.uczen = id_ucz
+                and o.opis = ustaw_ocene.opis
+                and przedmiot_instancji(o.zajecia) = przedm;
+    else
+        insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
+        (id_ucz, now(), id_zajec, ustaw_ocene.wartosc, ustaw_ocene.waga, ustaw_ocene.kategoria, ustaw_ocene.opis);
+    end if;
+end
+$$ language 'plpgsql';
+
+
+-- waga i kategoria mają byc te same dla odpowiednich ocen
+create or replace function update_waga_kategoria() returns trigger as $$
+declare
+    przedm int;
+begin
+    if new.waga = old.waga and new.kategoria = old.kategoria then
         return new;
     end if;
 
-    przedm := (
-        select iz.przedmiot
-        from instancje_zajec iz
-        where iz.id_instancji = new.zajecia
-                 );
+    przedm := przedmiot_instancji(new.zajecia);
 
-    update oceny o set waga = new.waga
+    update oceny o set waga = new.waga, kategoria = new.kategoria
     where new.opis = o.opis
     and new.ocena != o.ocena
     and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
-    and (
-        select iz.przedmiot
-        from instancje_zajec iz
-        where iz.id_instancji = o.zajecia
-        ) = przedm;
+    and przedmiot_instancji(o.zajecia) = przedm;
     return new;
 end
 $$ language 'plpgsql';
 
 
-create or replace function insert_waga() returns trigger as $$
+create or replace function insert_waga_kategoria() returns trigger as $$
 declare
     row record;
     przedm int;
 begin
-    przedm := (
-        select iz.przedmiot
-        from instancje_zajec iz
-        where iz.id_instancji = new.zajecia
-                 );
+    przedm := przedmiot_instancji(new.zajecia);
 
-    update oceny o set waga = new.waga
+    update oceny o set waga = new.waga, kategoria = new.kategoria
     where new.opis = o.opis
     and new.ocena != o.ocena
     and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
@@ -156,10 +151,38 @@ end
 $$ language 'plpgsql';
 
 create trigger rowna_waga_upd after update on oceny
-    for each row execute procedure update_waga();
+    for each row execute procedure update_waga_kategoria();
 
 create trigger rowna_waga_ins after insert on oceny
-    for each row execute procedure insert_waga();
+    for each row execute procedure insert_waga_kategoria();
+
+
+-- ocena koncowa
+create or replace function ustaw_ocene_koncowa(id_zajec int, id_ucznia int, ocena int) returns void as $$
+declare
+    przedm int;
+    sem int;
+    ro numeric(4);
+begin
+    przedm := przedmiot_instancji(id_zajec);
+
+    sem := case when to_char(poczatek_semestru(), 'Mon') = 'Sep' then 1 else 2 end;
+    ro := extract(year from poczatek_semestru());
+
+    if (
+        select ok.id
+        from oceny_koncowe ok
+        where ok.uczen = id_ucznia
+        and ok.przedmiot = przedm
+    ) is not null then
+        update oceny_koncowe ok set wartosc = ocena
+        where ok.uczen = id_ucznia and ok.przedmiot = przedm;
+    else
+        insert into oceny_koncowe (wartosc, uczen, przedmiot, rok, semestr) values
+        (ocena, id_ucznia, przedm, ro, sem);
+    end if;
+end
+$$ language 'plpgsql';
 
 
 -- dane oceny
