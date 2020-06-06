@@ -243,7 +243,7 @@ begin
         select przedm, sredn from (
                    select 'a', p.nazwa as przedm, srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) as sredn
                    from przedmioty p
-                   --where srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) is not null
+                   where srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) is not null
                    union
                    select 'z', 'Średnia', srednia_klasy(klasa_wychowawcy(id_wych))
                    order by 1, 2
@@ -251,6 +251,32 @@ begin
     );
 end
 $$ language 'plpgsql';
+
+
+-- zestawienie ocen ucznia
+create or replace function zestawienie_ocen_ucznia(id_ucznia int)
+returns table (
+    przedmiot varchar,
+    oceny text,
+    srednia numeric(3,2),
+    ocena_koncowa int
+              ) as $$
+
+begin
+    return query (
+        select distinct nazwa_przedmiotu(iz.przedmiot),
+               pokaz_oceny_nice(id_ucznia, iz.id_instancji),
+               srednia_ucznia(id_ucznia, iz.przedmiot), ok.wartosc
+        from instancje_zajec iz
+        left join oceny_koncowe ok on ok.uczen = id_ucznia and ok.przedmiot = iz.przedmiot
+        where iz.klasa = klasa_ucznia(id_ucznia)
+    );
+end
+$$ language 'plpgsql';
+
+
+
+
 
 -- dane oceny
 /*select uv.imie, uv.nazwisko, p.nazwa, o.wartosc, o.kategoria, o.opis, o.waga, o.data_wystawienia
