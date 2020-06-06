@@ -64,6 +64,9 @@ drop function if exists przeszle_zajecia_nauczyciela(id_naucz integer);
 drop function if exists klasa_wychowawcy(id_wych int);
 drop function if exists lista_uczniow_klasy(id_wych int, tryb int);
 drop function if exists nazwa_klasy_wychowawcy(id_wych int);
+drop function if exists wypisz_uwagi_klasy(id_wychowawcy int);
+drop function if exists dodaj_uwage(id_wystawiajacego integer, id_ucznia integer, tresc varchar, typ char);
+drop function if exists wypisz_uwagi_nauczyciela(id_nauczyciela integer);
 
 --zajecia
 drop function if exists nazwa_przedmiotu(id integer);
@@ -93,3 +96,7 @@ drop function if exists ustaw_ocene(id_naucz int, id_ucz int, id_zajec int, wart
 drop function if exists  zestawienie_obecnosci(id_wych int);
 drop function if exists update_waga_kategoria();
 drop function if exists insert_waga_kategoria();
+
+--instancje_zajec
+drop function if exists dostan_temat(id_ins integer);
+drop function if exists zapisz_temat(id_ins integer, temat_zajec varchar);
