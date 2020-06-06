@@ -40,16 +40,6 @@ alter table klasy
     add column wiceprzewodniczacy integer references uczniowie (osoba);
 alter table klasy
     add column skarbnik integer references uczniowie (osoba);
-create table opiekunowie
-(
-    osoba integer references osoby (id_osoby) primary key
-);
-create table uczniowie_opiekunowie
-(
-    uczen   integer references uczniowie (osoba)   not null,
-    opiekun integer references opiekunowie (osoba) not null,
-    primary key (uczen, opiekun)
-);
 
 create type typUwagi as enum ('P', 'N'); -- pozytywna / negatywna
 create table uwagi
@@ -168,10 +158,6 @@ values (5, 'Magister'),
        (10, 'Magister'),
        (1, 'Technik');
 
-insert into opiekunowie (osoba)
-values (11),
-       (12);
-
 insert into uczniowie (osoba, klasa)
 values (2, 1),
        (3, 1),
@@ -179,7 +165,9 @@ values (2, 1),
        (6, 3),
        (7, 2),
        (8, 2),
-       (9, 4);
+       (9, 4),
+       (11, 1),
+       (12, 2);
 
 update klasy
 set wychowawca = 1
@@ -275,15 +263,6 @@ declare
     row record;
     i   integer = 1;
 begin
-    for row in select o2.id_osoby as op, o3.id_osoby as uc
-               from (opiekunowie o join osoby o2 on o.osoba = o2.id_osoby)
-                        join
-                    (uczniowie u join osoby o3 on u.osoba = o3.id_osoby)
-                    on o2.nazwisko = o3.nazwisko
-        loop
-            insert into uczniowie_opiekunowie
-            values (row.uc, row.op);
-        end loop;
     for row in select * from zajecia z
         loop
             insert into nauczyciele_przedmioty (nauczyciel, przedmiot)
