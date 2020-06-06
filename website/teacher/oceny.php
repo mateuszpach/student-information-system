@@ -34,22 +34,22 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/zajecia.php">Zajęcia</a>
+                    <a class="nav-link active" href="zajecia.php">Zajęcia</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/plan.php">Plan</a>
+                    <a class="nav-link" href="plan.php">Plan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/klasa.php">Klasa</a>
+                    <a class="nav-link" href="klasa.php">Klasa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/uwagi.php">Uwagi</a>
+                    <a class="nav-link" href="uwagi.php">Uwagi</a>
                 </li>
             </ul>
             <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
             <label id="name" class="my-2 my-sm-0 mr-4">undefined</label>
 
-            <a href="/mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
+            <a href="mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
             <button class="btn btn-outline my-2 my-sm-0" onclick="logout()">Wyloguj</button>
         </div>
     </nav>
@@ -59,20 +59,23 @@
         <div class="card mt-5">
             <div class="card-header">
                 <div class="row" id="dane">
-                    <div class="col">
-                        <h3>Moje uwagi</h3>
-                    </div>
+                    <!-- oceny__dane.php -->
                 </div>
             </div>
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div style="overflow-x: auto">
                         <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3" style="background-color: white" id="tabela">
-                            <!-- uwagi__tabela.php -->
+                            <!-- oceny__tabela.php -->
                         </table>
                     </div>
                 </div>
-                <button class="btn btn-primary mt-2 float-right" type="button" data-toggle="modal" data-target="#dodajmodal">Dodaj uwagę</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#dodajmodal">Ustaw ocenę</button>
+                <button class="btn btn-primary mt-2" type="button" data-toggle="modal" data-target="#dodajkoncmodal">Ustaw ocenę końcową</button>
+                <form id="back" class="form-inline btn float-right mr-n3" action="zajecia_szczeg.php" method="post">
+                    <input type="hidden" name="id_zajec" value="<?php echo $_POST['id_zajec'] ?>">
+                    <button class="btn btn-danger" type="submit">Wróć</button>
+                </form>
             </div>
         </div>
 
@@ -108,7 +111,30 @@
                             </button>
                         </div>
                         <div class="modal-body" id="dodaj">
-                            <!-- uwagi__dodaj.php -->
+                            <!-- oceny__dodaj.php -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Porzuć</button>
+                            <button type="submit" class="btn btn-primary">Zapisz</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- dodajkonc Modal -->
+        <div class="modal fade" id="dodajkoncmodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="dodajkoncform">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ustaw ocenę końcową</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="dodajkonc">
+                            <!-- oceny__dodajkonc.php -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Porzuć</button>
@@ -140,16 +166,17 @@
         var id_oceny;
 
         $("#errormodal").modal('hide');
-        $("#dodajmodal").modal('hide');
 
+        $("#dodajmodal").modal('hide');
         $("#dodajform").submit(function(event) {
             var ajaxRequest;
             event.preventDefault();
-            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
             console.log(values);
 
             ajaxRequest = $.ajax({
-                url: "uwagi__upddodaj.php",
+                url: "dodajocene.php",
                 type: "post",
                 data: values
             });
@@ -165,6 +192,29 @@
             });
         });
 
+        $("#dodajkoncform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+            console.log(values);
+
+            ajaxRequest = $.ajax({
+                url: "dodajocenekonc.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dodajkoncmodal").modal('hide');
+                location.reload();
+            });
+
+            ajaxRequest.fail(function() {
+                $("#dodajkoncmodal").modal('hide');
+                $("#errormodal").modal('show');
+            });
+        });
 
         $(function() {
             var ajaxRequest;
@@ -172,7 +222,47 @@
             var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
-                url: "uwagi__dodaj.php",
+                url: "oceny__tabela.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#tabela").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__dane.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dane").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "oceny__dodaj.php",
                 type: "post",
                 data: values
             });
@@ -192,13 +282,13 @@
             var values = "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
-                url: "uwagi__tabela.php",
+                url: "oceny__dodajkonc.php",
                 type: "post",
                 data: values
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#tabela").html(response);
+                $("#dodajkonc").html(response);
             });
 
             ajaxRequest.fail(function() {
