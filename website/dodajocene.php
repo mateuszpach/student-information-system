@@ -19,7 +19,7 @@ $kategoria = $_POST['kategoria'];
 $opis = $_POST['opis'];
 
 try {
-    $q = $pdo->prepare("SELECT wstaw_ocene(:1, :2, :3, :4, :5, :6, :7)");
+    $q = $pdo->prepare("SELECT ustaw_ocene(:1, :2, :3, :4, :5, :6, :7)");
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->bindParam(':3', $id_zajec, PDO::PARAM_STR);

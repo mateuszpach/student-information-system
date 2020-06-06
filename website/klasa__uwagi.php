@@ -11,11 +11,11 @@ try {
     echo $e->getMessage();
 }
 
-// select z uwag where wychowawca klasy to id_osoby
-// rows: takie jak w forze
+$id_osoby = $_POST["id_osoby"];
+
 try {
-    $q = $pdo->prepare('SELECT * FROM przeszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * from wypisz_uwagi_klasy(:1)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -24,11 +24,11 @@ try {
 
 foreach ($res as $row) {
     echo '<tr>';
-    echo '<td>' . $row['uczen'] . '</td>';
-    echo '<td>' . $row['wystawiajacy'] . '</td>';
     echo '<td>' . $row['data_wystawienia'] . '</td>';
-    echo '<td>' . $row['tresc'] . '</td>';
-    echo '<td>' . $row['typ'] . '</td>';
+    echo '<td>' . $row['uczen'] . '</td>';
+    echo '<td>' . $row['tresc_uwagi'] . '</td>';
+    echo '<td>' . $row['typ_uwagi'] . '</td>';
+    echo '<td>' . $row['wystawiajacy'] . '</td>';
     echo '</tr>';
 }
 
