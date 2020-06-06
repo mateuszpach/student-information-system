@@ -36,42 +36,7 @@ begin
 end;
 $$ language 'plpgsql';*/
 
--- Kolizja w godzinach lekcyjnych występuje gdy: jakieś interwały czasowe niepusto się przecinają
-create or replace function brak_kolizji_godz()
-returns trigger as $$
-begin
-    if (
-        select nr_godziny
-        from godziny_lekcyjne where od <= new.do and "do" >= new.od
-        ) is not null then
-        raise exception 'Proba wstawienia kolidujacej godziny lekcyjnej.';
-    end if;
-    return new;
-end;
-$$ language 'plpgsql';
 
-create trigger godziny_lekcyjne_kolizje before insert or update on godziny_lekcyjne
-    for each row execute procedure brak_kolizji_godz();
-
--- Kolizja w planie występuje gdy w tym samym czasie: prowadzący prowadzi 2 zajęcia ||
--- sala jest zajęta przez 2 zajęcia || klasa bierze udział w dwóch zajęciach
-create or replace function brak_kolizji_plan()
-returns trigger as $$
-begin
-    if (
-        select z.id_zajec from
-        zajecia z where z.dzien_tygodnia = new.dzien_tygodnia and z.godzina_lekcyjna = new.godzina_lekcyjna
-        and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
-        limit 1
-    ) is not null then
-        raise exception 'Proba wstawienia kolidujacych zajec';
-    end if;
-    return new;
-end;
-$$ language 'plpgsql';
-
-create trigger plan_kolizje before insert or update on zajecia
-    for each row execute procedure brak_kolizji_plan();
 
 
 -- Edycja instancji zajec --TODO problemy gdy argumentami są nulle
@@ -114,92 +79,6 @@ begin
 end;
 $$ language 'plpgsql';
 
-
--- Kolizja w instancjach jest podobna do kolizji w planie.
-create or replace function brak_kolizji_instancje()
-returns trigger as $$
-begin
-    if (
-        select z.id_instancji from
-        instancje_zajec z where z.data = new.data and z.godzina_lekcyjna = new.godzina_lekcyjna
-        and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
-        and z.id_instancji != new.id_instancji
-        limit 1
-    ) is not null then
-        raise exception 'Proba wstawienia kolidujacych zajec';
-    end if;
-    return new;
-end;
-$$ language 'plpgsql';
-90
-create trigger instancje_kolizje before insert or update on instancje_zajec
-    for each row execute procedure brak_kolizji_instancje();
-
--- obecnosci
-create or replace function pokaz_wszystkie_obecnosci(id_zajec int)
-returns table (
-    id_obecnosci int,
-    imie varchar,
-    nazwisko varchar,
-    status statusobecnosci)
-as $$
-begin
-    return query (
-        select ob.id, os.imie, os.nazwisko, ob.status
-        from obecnosci ob join osoby os
-        on ob.uczen = os.id_osoby
-        where ob.instancja_zajecia = id_zajec
-        order by 1
-        );
-end
-$$ language 'plpgsql';
-
-create or replace function wstaw_obecnosc(id_obecnosci int,wstaw_status statusobecnosci)
-returns void
-as $$
-begin
-    update obecnosci
-    SET status=wstaw_status
-    WHERE id=id_obecnosci;
-end
-$$ language 'plpgsql';
-
-create or replace function usprawiedliw_ucznia(id_obecnosci int)
-returns void
-as $$
-begin
-    update obecnosci
-    set status='NU'
-    where id=id_obecnosci;
-end
-$$ language 'plpgsql';
-
-create or replace function wypisz_nieobecnych(id_wychowawcy int, id_ucznia int)
-returns table (
-    id_obecnosci integer,
-    data date,
-    godzina text,
-    przedmiot varchar(200),
-    imie varchar,
-    nazwisko varchar)
-as $$
-begin
-    return query (
-            select ob.id, i.data, concat(g.od, ' ', g.do) , p.nazwa, os.imie, os.nazwisko
-            from obecnosci ob
-            join osoby os on ob.uczen = os.id_osoby
-            join instancje_zajec i on i.id_instancji=ob.instancja_zajecia
-            join uczniowie u on ob.uczen = u.osoba
-            join klasy k on u.klasa = k.id_klasy
-            join godziny_lekcyjne g on g.nr_godziny = i.godzina_lekcyjna
-            join przedmioty p on p.id_przedmiotu = i.przedmiot 
-            where k.wychowawca = id_wychowawcy and ob.uczen = id_ucznia and ob.status = 'N'
-            order by 1
-        );
-end
-$$ language 'plpgsql';
-
-
 -- listowanie uczniow
 
 
@@ -237,76 +116,6 @@ end
 $$ language 'plpgsql';
 
 
--- obecnosci statystyki
-
-create or replace function poczatek_semestru() returns date as $$
-declare
-    czas date = now()::date;
-begin
-    while to_char(czas, 'Mon') != 'Sep' and to_char(czas, 'Mon') != 'Feb' loop
-        czas := czas - '1 Month'::interval;
-    end loop;
-    return date_trunc('Month', czas)::date;
-end
-$$ language 'plpgsql';
-
-create or replace function liczba_status(id_ucznia int, status statusobecnosci) returns int as $$
-declare
-begin
-    return (
-        select count(*)
-        from obecnosci o
-        join instancje_zajec iz on o.instancja_zajecia = iz.id_instancji
-        where o.uczen = id_ucznia
-        and o.status = liczba_status.status
-        and iz.data between poczatek_semestru() and now()::date
-    );
-end
-$$ language 'plpgsql';
-
-
-create or replace function liczba_zajec(id_ucznia int) returns int as $$
-declare
-begin
-    return (
-        select count(*)
-        from instancje_zajec iz
-        join uczniowie_view uv on iz.klasa = uv.klasa
-        where uv.id_osoby = id_ucznia
-        and iz.data between poczatek_semestru() and now()::date
-    );
-end
-$$ language 'plpgsql';
-
-
-create or replace function zestawienie_obecnosci(id_wych int)
-returns table (
-    uczen text,
-    liczba_zajec int,
-    obecnosc_proc numeric,
-    obecnosci int,
-    nieobecnosci int,
-    ucieczki int,
-    nieobecnosci_u int,
-    zwolnienia int
-) as $$
-declare
-begin
-    return query (
-        select concat(uv.imie, ' ', uv.nazwisko),
-               liczba_zajec(uv.id_osoby),
-               liczba_status(uv.id_osoby, 'O')::numeric / greatest(liczba_zajec(uv.id_osoby), 1)::numeric * 100,
-               liczba_status(uv.id_osoby, 'O'),
-               liczba_status(uv.id_osoby, 'N'),
-               liczba_status(uv.id_osoby, 'U'),
-               liczba_status(uv.id_osoby, 'NU'),
-               liczba_status(uv.id_osoby, 'Z')
-        from uczniowie_view uv
-        where uv.klasa = klasa_wychowawcy(id_wych)
-    );
-end
-$$ language 'plpgsql';
-
 --instancje zajec
 create or replace function dostan_temat(id_ins int)
 returns varchar
@@ -326,4 +135,14 @@ begin
     set temat=temat_zajec
     where id_instancji=id_ins;
 end;
+$$ language 'plpgsql';
+
+-- util
+create or replace function klasa_instancji(id_ins int) returns int as $$
+declare
+begin
+    return (
+        select klasa from instancje_zajec where id_instancji = id_ins
+        );
+end
 $$ language 'plpgsql';

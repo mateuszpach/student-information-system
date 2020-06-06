@@ -95,7 +95,17 @@ drop function if exists lista_ocen_ucznia(id_ucznia int, id_zajec int);
 drop function if exists opisy(id_zajec int);
 drop function if exists pokaz_oceny_nice(id_ucznia int, id_zajec int);
 drop function if exists tabela_ocen(id_zajec int);
+drop function if exists wyniki_klasy(id_wych integer);
+drop function if exists zestawienie_ocen_ucznia(id_ucznia integer);
 
 --instancje_zajec
 drop function if exists dostan_temat(id_ins integer);
 drop function if exists zapisz_temat(id_ins integer, temat_zajec varchar);
+drop function if exists klasa_instancji(id_ins integer);
+drop function if exists zajecia_ucznia();
+
+--obecnosci
+drop function if exists wypisz_nieobecnych(id_wychowawcy integer, id_ucznia integer);
+drop function if exists brak_zajec_weekend();
+drop function if exists nie_edytuj_obecnosci();
+drop function if exists wstaw_puste_obecnosci();
