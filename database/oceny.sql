@@ -182,9 +182,7 @@ begin
 end
 $$ language 'plpgsql';
 
-
 -- wyswietlanie ocen (ciekawe)
-
 create or replace function lista_ocen_ucznia(id_ucznia int, id_zajec int)
 returns table (
     ocena int

@@ -12,10 +12,6 @@ try {
 
 echo '<thead>';
 
-echo '<tr>';
-echo  '<th colspan="100" class="align-middle">Oceny</th>';
-echo '</tr>';
-
 $id_zajec = $_POST['id_zajec'];
 
 try {
@@ -35,17 +31,14 @@ echo     '<th>Ocena końcowa</th>';
 echo '</tr>';
 
 echo '</thead>';
-
-
 echo '<tbody>';
 
 foreach ($res as $row) {
     echo '<tr>';
     echo     '<td>' . $row['uczen'] . '</td>';
     echo     '<td>' . $row['oceny'] . '</td>';
-    echo     '<td>' . $row['srednia'] . '/td>';
+    echo     '<td>' . $row['srednia'] . '</td>';
     echo     '<td>' . $row['ocena_koncowa'] . '</td>';
     echo '</tr>';
 }
-
 echo '</tbody>';
