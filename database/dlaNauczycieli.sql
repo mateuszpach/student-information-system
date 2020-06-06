@@ -184,3 +184,54 @@ begin
     );
 end
 $$ language 'plpgsql';
+
+create or replace function wypisz_uwagi_klasy(id_wychowawcy int )
+returns table(
+    data_wystawienia timestamp,
+    uczen text,
+    wystawiajacy text,
+    tresc_uwagi varchar(10000),
+    typ_uwagi text
+)as $$
+begin
+    return query (
+        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko),concat(wyst_os.imie,' ',wyst_os.nazwisko), uw.tresc,
+           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
+            from uwagi uw
+        join uczniowie uc on uw.uczen = uc.osoba
+        join klasy k on uc.klasa = k.id_klasy
+        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
+        join osoby wyst_os on uw.wystawiajacy=wyst_os.id_osoby
+        where k.wychowawca=id_wychowawcy
+    );
+end
+$$ language 'plpgsql';
+
+create or replace function dodaj_uwage(id_wystawiajacego int,id_ucznia int,tresc varchar,typ char)
+returns void
+as $$
+begin
+    insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
+    values (id_ucznia,id_wystawiajacego,now(),tresc,typ);
+end;
+$$ language 'plpgsql';
+
+
+create or replace function wypisz_uwagi_nauczyciela(id_nauczyciela int )
+returns table(
+    data_wystawienia timestamp,
+    uczen text,
+    tresc_uwagi varchar(10000),
+    typ_uwagi text
+)as $$
+begin
+    return query (
+        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko), uw.tresc,
+           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
+            from uwagi uw
+        join uczniowie uc on uw.uczen = uc.osoba
+        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
+        where uw.wystawiajacy=id_nauczyciela
+    );
+end
+$$ language 'plpgsql';
