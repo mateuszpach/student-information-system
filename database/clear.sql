@@ -7,8 +7,6 @@ drop table if exists godziny_lekcyjne cascade;
 drop table if exists sale cascade;
 drop table if exists przedmioty cascade;
 drop table if exists uwagi cascade;
-drop table if exists uczniowie_opiekunowie cascade;
-drop table if exists opiekunowie cascade;
 drop table if exists uczniowie cascade;
 drop table if exists klasy cascade;
 drop table if exists nauczyciele cascade;
@@ -32,7 +30,6 @@ drop function if exists klasa_spoleczna_osoby(integer) cascade;
 drop function if exists verify_osoby() cascade;
 drop view if exists uczniowie_view cascade;
 drop view if exists nauczyciele_view cascade;
-drop view if exists opiekunowie_view cascade;
 drop view if exists dyrektorstwo_view cascade;
 drop function if exists email_check();
 drop function if exists pesel_check();
@@ -42,12 +39,10 @@ drop function if exists telefon_check();
 --administracyjne
 drop function if exists dodaj_ucznia(id_wstawiajacego integer, pesel_ char, email_ varchar, imie_ varchar, drugie_imie_ varchar,
                                      nazwisko_ varchar, haslo_ varchar, nr_telefonu_ varchar, klasa_ integer) cascade;
-drop function if exists dodaj_opiekuna(id_wstawiajacego integer, pesel_ char, email_ varchar, imie_ varchar, drugie_imie_ varchar,
-                                       nazwisko_ varchar, haslo_ varchar, nr_telefonu_ varchar, dziecko_ integer) cascade;
 drop function if exists dodaj_nauczyciela(id_wstawiajacego integer, pesel_ char, email_ varchar, imie_ varchar, drugie_imie_ varchar,
                                           nazwisko_ varchar, haslo_ varchar, nr_telefonu_ varchar, wyksztalcenie_ varchar) cascade;
 
---dla uczniow opiekunow
+--dla uczniow
 drop function if exists klasa_ucznia(id_ucz integer) cascade;
 drop function if exists nazwa_klasy(id integer);
 drop function if exists plan_ucznia(id_ucz integer);
@@ -96,6 +91,10 @@ drop function if exists ustaw_ocene(id_naucz int, id_ucz int, id_zajec int, wart
 drop function if exists  zestawienie_obecnosci(id_wych int);
 drop function if exists update_waga_kategoria();
 drop function if exists insert_waga_kategoria();
+drop function if exists lista_ocen_ucznia(id_ucznia int, id_zajec int);
+drop function if exists opisy(id_zajec int);
+drop function if exists pokaz_oceny_nice(id_ucznia int, id_zajec int);
+drop function if exists tabela_ocen(id_zajec int);
 
 --instancje_zajec
 drop function if exists dostan_temat(id_ins integer);

@@ -183,6 +183,56 @@ end
 $$ language 'plpgsql';
 
 
+-- wyswietlanie ocen (ciekawe)
+
+create or replace function lista_ocen_ucznia(id_ucznia int, id_zajec int)
+returns table (
+    ocena int
+              ) as $$
+begin
+    return query((
+        select o.ocena
+        from oceny o
+        where o.uczen = id_ucznia
+        and przedmiot_instancji(o.zajecia) = przedmiot_instancji(id_zajec)
+    ));
+end
+$$ language 'plpgsql';
+
+create or replace function pokaz_oceny_nice(id_ucznia int, id_zajec int) returns text as $$
+declare
+    oceny text;
+    row record;
+begin
+    for row in select * from lista_ocen_ucznia(id_ucznia, id_zajec) loop
+        oceny := concat(oceny, (select o.opis from oceny o where o.ocena = row.ocena), ' (');
+        oceny := concat(oceny, (select o.kategoria from oceny o where o.ocena = row.ocena), ', ');
+        oceny := concat(oceny, (select o.waga from oceny o where o.ocena = row.ocena), '): ');
+        oceny := concat(oceny, (select o.wartosc from oceny o where o.ocena = row.ocena), '; ');
+    end loop;
+    return oceny;
+end
+$$ language 'plpgsql';
+
+create or replace function tabela_ocen(id_zajec int)
+returns table (
+    uczen text,
+    oceny text,
+    srednia numeric(3,2),
+    ocena_koncowa int
+              ) as $$
+
+begin
+    return query (
+        select concat(uv.imie, ' ', uv.nazwisko), pokaz_oceny_nice(uv.id_osoby, id_zajec),
+               srednia_ucznia(uv.id_osoby, przedmiot_instancji(id_zajec)), ok.wartosc
+        from uczniowie_view uv
+        left join oceny_koncowe ok on ok.uczen = uv.id_osoby
+        where uv.klasa = (select klasa from instancje_zajec where id_instancji = id_zajec)
+    );
+end
+$$ language 'plpgsql';
+
 -- dane oceny
 /*select uv.imie, uv.nazwisko, p.nazwa, o.wartosc, o.kategoria, o.opis, o.waga, o.data_wystawienia
 from oceny o

@@ -1,4 +1,4 @@
-create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'OPIEKUNOWIE', 'DYREKTORSTWO');
+create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE', 'DYREKTORSTWO');
 
 create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
 begin
@@ -11,10 +11,6 @@ begin
         ) is not null then return 'NAUCZYCIELE';
     end if;
     if (
-        select osoba from opiekunowie where osoba = id_osoby
-        ) is not null then return 'OPIEKUNOWIE';
-    end if;
-    if (
         select osoba from uczniowie where osoba = id_osoby
         ) is not null then return 'UCZNIOWIE';
     end if;
@@ -23,7 +19,7 @@ end;
 $$ language 'plpgsql';
 
 /*
- Dodajemy do uczniowie / nauczyciele / opiekunowie tylko pod warunkiem, że mamy już takie id w osobach,
+ Dodajemy do uczniowie / nauczyciele tylko pod warunkiem, że mamy już takie id w osobach,
  i nie mamy takiego id jeszcze w żadnej z powyższych trzech grup.
  */
 create or replace function verify_osoby() returns trigger as $$
@@ -35,10 +31,6 @@ begin
     if (
         select u.osoba from uczniowie u where u.osoba = new.osoba
         ) is not null then raise exception 'Person already present in uczniowie';
-    end if;
-    if (
-        select o.osoba from opiekunowie o where o.osoba = new.osoba
-        ) is not null then raise exception 'Person already present in opiekunowie';
     end if;
     if (
         select n.osoba from nauczyciele n where n.osoba = new.osoba
@@ -56,7 +48,6 @@ $$ language 'plpgsql';
 
 create trigger on_add_uczen before insert on uczniowie for each row execute procedure verify_osoby();
 create trigger on_add_nauczyciel before insert on nauczyciele for each row execute procedure verify_osoby();
-create trigger on_add_opiekun before insert on opiekunowie for each row execute procedure verify_osoby();
 create trigger on_add_dyrektor before insert on dyrektorstwo for each row execute procedure verify_osoby();
 
 /*
@@ -71,10 +62,6 @@ create or replace view uczniowie_view as
 create or replace view nauczyciele_view as
     select o.*, n.wyksztalcenie
     from nauczyciele n join osoby o on n.osoba = o.id_osoby;
-
-create or replace view opiekunowie_view as
-    select o.*
-    from opiekunowie op join osoby o on op.osoba = o.id_osoby;
 
 create or replace view dyrektorstwo_view as
     select o.*, d.wyksztalcenie
