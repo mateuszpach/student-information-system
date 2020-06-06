@@ -14,17 +14,11 @@ $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
 $id_ucz = $_POST['id_ucz'];
 $wartosc = $_POST['wartosc'];
-$waga = $_POST['waga'];
-$kategoria = $_POST['kategoria'];
-$opis = $_POST['opis'];
-
-$id_zajec=0;
-$id_osoby=1;
 
 //TODO: adjust n test
 try {
-    $q = $pdo->prepare('SELECT wstaw_ocene_konc(:1, :2, :3)');
-    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT ustaw_ocene_koncowa(:1, :2, :3)');
+    $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
     $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->bindParam(':3', $wartosc, PDO::PARAM_STR);
     $q->execute();

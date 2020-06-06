@@ -14,7 +14,7 @@ $id_osoby = $_POST['id_osoby'];
 $id_ucz = $_POST['id_ucz'];
 
 try {
-    $q = $pdo->prepare("SELECT przydziel_funkcje(:1, :2, 'ZASTEPCA')");
+    $q = $pdo->prepare("SELECT przydziel_funkcje(:1, :2, 'PRZEWODNICZACY')");
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->execute();
