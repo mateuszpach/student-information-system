@@ -77,14 +77,8 @@
                     </div>
                 </form>
 
-                <form class="mt-5" id="ocenyform">
-                    <div class="input-group mb-3" id="oceny">
-                        <!-- klasa__oceny.php -->
-                    </div>
-                </form>
-
-                <form id="nieobform" action="nieobecnosci.php">
-                    <div class="input-group mb-3" id="nieob">
+                <form id="nieobform" action="nieobecnosci.php" method="post">
+                    <div class="input-group mb-3 mt-4" id="nieob">
                         <!-- klasa__nieob.php -->
                     </div>
                 </form>
@@ -230,6 +224,7 @@
             var ajaxRequest;
             event.preventDefault();
             var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+                console.log(values);
 
             ajaxRequest = $.ajax({
                 url: "klasa__updprzew.php",
@@ -238,12 +233,12 @@
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-
+                location.reload();
             });
 
             ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
-                // location.reload();
+                // $("#errormodal").modal('show');
+                location.reload();
             });
         });
 
@@ -259,12 +254,12 @@
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                
+                location.reload();
             });
 
             ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
-                // location.reload();
+                // $("#errormodal").modal('show');
+                location.reload();
             });
         });
 
@@ -280,12 +275,12 @@
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                
+                location.reload();
             });
 
             ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
-                // location.reload();
+                // $("#errormodal").modal('show');
+                location.reload();
             });
         });
 
@@ -339,25 +334,6 @@
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
                 $("#skarb").html(response);
-            });
-
-            ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
-            });
-        });
-
-        $(function() {
-            var ajaxRequest;
-            var values = "id_osoby=" + id_osoby;
-
-            ajaxRequest = $.ajax({
-                url: "klasa__oceny.php",
-                type: "post",
-                data: values
-            });
-
-            ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#oceny").html(response);
             });
 
             ajaxRequest.fail(function() {
@@ -434,6 +410,25 @@
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
                 $("#grobec").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__dane.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dane").html(response);
             });
 
             ajaxRequest.fail(function() {

@@ -10,12 +10,13 @@ try {
     echo $e->getMessage();
 }
 
-$id_obec = $_POST['id_obec'];
+$id_osoby = $_POST['id_osoby'];
+$id_ucz = $_POST['id_ucz'];
 
-//TODO adjust
 try {
-    $q = $pdo->prepare('SELECT * FROM przyszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * FROM wypisz_nieobecnych(:1, :2)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
+    $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -24,15 +25,13 @@ try {
 
 foreach ($res as $row) {
     echo '<tr>';
-    echo '<td>1232-23-32</td>';
-    echo '<td>9:00-10:00</td>';
-    echo '<td>Matematyka</td>';
-    echo '<td>Jan Kowalski</td>';
-    echo '<td>
-        <form class="inline-form" id="usunform">
-            <input type="hidden" name="id_obec" value="23">
-            <button type="submit" class="btn btn-primary btn-sm">Usprawiedliw</button>
-        </form>
-    </td>';
+    echo '<td>' . $row['data'] . '</td>';
+    echo '<td>' . $row['godzina'] . '</td>';
+    echo '<td>' . $row['przedmiot'] . '</td>';
+    echo '<td>' . $row['imie'] . ' ' . $row['nazwisko'] . '</td>';
+    echo '<td>' . '<form id="usprform">
+    <input type="hidden" name="id_obec" value="' . $row['id_obecnosci'] . '">
+    <button class="btn btn-primary btn-sm" type="submit">Usprawiedliw</button>
+    </form>' . '</td>';
     echo '</tr>';
 }

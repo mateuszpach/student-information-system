@@ -18,9 +18,8 @@ $waga = $_POST['waga'];
 $kategoria = $_POST['kategoria'];
 $opis = $_POST['opis'];
 
-//TODO: test
 try {
-    $q = $pdo->prepare('SELECT wstaw_ocene(:1, :2, :3, :4, :5, :6, :7)');
+    $q = $pdo->prepare("SELECT wstaw_ocene(:1, :2, :3, :4, :5, :6, :7)");
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
     $q->bindParam(':3', $id_zajec, PDO::PARAM_STR);
@@ -33,4 +32,3 @@ try {
 } catch (PDOException $exception) {
     die(header("HTTP/1.0 400 Bad Request"));
 }
-?>

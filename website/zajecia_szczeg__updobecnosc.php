@@ -12,6 +12,7 @@ try {
 
 $id_zajec = $_POST['id_zajec'];
 $id_osoba = $_POST['id_osoba'];
+$id_zajec = 0;
 
 try {
     $q = $pdo->prepare('select count(*) from lista_uczniow_zajecia(:1, :2)');
