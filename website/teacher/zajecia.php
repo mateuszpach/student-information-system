@@ -33,22 +33,22 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/zajecia.php">Zajęcia <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="zajecia.php">Zajęcia <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/plan.php">Plan</a>
+                    <a class="nav-link" href="plan.php">Plan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/klasa.php">Klasa</a>
+                    <a class="nav-link" href="klasa.php">Klasa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/uwagi.php">Uwagi</a>
+                    <a class="nav-link" href="uwagi.php">Uwagi</a>
                 </li>
             </ul>
             <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
             <label id="name" class="my-2 my-sm-0 mr-4">undefined</label>
 
-            <a href="/mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
+            <a href="mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
             <button class="btn btn-outline my-2 my-sm-0" onclick="logout()">Wyloguj</button>
         </div>
     </nav>

@@ -11,9 +11,8 @@ try {
 }
 
 $em = $_POST["email"];
-
-// TODO: change to SQL function   
-$q = $pdo->prepare('SELECT count(*) as "A" FROM osoby WHERE email = :1');
+   
+$q = $pdo->prepare('SELECT count(id_osoby) as "A" FROM osoby WHERE email = :1 and id_osoby in(select osoba from nauczyciele)');
 $q->bindParam(':1', $em, PDO::PARAM_STR);
 $q->execute();
 $res = $q->fetch();
