@@ -112,6 +112,7 @@ $$ language 'plpgsql';
 
 
 create or replace function przeszle_zajecia_nauczyciela(id_naucz int) returns table (
+    id_zajec int,
     data date,
     czas text,
     przedmiot varchar,
@@ -122,7 +123,7 @@ declare
     today_date date = now()::date;
 begin
     return query (
-        select iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
+        select iz.id_instancji, iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
         from instancje_zajec iz
         join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
         join klasy k on iz.klasa = k.id_klasy
@@ -163,13 +164,14 @@ $$ language 'plpgsql';
 
 create or replace function lista_uczniow_klasy(id_wych int, tryb int = 0)
 returns table (
+    id integer,
     imie varchar,
     nazwisko varchar,
     aktualny bool
 ) as $$
 begin
     return query (
-        select uv.imie, uv.nazwisko,
+        select uv.id_osoby, uv.imie, uv.nazwisko,
         case
         when tryb = 1 and uv.id_osoby = k.przewodniczacy then true
         when tryb = 2 and uv.id_osoby = k.wiceprzewodniczacy then true
@@ -179,6 +181,57 @@ begin
         join klasy k on uv.klasa = k.id_klasy
         where klasa_wychowawcy(id_wych) = k.id_klasy
         order by uv.nazwisko
+    );
+end
+$$ language 'plpgsql';
+
+create or replace function wypisz_uwagi_klasy(id_wychowawcy int )
+returns table(
+    data_wystawienia timestamp,
+    uczen text,
+    wystawiajacy text,
+    tresc_uwagi varchar(10000),
+    typ_uwagi text
+)as $$
+begin
+    return query (
+        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko),concat(wyst_os.imie,' ',wyst_os.nazwisko), uw.tresc,
+           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
+            from uwagi uw
+        join uczniowie uc on uw.uczen = uc.osoba
+        join klasy k on uc.klasa = k.id_klasy
+        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
+        join osoby wyst_os on uw.wystawiajacy=wyst_os.id_osoby
+        where k.wychowawca=id_wychowawcy
+    );
+end
+$$ language 'plpgsql';
+
+create or replace function dodaj_uwage(id_wystawiajacego int,id_ucznia int,tresc varchar,typ char)
+returns void
+as $$
+begin
+    insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
+    values (id_ucznia,id_wystawiajacego,now(),tresc,typ);
+end;
+$$ language 'plpgsql';
+
+
+create or replace function wypisz_uwagi_nauczyciela(id_nauczyciela int )
+returns table(
+    data_wystawienia timestamp,
+    uczen text,
+    tresc_uwagi varchar(10000),
+    typ_uwagi text
+)as $$
+begin
+    return query (
+        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko), uw.tresc,
+           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
+            from uwagi uw
+        join uczniowie uc on uw.uczen = uc.osoba
+        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
+        where uw.wystawiajacy=id_nauczyciela
     );
 end
 $$ language 'plpgsql';

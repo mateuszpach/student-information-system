@@ -11,11 +11,11 @@ try {
     echo $e->getMessage();
 }
 
-// zestawienie obecnosci
-// rows: takie jak w forze
+$id_osoby = $_POST['id_osoby'];
+
 try {
-    $q = $pdo->prepare('SELECT * FROM przeszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * FROM zestawienie_obecnosci(:1)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {

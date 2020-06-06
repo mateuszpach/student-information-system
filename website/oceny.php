@@ -166,27 +166,6 @@
         var id_oceny;
 
         $("#errormodal").modal('hide');
-        $("#temat").submit(function(event) {
-            var ajaxRequest;
-            event.preventDefault();
-            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
-            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
-
-            ajaxRequest = $.ajax({
-                url: "temat.php",
-                type: "post",
-                data: values
-            });
-
-            ajaxRequest.done(function(response, textStatus, jqXHR) {
-
-            });
-
-            ajaxRequest.fail(function() {
-                $("#temat-input").val("");
-                $("#errormodal").modal('show');
-            });
-        });
 
         $("#dodajmodal").modal('hide');
         $("#dodajform").submit(function(event) {
@@ -209,6 +188,30 @@
 
             ajaxRequest.fail(function() {
                 $("#dodajmodal").modal('hide');
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $("#dodajkoncform").submit(function(event) {
+            var ajaxRequest;
+            event.preventDefault();
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
+            var values = $(this).serialize() + '&' + "id_zajec=" + id_zajec + '&' + "id_osoby=" + id_osoby;
+            console.log(values);
+
+            ajaxRequest = $.ajax({
+                url: "dodajocenekonc.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dodajkoncmodal").modal('hide');
+                location.reload();
+            });
+
+            ajaxRequest.fail(function() {
+                $("#dodajkoncmodal").modal('hide');
                 $("#errormodal").modal('show');
             });
         });

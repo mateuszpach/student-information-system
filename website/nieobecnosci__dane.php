@@ -1,4 +1,5 @@
 <?php
+
 require 'vendor/autoload.php';
 
 use PostgreSQLPHP\Connection as Connection;
@@ -14,11 +15,18 @@ $id_osoby = $_POST['id_osoby'];
 $id_ucz = $_POST['id_ucz'];
 
 try {
-    $q = $pdo->prepare("SELECT przydziel_funkcje(:1, :2, 'SKARBNIK')");
-    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
-    $q->bindParam(':2', $id_ucz, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT imie, nazwisko from osoby where id_osoby=:1');
+    $q->bindParam(':1', $id_ucz, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
-    die(header("HTTP/1.0 400 Bad Request"));
+    return $exception->getMessage();
 }
+
+echo '<div class="col">';
+foreach ($res as $row) {
+    echo '<h3>' . $row['imie'] . ' ' . $row['nazwisko'] . '</h3';
+}
+echo '</div>';
+
+?>

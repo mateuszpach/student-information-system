@@ -18,6 +18,9 @@ $waga = $_POST['waga'];
 $kategoria = $_POST['kategoria'];
 $opis = $_POST['opis'];
 
+$id_zajec=0;
+$id_osoby=1;
+
 //TODO: adjust n test
 try {
     $q = $pdo->prepare('SELECT wstaw_ocene_konc(:1, :2, :3)');

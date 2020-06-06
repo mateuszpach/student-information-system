@@ -11,6 +11,7 @@ try {
 }
 
 $id_zajec = $_POST['id_zajec'];
+$id_zajec = 0;
 
 try {
   $q = $pdo->prepare('select * from pokaz_wszystkie_obecnosci(:1)');
@@ -28,7 +29,7 @@ foreach ($res as $row) {
   echo '<td class="align-middle">' . $row['imie'] . '</td>';
   echo '<td class="align-middle">' . $row['nazwisko'] . '</td>';
   echo '<td class="align-middle">' . '<div class="input-group input-group-sm">
-                                                      <input type="hidden" name="id' . $i . '" type="hidden" value="' . $row['id_obecnosci'] . '"></input>
+                                                      <input type="hidden" name="id' . $i . '" value="' . $row['id_obecnosci'] . '"></input>
                                                       <select class="custom-select" name="' . $i . '">';
   $status = $row['status'];
   if ($status == "") {
@@ -44,9 +45,9 @@ foreach ($res as $row) {
   }
 
   if ($status == "N") {
-    echo '<option selected>Nieobecność</option>';
+    echo '<option value="N"selected>Nieobecność</option>';
   } else {
-    echo '<option>Nieobecność</option>';
+    echo '<option value="N">Nieobecność</option>';
   }
 
   if ($status == "U") {

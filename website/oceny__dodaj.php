@@ -12,16 +12,12 @@ try {
 }
 
 echo '<div class="form-group">';
-echo '<label for="imie">Uczeń</label>';
-echo '<select class="form-control" id="wartosc" name="imie">';
+echo '<label for="id_ucz">Uczeń</label>';
+echo '<select class="form-control" id="wartosc" name="id_ucz">';
 
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
 
-$id_osoby = 5;
-$id_zajec = 1;
-
-// TODO: test and remove
 try {
     $q = $pdo->prepare('SELECT * FROM lista_uczniow_zajecia(:1, :2)');
     $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
@@ -33,7 +29,7 @@ try {
 }
 
 foreach ($res as $row) {
-    echo '<option>' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
+    echo '<option value="'. $row['id'] . '">' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
 }
 
 echo '</select>';
@@ -75,13 +71,14 @@ echo '
         <option value="inne">Inne</option>
         ';
 echo ' </select>
+<small id="passwordHelpBlock" class="form-text text-muted">
+        Ustawia kategorię dla wszystkich ocen o tym opisie.
+        </small>
     </div>
 <div class="form-group">
     <label for="opis">Opis</label>
-    <textarea class="form-control" id="opis" name="opis" rows="3"></textarea>
+    <input type="text" class="form-control" id="opis" name="opis" maxlength="50"></textarea>
     <small id="passwordHelpBlock" class="form-text text-muted">
-        Nie może przkraczać x znaków.
-        
-        <!-- TODO ile dokaldnie -->
+        Nie może przekraczać 50 znaków.
         </small>
     </div>';

@@ -54,11 +54,10 @@
     </nav>
 
     <div class="container">
-
         <div class="card mt-5">
             <div class="card-header">
                 <div class="row" id="dane">
-                    <!-- klasa__dane.php -->
+                    <!-- nieobecnosci__dane.php -->
                 </div>
             </div>
             <div class="card-body">
@@ -124,10 +123,13 @@
         var id_osoby = getCookie("user_id");
 
         $("#errormodal").modal('hide');
-        $("#usunform").submit(function(event) {
+
+        $("body").on("submit", "#usprform", function(event) {
             var ajaxRequest;
             event.preventDefault();
-            var values = $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+            var id_ucz = "<?php echo $_POST['id_ucz'] ?>";
+            var values = "id_ucz=" + id_ucz + '&' + $(this).serialize() + '&' + "id_osoby=" + id_osoby;
+            console.log(values);
 
             ajaxRequest = $.ajax({
                 url: "nieobecnosci__uspr.php",
@@ -136,7 +138,7 @@
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                location.reload();
+                window.location = '/klasa.php';
             });
 
             ajaxRequest.fail(function() {
@@ -147,16 +149,38 @@
 
         $(function() {
             var ajaxRequest;
-            var values = "id_osoby=" + id_osoby;
-
+            var id_ucz = "<?php echo $_POST['id_ucz'] ?>";
+            var values = "id_ucz=" + id_ucz + '&' + "id_osoby=" + id_osoby;
+            console.log(values);
             ajaxRequest = $.ajax({
-                url: "klasa__dane.php",
+                url: "nieobecnosci__dane.php",
                 type: "post",
                 data: values
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
                 $("#dane").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
+
+        $(function() {
+            var ajaxRequest;
+            var id_ucz = "<?php echo $_POST['id_ucz'] ?>";
+            var values = "id_ucz=" + id_ucz + '&' + "id_osoby=" + id_osoby;
+            console.log(values);
+            ajaxRequest = $.ajax({
+                url: "nieobecnosci__tabela.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#tabela").html(response);
+                console.log(response);
             });
 
             ajaxRequest.fail(function() {

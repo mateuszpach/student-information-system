@@ -18,8 +18,8 @@ echo '<select class="form-control" id="wartosc" name="imie">';
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
 
-$id_osoby = 5;
-$id_zajec = 1;
+$id_zajec=0;
+$id_osoby=1;
 
 // TODO: test and remove
 try {

@@ -168,28 +168,31 @@ returns void
 as $$
 begin
     update obecnosci
-    set status='U'
+    set status='NU'
     where id=id_obecnosci;
 end
 $$ language 'plpgsql';
 
-create or replace function wypisz_nieobecnych(id_wychowawcy int)
+create or replace function wypisz_nieobecnych(id_wychowawcy int, id_ucznia int)
 returns table (
+    id_obecnosci integer,
     data date,
-    godzina_lekcyjna integer,
-    przedmiot integer,
+    godzina text,
+    przedmiot varchar(200),
     imie varchar,
     nazwisko varchar)
 as $$
 begin
     return query (
-            select i.data, i.godzina_lekcyjna,i.przedmiot,os.imie,os.nazwisko
+            select ob.id, i.data, concat(g.od, ' ', g.do) , p.nazwa, os.imie, os.nazwisko
             from obecnosci ob
             join osoby os on ob.uczen = os.id_osoby
             join instancje_zajec i on i.id_instancji=ob.instancja_zajecia
             join uczniowie u on ob.uczen = u.osoba
             join klasy k on u.klasa = k.id_klasy
-            where k.wychowawca=id_wychowawcy
+            join godziny_lekcyjne g on g.nr_godziny = i.godzina_lekcyjna
+            join przedmioty p on p.id_przedmiotu = i.przedmiot 
+            where k.wychowawca = id_wychowawcy and ob.uczen = id_ucznia and ob.status = 'N'
             order by 1
         );
 end
@@ -299,4 +302,25 @@ begin
         where uv.klasa = klasa_wychowawcy(id_wych)
     );
 end
+$$ language 'plpgsql';
+
+--instancje zajec
+create or replace function dostan_temat(id_ins int)
+returns varchar
+as $$
+begin
+    RETURN(select temat
+    from instancje_zajec
+    where instancje_zajec.id_instancji=id_ins);
+end
+$$ language 'plpgsql';
+
+create or replace function zapisz_temat(id_ins int,temat_zajec varchar )
+returns void
+as $$
+begin
+    update instancje_zajec
+    set temat=temat_zajec
+    where id_instancji=id_ins;
+end;
 $$ language 'plpgsql';
