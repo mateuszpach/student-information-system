@@ -212,7 +212,7 @@ returns void
 as $$
 begin
     insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
-    values (id_ucznia,id_wystawiajacego,now(),tresc,typ);
+    values (id_ucznia,id_wystawiajacego, date_trunc('second',  now()), tresc, typ);
 end;
 $$ language 'plpgsql';
 
