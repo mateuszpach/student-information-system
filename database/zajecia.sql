@@ -300,3 +300,24 @@ begin
     );
 end
 $$ language 'plpgsql';
+
+--instancje zajec
+create or replace function dostan_temat(id_ins int)
+returns varchar
+as $$
+begin
+    RETURN(select temat
+    from instancje_zajec
+    where instancje_zajec.id_instancji=id_ins);
+end
+$$ language 'plpgsql';
+
+create or replace function zapisz_temat(id_ins int,temat_zajec varchar )
+returns void
+as $$
+begin
+    update instancje_zajec
+    set temat=temat_zajec
+    where id_instancji=id_ins;
+end;
+$$ language 'plpgsql';
