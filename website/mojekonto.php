@@ -32,8 +32,8 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/zajecia.php">Zajęcia <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/zajecia.php">Zajęcia</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/plan.php">Plan</a>
@@ -47,71 +47,19 @@
             </ul>
             <label class="my-2 my-sm-0">Zalogowano jako&nbsp;</label>
             <label id="name" class="my-2 my-sm-0 mr-4">undefined</label>
-
             <a href="/mojekonto.php" class="btn btn-outline my-2 my-sm-0" role="button">Moje konto</a>
             <button class="btn btn-outline my-2 my-sm-0" onclick="logout()">Wyloguj</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="row justify-content-center">
-            <table class="table table-striped table-bordered table-responsive{-xl} text-center mt-5" style="background-color: white">
-                <thead>
-                    <tr>
-                        <th colspan="6" class="align-middle">Nadchodzące zajęcia</th>
-                    </tr>
-                    <tr>
-                        <th>Data</th>
-                        <th>Godzina</th>
-                        <th>Przedmiot</th>
-                        <th>Klasa</th>
-                        <th>Sala</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="nowe">
-                    <!-- zajecia__nowe.php -->
-                </tbody>
-            </table>
-            <table class="table table-striped table-bordered table-responsive{-xl} text-center mt-5" style="background-color: white">
-                <thead>
-                    <tr>
-                        <th colspan="6" class="align-middle">Dawne zajęcia</th>
-                    </tr>
-                    <tr>
-                        <th>Data</th>
-                        <th>Godzina</th>
-                        <th>Przedmiot</th>
-                        <th>Klasa</th>
-                        <th>Sala</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="dawne">
-                    <!-- zajecia__dawne.php -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Error Modal -->
-        <div class="modal fade" id="errormodal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Błąd</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Operacja niedozwolona.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Wróć</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <table class="table table-striped table-bordered table-responsive{-xl} mt-5" style="background-color: white">
+            <thead>
+            </thead>
+            <tbody id="tabela">
+                <!-- mojekonto__tabela.php -->
+            </tbody>
+        </table>
     </div> <!-- /container -->
 
     <script type="text/javascript">
@@ -131,46 +79,27 @@
             return "";
         }
         var id_osoby = getCookie("user_id");
-        var id_oceny;
-
-        $("#errormodal").modal('hide');
-        $(function() {
-            var ajaxRequest;
-            var values = "id_osoby=" + id_osoby;
-
-            ajaxRequest = $.ajax({
-                url: "zajecia__dawne.php",
-                type: "post",
-                data: values
-            });
-            ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#dawne").html(response);
-            });
-
-            ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
-            });
-        });
 
         $(function() {
             var ajaxRequest;
             var values = "id_osoby=" + id_osoby;
 
             ajaxRequest = $.ajax({
-                url: "zajecia__nowe.php",
+                url: "mojekonto__tabela.php",
                 type: "post",
                 data: values
             });
 
             ajaxRequest.done(function(response, textStatus, jqXHR) {
-                $("#nowe").html(response);
+                $("#tabela").html(response);
             });
 
             ajaxRequest.fail(function() {
-                $("#errormodal").modal('show');
+
             });
         });
     </script>
+
 
     <script src="cookies.js" crossorigin="anonymous"></script>
 </body>

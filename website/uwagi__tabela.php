@@ -11,11 +11,11 @@ try {
 }
 
 
-$id_zajec = $_POST['id_zajec'];
+$id_osoby = $_POST['id_osoby'];
 
 try {
-    $q = $pdo->prepare('SELECT * from tabela_ocen(:1)');
-    $q->bindParam(':1', $id_zajec, PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * from wypisz_uwagi_nauczyciela(:1)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -24,10 +24,10 @@ try {
 
 echo '<thead>';
 echo '<tr>';
+echo     '<th>Data wystawienia</th>';
 echo     '<th>Uczeń</th>';
-echo     '<th>Oceny</th>';
-echo     '<th>Średnia</th>';
-echo     '<th>Ocena końcowa</th>';
+echo     '<th>Treść</th>';
+echo     '<th>Typ</th>';
 echo '</tr>';
 
 echo '</thead>';
@@ -35,10 +35,10 @@ echo '<tbody>';
 
 foreach ($res as $row) {
     echo '<tr>';
+    echo     '<td>' . $row['data_wystawienia'] . '</td>';
     echo     '<td>' . $row['uczen'] . '</td>';
-    echo     '<td>' . $row['oceny'] . '</td>';
-    echo     '<td>' . $row['srednia'] . '</td>';
-    echo     '<td>' . $row['ocena_koncowa'] . '</td>';
+    echo     '<td>' . $row['tresc_uwagi'] . '</td>';
+    echo     '<td>' . $row['typ_uwagi'] . '</td>';
     echo '</tr>';
 }
 
