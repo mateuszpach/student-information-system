@@ -115,7 +115,7 @@ create table oceny
     wartosc          numeric(3, 2) check (wartosc between 1.00 and 6.00) check ( wartosc * 2 % 1 = 0 )  not null,
     waga             numeric(1, 0)                                                                      not null,
     kategoria        kategoriaOceny                                                                     not null,
-    opis             varchar(1000)
+    opis             varchar(50)
 );
 
 create table oceny_koncowe
