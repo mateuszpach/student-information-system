@@ -33,7 +33,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="oceny.php">Oceny</a>
+                    <a class="nav-link active" href="oceny.php">Oceny</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="plan.php">Plan</a>
@@ -51,14 +51,11 @@
     </nav>
 
     <div class="container">
-        <table class="table table-striped table-bordered table-responsive{-xl} mt-5" style="background-color: white">
-            <thead>
-            </thead>
-            <tbody id="tabela">
-                <!-- mojekonto__tabela.php -->
-            </tbody>
+        <table class="table table-striped table-bordered table-responsive{-xl} text-center mb-3 mt-5" style="background-color: white" id="tabela">
+            <!-- oceny__tabela.php -->
         </table>
     </div> <!-- /container -->
+
 
     <script type="text/javascript">
         function getCookie(cname) {
@@ -80,10 +77,12 @@
 
         $(function() {
             var ajaxRequest;
+            var id_zajec = "<?php echo $_POST['id_zajec'] ?>";
             var values = "id_osoby=" + id_osoby;
+            console.log(values);
 
             ajaxRequest = $.ajax({
-                url: "mojekonto__tabela.php",
+                url: "oceny__tabela.php",
                 type: "post",
                 data: values
             });
@@ -97,8 +96,6 @@
             });
         });
     </script>
-
-
     <script src="cookies.js" crossorigin="anonymous"></script>
 </body>
 
