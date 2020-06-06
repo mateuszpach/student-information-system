@@ -131,7 +131,7 @@ begin
     return new;
 end;
 $$ language 'plpgsql';
-
+90
 create trigger instancje_kolizje before insert or update on instancje_zajec
     for each row execute procedure brak_kolizji_instancje();
 
