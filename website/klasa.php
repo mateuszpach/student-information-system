@@ -440,6 +440,25 @@
                 $("#errormodal").modal('show');
             });
         });
+
+        $(function() {
+            var ajaxRequest;
+            var values = "id_osoby=" + id_osoby;
+
+            ajaxRequest = $.ajax({
+                url: "klasa__dane.php",
+                type: "post",
+                data: values
+            });
+
+            ajaxRequest.done(function(response, textStatus, jqXHR) {
+                $("#dane").html(response);
+            });
+
+            ajaxRequest.fail(function() {
+                $("#errormodal").modal('show');
+            });
+        });
     </script>
 
     <script src="cookies.js" crossorigin="anonymous"></script>

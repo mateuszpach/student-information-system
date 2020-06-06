@@ -12,8 +12,8 @@ try {
 }
 
 echo '<div class="form-group">';
-echo '<label for="imie">Uczeń</label>';
-echo '<select class="form-control" id="wartosc" name="imie">';
+echo '<label for="id_ucz">Uczeń</label>';
+echo '<select class="form-control" id="wartosc" name="id_ucz">';
 
 $id_osoby = $_POST['id_osoby'];
 $id_zajec = $_POST['id_zajec'];
@@ -29,12 +29,11 @@ try {
 }
 
 foreach ($res as $row) {
-    echo '<option>' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
+    echo '<option value="'. $row['id'] . '">' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
 }
 
 echo '</select>';
 echo '</div>';
-echo '<input type="hidden" name="id_ucz" value="'. $row['id'] .'">';
 
 echo '<div class="form-group">
     <label for="wartosc">Ocena</label>

@@ -11,11 +11,11 @@ try {
     echo $e->getMessage();
 }
 
-// lista uczniow klasy
-// rows: string imie_nazwisko, bool aktualny
+$id_osoby = $_POST['id_osoby'];
+
 try {
-    $q = $pdo->prepare('SELECT * FROM przeszle_zajecia_nauczyciela(:1)');
-    $q->bindParam(':1', $_POST["id_osoby"], PDO::PARAM_STR);
+    $q = $pdo->prepare('SELECT * FROM lista_uczniow_klasy(:1, 2)');
+    $q->bindParam(':1', $id_osoby, PDO::PARAM_STR);
     $q->execute();
     $res = $q->fetchAll();
 } catch (PDOException $exception) {
@@ -25,13 +25,16 @@ try {
 echo '<div class="input-group-prepend">';
 echo '<span class="input-group-text" style="width:180px">Wiceprzewodniczący</span>';
 echo '</div>';
-echo '<select class="form-control" id="osoba">';
+echo '<select class="form-control" id="id_ucz">';
+
+echo '<option value="-1"></option>';
 
 foreach ($res as $row) {
-    if ($row['aktualny'] == 1) {
-        echo '<option selected="selected">' . $row['imie_nazwisko'] . '</option>';
+    echo $row['aktualny'];
+    if ($row['aktualny'] == 2) {
+        echo '<option value="' . $row['id'] . '" selected="selected">' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
     } else {
-        echo '<option>' . $row['imie_nazwisko'] . '</option>';
+        echo '<option value="' . $row['id'] . '">' . $row['imie'] . ' ' . $row['nazwisko'] . '</option>';
     }
 }
 
