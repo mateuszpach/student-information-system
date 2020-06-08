@@ -125,18 +125,11 @@ create table obecnosci
     unique (uczen, instancja_zajecia)
 );
 
-
+/*
 -- Insertion of example values
-
-insert into klasy (nazwa)
-values ('1A'),
-       ('1B'),
-       ('2A'),
-       ('3A');
-
 insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu)
-values ('11111111111', 'jan@gmail.com', 'Jan', 'Piotr', 'Kowalski', 'abcd123', '+48888888888'),
-       ('22222222222', 'pio@gmail.com', 'Piotr', 'Tomasz', 'Jaworski', 'abcddfsdf', '+48843888888'),
+values ('11111111111','jan@gmail.com', 'Jan', 'Piotr', 'Kowalski', 'abcd123', '+48888888888'),
+       ('22222222222','pio@gmail.com', 'Piotr', 'Tomasz', 'Jaworski', 'abcddfsdf', '+48843888888'),
        ('55555555555', 'tomcio@gmail.com', 'Tomasz', null, 'Zięba', 'sec4tcte4ct', '+48888888628'),
        ('22222333333', 'aga@gmail.com', 'Agata', null, 'Chłopska', 'cetdrf', '+48888865388'),
        ('77777777754', 'jmn@email.com', 'Jan', 'Michał', 'Niedźwiedź', 'crg5', '+48888854388'),
@@ -147,6 +140,13 @@ values ('11111111111', 'jan@gmail.com', 'Jan', 'Piotr', 'Kowalski', 'abcd123', '
        ('33443344334', 'knyszy@wp.com', 'Donald', 'Gustaw', 'Knyszy', 'httfdf', '+48878898080'),
        ('22221234222', 'tomasz@gmail.com', 'Tomasz', 'Michał', 'Jaworski', 'ab2222ddfsdf', '+48843855555'),
        ('55513455555', 'januszek@gmail.com', 'Janusz', null, 'Zięba', 'sec4ttsss', '+48238888628');
+
+insert into klasy (nazwa)
+values ('1A'),
+       ('1B'),
+       ('2A'),
+       ('3A');
+
 
 insert into nauczyciele (osoba, wyksztalcenie)
 values (5, 'Magister'),
@@ -173,8 +173,9 @@ set wychowawca = 10
 where id_klasy = 3;
 
 update klasy
-set przewodniczacy = 8
-where id_klasy = 2;
+set wychowawca = 5,
+przewodniczacy = 8
+where id_klasy = 1;
 
 
 insert into sale (nr_sali)
@@ -217,7 +218,8 @@ values (4, 1, '2018-03-14 12:30:40', 'Wzorowe zachowanie przy tablicy', 'P'),
        (7, 1, '2015-04-27 10:28:36', 'Uczeń ochoczo zastąpił kolegę w obowiązkach', 'P');
 
 insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala, temat)
-values (now()::date - 1, 1, 1, 1, 5, 101, 'A'),
+values
+    (now()::date - 1, 1, 1, 1, 5, 101, 'A'),
        (now()::date - 2, 4, 1, 1, 1, 102, 'B'),
        (now()::date - 1, 2, 1, 1, 10, 201, 'A'),
        (now()::date - 2, 3, 1, 1, 10, 102, 'B'),
@@ -270,4 +272,4 @@ end;
 $$ language 'plpgsql';
 
 select fill_linkers();
-drop function fill_linkers();
+drop function fill_linkers(); */
