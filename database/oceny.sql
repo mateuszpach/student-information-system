@@ -228,6 +228,27 @@ $$ language 'plpgsql';
 
 
 
+/*
+ Upgrade do wyższych klas
+ */
+create or replace function wszyscy_maja_koncowe() returns bool as $$
+begin
+    if (
+        select ok.wartosc
+        from uczniowie_view uv join instancje_zajec iz on uv.klasa = iz.klasa
+        left join oceny_koncowe ok on ok.uczen = uv.id_osoby
+        and ok.przedmiot = iz.przedmiot
+        where ok.wartosc is null
+        and ok.rok = (extract(year from poczatek_semestru()))
+        and ok.semestr = (case when to_char(poczatek_semestru(), 'Mon') = 'Sep' then 1 else 2 end)
+        limit 1
+        ) is null then
+        return true;
+    else
+        return false;
+    end if;
+end
+$$ language 'plpgsql';
 
 
 -- dane oceny

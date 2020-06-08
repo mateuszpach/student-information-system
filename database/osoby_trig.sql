@@ -117,22 +117,3 @@ create trigger name_check before insert or update on osoby
 insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu) VALUES
 ('99040319100', 'J1n@ww', 'Jn', 'Jn', 'Jn', 'hehe', '3+31342');
 
-
-create or replace function klasa_check() returns trigger as $$
-declare
-    digits char [] = array['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-begin
-    if length(new.nazwa) < 2 then
-        raise exception 'Niepoprawna nazwa klasy';
-    end if;
-    if substr(new.nazwa, 1, 1) not in (
-        select unnest(digits)
-        ) and new.nazwa != 'Absolwent' then
-        raise exception 'Niepoprawna nazwa klasy';
-    end if;
-    return new;
-end
-$$ language 'plpgsql';
-
-create trigger klasa_check before insert or update on klasy
-    for each row execute procedure klasa_check();
