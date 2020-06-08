@@ -81,7 +81,7 @@ create table instancje_zajec
     klasa            integer references klasy (id_klasy)              not null,
     prowadzacy       integer references nauczyciele (osoba)           not null,
     sala             integer references sale (nr_sali)                not null,
-    temat            varchar(100)                                     not null
+    temat            varchar(100)
 );
 
 create table nauczyciele_przedmioty

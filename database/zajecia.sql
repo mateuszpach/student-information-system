@@ -146,3 +146,26 @@ begin
         );
 end
 $$ language 'plpgsql';
+
+
+
+/* Planowanie */
+create or replace function zaplanuj_kolejny_tydzien() returns void as $$
+declare
+    data_ date = now()::date + 1;
+    dzien int = 1;
+    row record;
+begin
+    while to_char(data_, 'Dy') != 'Mon' loop
+        data_ := data_ + 1;
+        end loop;
+    while to_char(data_, 'Dy') != 'Sat' loop
+        for row in select * from zajecia where dzien_tygodnia = dzien loop
+            insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
+            (data_, row.godzina_lekcyjna, row.przedmiot, row.klasa, row.prowadzacy, row.sala);
+            end loop;
+        data_ := data_ + 1;
+        dzien := dzien + 1;
+        end loop;
+end
+$$ language 'plpgsql';

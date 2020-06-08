@@ -68,7 +68,7 @@ for each row execute procedure pesel_check();
 create or replace function telefon_check() returns trigger as $$
 declare
 begin
-    if new.nr_telefonu !~ '\+[0-9]+$' then
+    if new.nr_telefonu !~ '^\+[0-9]+$' then
         raise exception 'Niepoprawny nr telefonu.';
     end if;
     return new;
@@ -92,3 +92,47 @@ $$ language 'plpgsql';
 
 create trigger email before insert or update on osoby
     for each row execute procedure email_check();
+
+
+create or replace function name_check() returns trigger as $$
+declare
+begin
+    if new.imie !~ '^[A-Z][a-z]+$' then
+        raise exception 'Niepoprawne imie lub nazwisko';
+    end if;
+    if new.drugie_imie !~ '^[A-Z][a-z]+$' then
+        raise exception 'Niepoprawne imie lub nazwisko';
+    end if;
+    if new.nazwisko !~ '^[A-Z][a-z]+$' then
+        raise exception 'Niepoprawne imie lub nazwisko';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+
+create trigger name_check before insert or update on osoby
+    for each row execute procedure name_check();
+
+insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu) VALUES
+('99040319100', 'J1n@ww', 'Jn', 'Jn', 'Jn', 'hehe', '3+31342');
+
+
+create or replace function klasa_check() returns trigger as $$
+declare
+    digits char [] = array['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+begin
+    if length(new.nazwa) < 2 then
+        raise exception 'Niepoprawna nazwa klasy';
+    end if;
+    if substr(new.nazwa, 1, 1) not in (
+        select unnest(digits)
+        ) and new.nazwa != 'Absolwent' then
+        raise exception 'Niepoprawna nazwa klasy';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger klasa_check before insert or update on klasy
+    for each row execute procedure klasa_check();
