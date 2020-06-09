@@ -27,6 +27,11 @@ create table uczniowie
     osoba integer references osoby (id_osoby) primary key,
     klasa integer references klasy (id_klasy) not null
 );
+create table dyrektorstwo
+(
+    osoba         integer references osoby (id_osoby) primary key,
+    wyksztalcenie varchar(100)
+);
 alter table klasy
     add column wychowawca integer unique references nauczyciele (osoba) unique;
 alter table klasy
@@ -148,12 +153,17 @@ begin
         select n.osoba from nauczyciele n where n.osoba = new.osoba
         ) is not null then raise exception 'Person already present in nauczyciele';
     end if;
+    if (
+        select d.osoba from dyrektorstwo d where d.osoba = new.osoba
+        ) is not null then raise exception 'Person already present in dyrektorstwo';
+    end if;
     return new;
 end
 $$ language 'plpgsql';
 
 create trigger on_add_uczen before insert on uczniowie for each row execute procedure verify_osoby();
 create trigger on_add_nauczyciel before insert on nauczyciele for each row execute procedure verify_osoby();
+create trigger on_add_dyrektor before insert on dyrektorstwo for each row execute procedure verify_osoby();
 
 /* Sprawdzanie pól */
 
@@ -514,6 +524,9 @@ create or replace view nauczyciele_view as
     select o.*, n.wyksztalcenie
     from nauczyciele n join osoby o on n.osoba = o.id_osoby;
 
+create or replace view dyrektorstwo_view as
+    select o.*, d.wyksztalcenie
+    from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
 
 /*
  Osoby: Funkcje
@@ -523,6 +536,10 @@ create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE');
 
 create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
 begin
+    if (
+        select osoba from dyrektorstwo where osoba = id_osoby
+        ) is not null then return 'DYREKTORSTWO';
+    end if;
     if (
         select osoba from nauczyciele where osoba = id_osoby
         ) is not null then return 'NAUCZYCIELE';
@@ -553,7 +570,7 @@ end;
 $$ language 'plpgsql';
 
 -- Edycja planu zajęć
-/*create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
+create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
 returns int as $$
 begin
     if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
@@ -578,23 +595,23 @@ begin
     end if;
     delete from zajecia where id_zajec = id_zaj;
 end;
-$$ language 'plpgsql';*/
+$$ language 'plpgsql';
 
 
 
 
 -- Edycja instancji zajec --TODO problemy gdy argumentami są nulle
-create or replace function dodaj_instancje(id_wst int, dat date, godz_lek int, przedm int, klas int, prow int, sal int)
+/*create or replace function dodaj_instancje(id_wst int, dat date, godz_lek int, przedm int, klas int, prow int, sal int)
 returns int as $$
 begin
-    /*if klasa_spoleczna_osoby(id_wst) != 'DYREKTORSTWO' and id_wst != prow then
+    if klasa_spoleczna_osoby(id_wst) != 'DYREKTORSTWO' and id_wst != prow then
         raise exception 'Ta osoba nie moze zaplanowac tych zajec.';
     end if;
     if (
         select nauczyciel
         from nauczyciele_przedmioty where nauczyciel = prow and przedmiot = przedm
     ) is null then raise exception 'Ta osoba nie moze prowadzic tych zajec';
-    end if;*/
+    end if;
 
     insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
     (dat, godz_lek, przedm, klas, prow, sal);
@@ -605,19 +622,19 @@ begin
         data = dat and godzina_lekcyjna = godz_lek
     );
 end;
-$$ language 'plpgsql';
+$$ language 'plpgsql';*/
 
 --TODO Odwolac instancję da się jeżeli nie ma powiązanych obecności i ocen
 create or replace function odwolaj_instancje(id_odw int, id_ins int)
 returns void as $$
 begin
-    /*if klasa_spoleczna_osoby(id_odw) != 'DYREKTORSTWO' and id_odw != (
+    if klasa_spoleczna_osoby(id_odw) != 'DYREKTORSTWO' and id_odw != (
         select prowadzacy
         from instancje_zajec
         where id_instancji = id_ins
     )
     then raise exception 'Ta osoba nie moze odwolac tych zajec.';
-    end if;*/
+    end if;
 
     delete from instancje_zajec where id_instancji = id_ins;
 end;
