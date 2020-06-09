@@ -135,44 +135,70 @@ create table obecnosci
  Osoby: Triggery
  */
 
- /*
- Dodajemy do uczniowie / nauczyciele tylko pod warunkiem, że mamy już takie id w osobach,
- i nie mamy takiego id jeszcze w żadnej z powyższych trzech grup.
- */
-create or replace function verify_osoby() returns trigger as $$
+/*
+Dodajemy do uczniowie / nauczyciele tylko pod warunkiem, że mamy już takie id w osobach,
+i nie mamy takiego id jeszcze w żadnej z powyższych trzech grup.
+*/
+create or replace function verify_osoby() returns trigger as
+$$
 begin
     if (
-        select id_osoby from osoby o where o.id_osoby = new.osoba
-        ) is null then raise exception 'Person not present in osoby';
+        select id_osoby
+        from osoby o
+        where o.id_osoby = new.osoba
+    ) is null then
+        raise exception 'Person not present in osoby';
     end if;
     if (
-        select u.osoba from uczniowie u where u.osoba = new.osoba
-        ) is not null then raise exception 'Person already present in uczniowie';
+        select u.osoba
+        from uczniowie u
+        where u.osoba = new.osoba
+    ) is not null then
+        raise exception 'Person already present in uczniowie';
     end if;
     if (
-        select n.osoba from nauczyciele n where n.osoba = new.osoba
-        ) is not null then raise exception 'Person already present in nauczyciele';
+        select n.osoba
+        from nauczyciele n
+        where n.osoba = new.osoba
+    ) is not null then
+        raise exception 'Person already present in nauczyciele';
     end if;
     if (
-        select d.osoba from dyrektorstwo d where d.osoba = new.osoba
-        ) is not null then raise exception 'Person already present in dyrektorstwo';
+        select d.osoba
+        from dyrektorstwo d
+        where d.osoba = new.osoba
+    ) is not null then
+        raise exception 'Person already present in dyrektorstwo';
     end if;
     return new;
 end
 $$ language 'plpgsql';
 
-create trigger on_add_uczen before insert on uczniowie for each row execute procedure verify_osoby();
-create trigger on_add_nauczyciel before insert on nauczyciele for each row execute procedure verify_osoby();
-create trigger on_add_dyrektor before insert on dyrektorstwo for each row execute procedure verify_osoby();
+create trigger on_add_uczen
+    before insert
+    on uczniowie
+    for each row
+execute procedure verify_osoby();
+create trigger on_add_nauczyciel
+    before insert
+    on nauczyciele
+    for each row
+execute procedure verify_osoby();
+create trigger on_add_dyrektor
+    before insert
+    on dyrektorstwo
+    for each row
+execute procedure verify_osoby();
 
 /* Sprawdzanie pól */
 
-create or replace function pesel_check() returns trigger as $pesel_check$
+create or replace function pesel_check() returns trigger as
+$pesel_check$
 declare
-    sum integer = 0;
-    i integer = 1;
+    sum    integer = 0;
+    i      integer = 1;
     numbah integer;
-    ar integer[];
+    ar     integer[];
 begin
     if character_length(new.pesel) != 11 then
         raise exception 'Niepoprawny PESEL';
@@ -182,18 +208,20 @@ begin
     end if;
     numbah := substring(new.pesel, 3, 2)::integer;
     numbah :=
-    case when numbah > 80 then numbah - 80
-         when numbah > 60 and numbah < 80 then numbah - 60
-         when numbah > 40 and numbah < 60 then numbah - 40
-         when numbah > 20 and numbah < 40 then numbah - 20
-         else numbah
-    end;
+            case
+                when numbah > 80 then numbah - 80
+                when numbah > 60 and numbah < 80 then numbah - 60
+                when numbah > 40 and numbah < 60 then numbah - 40
+                when numbah > 20 and numbah < 40 then numbah - 20
+                else numbah
+                end;
     if numbah > 12 then
         raise exception 'Niepoprawny PESEL';
     end if;
-    ar := array[9, 7, 3, 1, 9 ,7, 3, 1, 9, 7];
-    loop exit when i = 11;
-        sum :=  sum + ar[i] * substring(new.pesel, i, 1)::integer;
+    ar := array [9, 7, 3, 1, 9 ,7, 3, 1, 9, 7];
+    loop
+        exit when i = 11;
+        sum := sum + ar[i] * substring(new.pesel, i, 1)::integer;
         i := i + 1;
     end loop;
     if sum % 10 != substring(new.pesel, 11, 1)::integer then
@@ -203,11 +231,15 @@ begin
 end;
 $pesel_check$ language 'plpgsql';
 
-create trigger pesel_check before insert or update on osoby
-for each row execute procedure pesel_check();
+create trigger pesel_check
+    before insert or update
+    on osoby
+    for each row
+execute procedure pesel_check();
 
 
-create or replace function telefon_check() returns trigger as $$
+create or replace function telefon_check() returns trigger as
+$$
 declare
 begin
     if new.nr_telefonu !~ '^\+[0-9]+$' then
@@ -218,11 +250,15 @@ end
 $$ language 'plpgsql';
 
 
-create trigger telefon before insert or update on osoby
-    for each row execute procedure telefon_check();
+create trigger telefon
+    before insert or update
+    on osoby
+    for each row
+execute procedure telefon_check();
 
 
-create or replace function email_check() returns trigger as $$
+create or replace function email_check() returns trigger as
+$$
 declare
 begin
     if new.email !~ '.*@.*' then
@@ -232,8 +268,11 @@ begin
 end
 $$ language 'plpgsql';
 
-create trigger email before insert or update on osoby
-    for each row execute procedure email_check();
+create trigger email
+    before insert or update
+    on osoby
+    for each row
+execute procedure email_check();
 
 
 /*create or replace function name_check() returns trigger as $$
@@ -261,28 +300,34 @@ create trigger name_check before insert or update on osoby
  Klasy: Triggery
  */
 
- alter table klasy add constraint brak_funkcji_absolwenci
-    check ( (wychowawca is null and przewodniczacy is null and wiceprzewodniczacy is null) or nazwa != 'Absolwenci');
+alter table klasy
+    add constraint brak_funkcji_absolwenci
+        check ( (wychowawca is null and przewodniczacy is null and wiceprzewodniczacy is null) or
+                nazwa != 'Absolwenci');
 
 
-create or replace function klasa_check() returns trigger as $$
+create or replace function klasa_check() returns trigger as
+$$
 declare
-    digits char [] = array['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    digits char[] = array ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 begin
     if length(new.nazwa) < 2 then
         raise exception 'Niepoprawna nazwa klasy';
     end if;
     if substr(new.nazwa, 1, 1) not in (
         select unnest(digits)
-        ) and new.nazwa != 'Absolwenci' then
+    ) and new.nazwa != 'Absolwenci' then
         raise exception 'Niepoprawna nazwa klasy';
     end if;
     return new;
 end
 $$ language 'plpgsql';
 
-create trigger klasa_check before insert or update on klasy
-    for each row execute procedure klasa_check();
+create trigger klasa_check
+    before insert or update
+    on klasy
+    for each row
+execute procedure klasa_check();
 
 
 /*
@@ -292,30 +337,39 @@ create trigger klasa_check before insert or update on klasy
 
 -- Kolizja w godzinach lekcyjnych występuje gdy: jakieś interwały czasowe niepusto się przecinają
 create or replace function brak_kolizji_godz()
-returns trigger as $$
+    returns trigger as
+$$
 begin
     if (
         select nr_godziny
-        from godziny_lekcyjne where od <= new.do and "do" >= new.od
-        ) is not null then
+        from godziny_lekcyjne
+        where od <= new.do
+          and "do" >= new.od
+    ) is not null then
         raise exception 'Proba wstawienia kolidujacej godziny lekcyjnej.';
     end if;
     return new;
 end;
 $$ language 'plpgsql';
 
-create trigger godziny_lekcyjne_kolizje before insert or update on godziny_lekcyjne
-    for each row execute procedure brak_kolizji_godz();
+create trigger godziny_lekcyjne_kolizje
+    before insert or update
+    on godziny_lekcyjne
+    for each row
+execute procedure brak_kolizji_godz();
 
 -- Kolizja w planie występuje gdy w tym samym czasie: prowadzący prowadzi 2 zajęcia ||
 -- sala jest zajęta przez 2 zajęcia || klasa bierze udział w dwóch zajęciach
 create or replace function brak_kolizji_plan()
-returns trigger as $$
+    returns trigger as
+$$
 begin
     if (
-        select z.id_zajec from
-        zajecia z where z.dzien_tygodnia = new.dzien_tygodnia and z.godzina_lekcyjna = new.godzina_lekcyjna
-        and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
+        select z.id_zajec
+        from zajecia z
+        where z.dzien_tygodnia = new.dzien_tygodnia
+          and z.godzina_lekcyjna = new.godzina_lekcyjna
+          and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
         limit 1
     ) is not null then
         raise exception 'Proba wstawienia kolidujacych zajec';
@@ -324,19 +378,25 @@ begin
 end;
 $$ language 'plpgsql';
 
-create trigger plan_kolizje before insert or update on zajecia
-    for each row execute procedure brak_kolizji_plan();
+create trigger plan_kolizje
+    before insert or update
+    on zajecia
+    for each row
+execute procedure brak_kolizji_plan();
 
 
 -- Kolizja w instancjach jest podobna do kolizji w planie.
 create or replace function brak_kolizji_instancje()
-returns trigger as $$
+    returns trigger as
+$$
 begin
     if (
-        select z.id_instancji from
-        instancje_zajec z where z.data = new.data and z.godzina_lekcyjna = new.godzina_lekcyjna
-        and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
-        and z.id_instancji != new.id_instancji
+        select z.id_instancji
+        from instancje_zajec z
+        where z.data = new.data
+          and z.godzina_lekcyjna = new.godzina_lekcyjna
+          and (z.prowadzacy = new.prowadzacy or z.sala = new.sala or z.klasa = new.klasa)
+          and z.id_instancji != new.id_instancji
         limit 1
     ) is not null then
         raise exception 'Proba wstawienia kolidujacych zajec';
@@ -345,11 +405,15 @@ begin
 end;
 $$ language 'plpgsql';
 
-create trigger instancje_kolizje before insert or update on instancje_zajec
-    for each row execute procedure brak_kolizji_instancje();
+create trigger instancje_kolizje
+    before insert or update
+    on instancje_zajec
+    for each row
+execute procedure brak_kolizji_instancje();
 
 
-create or replace function brak_zajec_weekend() returns trigger as $$
+create or replace function brak_zajec_weekend() returns trigger as
+$$
 declare
 begin
     if to_char(new.data, 'Dy') = 'Sat' or to_char(new.data, 'Dy') = 'Sun' then
@@ -360,8 +424,11 @@ end
 $$ language 'plpgsql';
 
 
-create trigger brak_zajec_weekend before insert on instancje_zajec
-    for each row execute procedure brak_zajec_weekend();
+create trigger brak_zajec_weekend
+    before insert
+    on instancje_zajec
+    for each row
+execute procedure brak_zajec_weekend();
 
 
 /*
@@ -369,25 +436,30 @@ create trigger brak_zajec_weekend before insert on instancje_zajec
  */
 
 
- /* Można określić status obecności jedynie dla osoby, która mogła brać udział w danej instancji zajęć.
-   Np jeśli ktoś chodzi do klasy 2a to nie można mu wpisać obecności na zajęciach klasy 3b*/
-create or replace function zajecia_ucznia() returns trigger as $$
+/* Można określić status obecności jedynie dla osoby, która mogła brać udział w danej instancji zajęć.
+  Np jeśli ktoś chodzi do klasy 2a to nie można mu wpisać obecności na zajęciach klasy 3b*/
+create or replace function zajecia_ucznia() returns trigger as
+$$
 declare
 begin
     if klasa_ucznia(new.uczen) != (
         select iz.klasa from instancje_zajec iz where iz.id_instancji = new.instancja_zajecia
-        ) then
+    ) then
         raise exception 'Uczeń nie mógł uczestniczyć w tych zajęciach';
     end if;
     return new;
 end
 $$ language 'plpgsql';
 
-create trigger zajecia_ucznia before insert  on obecnosci
-    for each row execute procedure zajecia_ucznia();
+create trigger zajecia_ucznia
+    before insert
+    on obecnosci
+    for each row
+execute procedure zajecia_ucznia();
 
 -- Nie wolno edytować osoby i instancji zajęć. Jedynie status.
-create or replace function nie_edytuj_obecnosci() returns trigger as $$
+create or replace function nie_edytuj_obecnosci() returns trigger as
+$$
 declare
 begin
     if new.uczen != old.uczen or new.instancja_zajecia != old.instancja_zajecia then
@@ -397,8 +469,11 @@ begin
 end
 $$ language 'plpgsql';
 
-create trigger nie_edytuj_obecnosci before update on obecnosci
-    for each row execute procedure nie_edytuj_obecnosci();
+create trigger nie_edytuj_obecnosci
+    before update
+    on obecnosci
+    for each row
+execute procedure nie_edytuj_obecnosci();
 
 
 /*
@@ -412,9 +487,9 @@ begin
     for row in select *
                from uczniowie_view uv
                where uv.klasa = new.klasa
-    loop
-        insert into obecnosci (uczen, instancja_zajecia, status) values
-        (row.id_osoby, new.id_instancji, null);
+        loop
+            insert into obecnosci (uczen, instancja_zajecia, status)
+            values (row.id_osoby, new.id_instancji, null);
         end loop;
     return new;
 end
@@ -432,8 +507,9 @@ execute procedure wstaw_puste_obecnosci();
  Oceny: Triggery
  */
 
- -- waga i kategoria mają byc te same dla odpowiednich ocen
-create or replace function update_waga_kategoria() returns trigger as $$
+-- waga i kategoria mają byc te same dla odpowiednich ocen
+create or replace function update_waga_kategoria() returns trigger as
+$$
 declare
     przedm int;
 begin
@@ -443,58 +519,70 @@ begin
 
     przedm := przedmiot_instancji(new.zajecia);
 
-    update oceny o set waga = new.waga, kategoria = new.kategoria
+    update oceny o
+    set waga      = new.waga,
+        kategoria = new.kategoria
     where new.opis = o.opis
-    and new.ocena != o.ocena
-    and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
-    and przedmiot_instancji(o.zajecia) = przedm;
+      and new.ocena != o.ocena
+      and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
+      and przedmiot_instancji(o.zajecia) = przedm;
     return new;
 end
 $$ language 'plpgsql';
 
 
-create or replace function insert_waga_kategoria() returns trigger as $$
+create or replace function insert_waga_kategoria() returns trigger as
+$$
 declare
-    row record;
+    row    record;
     przedm int;
 begin
     przedm := przedmiot_instancji(new.zajecia);
 
-    update oceny o set waga = new.waga, kategoria = new.kategoria
+    update oceny o
+    set waga      = new.waga,
+        kategoria = new.kategoria
     where new.opis = o.opis
-    and new.ocena != o.ocena
-    and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
-    and (
-        select iz.przedmiot
-        from instancje_zajec iz
-        where iz.id_instancji = o.zajecia
-        ) = przedm;
+      and new.ocena != o.ocena
+      and klasa_ucznia(new.uczen) = klasa_ucznia(o.uczen)
+      and (
+              select iz.przedmiot
+              from instancje_zajec iz
+              where iz.id_instancji = o.zajecia
+          ) = przedm;
     return new;
 end
 $$ language 'plpgsql';
 
-create trigger rowna_waga_upd after update on oceny
-    for each row execute procedure update_waga_kategoria();
+create trigger rowna_waga_upd
+    after update
+    on oceny
+    for each row
+execute procedure update_waga_kategoria();
 
-create trigger rowna_waga_ins after insert on oceny
-    for each row execute procedure insert_waga_kategoria();
+create trigger rowna_waga_ins
+    after insert
+    on oceny
+    for each row
+execute procedure insert_waga_kategoria();
 
 
 
 /*
  Ocenę końcową można wpisać tylko wtedy gdy istnieje jakaś ocena cząstkowa
  */
-create or replace function oceny_koncowe_check() returns trigger as $$
+create or replace function oceny_koncowe_check() returns trigger as
+$$
 declare
 begin
     if (
         select o.ocena
         from oceny o
         where o.uczen = new.uczen
-        and przedmiot_instancji(o.zajecia) = new.przedmiot
-        and o.data_wystawienia >= poczatek_semestru()
+          and przedmiot_instancji(o.zajecia) = new.przedmiot
+          and o.data_wystawienia >= poczatek_semestru()
         limit 1
-        ) is null then
+    ) is null then
         raise exception 'Nie można wpisać oceny końcowej bez żadnej oceny cząstkowej.';
     end if;
     return new;
@@ -502,8 +590,11 @@ end
 $$ language 'plpgsql';
 
 
-create trigger oceny_koncowe_check before insert on oceny_koncowe
-    for each row execute procedure oceny_koncowe_check();
+create trigger oceny_koncowe_check
+    before insert
+    on oceny_koncowe
+    for each row
+execute procedure oceny_koncowe_check();
 
 
 
@@ -517,16 +608,19 @@ create trigger oceny_koncowe_check before insert on oceny_koncowe
  */
 
 create or replace view uczniowie_view as
-    select o.*, u.klasa
-    from uczniowie u join osoby o on u.osoba = o.id_osoby;
+select o.*, u.klasa
+from uczniowie u
+         join osoby o on u.osoba = o.id_osoby;
 
 create or replace view nauczyciele_view as
-    select o.*, n.wyksztalcenie
-    from nauczyciele n join osoby o on n.osoba = o.id_osoby;
+select o.*, n.wyksztalcenie
+from nauczyciele n
+         join osoby o on n.osoba = o.id_osoby;
 
 create or replace view dyrektorstwo_view as
-    select o.*, d.wyksztalcenie
-    from dyrektorstwo d join osoby o on d.osoba = o.id_osoby;
+select o.*, d.wyksztalcenie
+from dyrektorstwo d
+         join osoby o on d.osoba = o.id_osoby;
 
 /*
  Osoby: Funkcje
@@ -534,61 +628,75 @@ create or replace view dyrektorstwo_view as
 
 create type klasa_spoleczna as enum ('UCZNIOWIE', 'NAUCZYCIELE');
 
-create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as $$
+create or replace function klasa_spoleczna_osoby(id_osoby integer) returns klasa_spoleczna as
+$$
 begin
     if (
-        select osoba from dyrektorstwo where osoba = id_osoby
-        ) is not null then return 'DYREKTORSTWO';
+        select osoba
+        from dyrektorstwo
+        where osoba = id_osoby
+    ) is not null then
+        return 'DYREKTORSTWO';
     end if;
     if (
-        select osoba from nauczyciele where osoba = id_osoby
-        ) is not null then return 'NAUCZYCIELE';
+        select osoba
+        from nauczyciele
+        where osoba = id_osoby
+    ) is not null then
+        return 'NAUCZYCIELE';
     end if;
     if (
-        select osoba from uczniowie where osoba = id_osoby
-        ) is not null then return 'UCZNIOWIE';
+        select osoba
+        from uczniowie
+        where osoba = id_osoby
+    ) is not null then
+        return 'UCZNIOWIE';
     end if;
     return null;
 end;
 $$ language 'plpgsql';
 
 
-
-
-
 /*
  Zajęcia: funkcje
  */
 
-create or replace function nazwa_przedmiotu(id int) returns varchar as $$
+create or replace function nazwa_przedmiotu(id int) returns varchar as
+$$
 begin
     return (
         select nazwa
-        from przedmioty where id_przedmiotu = id
+        from przedmioty
+        where id_przedmiotu = id
     );
 end;
 $$ language 'plpgsql';
 
 -- Edycja planu zajęć
 create or replace function dodaj_do_planu(id_dyr int, dz_tyg int, godz_lek int, przedm int, klas int, prow int, sal int)
-returns int as $$
+    returns int as
+$$
 begin
     if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
         raise exception 'Ta osoba nie ma uprawnien do edycji planu zajec.';
     end if;
-    insert into zajecia (dzien_tygodnia, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
-    (dz_tyg, godz_lek, przedm, klas, prow, sal);
+    insert into zajecia (dzien_tygodnia, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala)
+    values (dz_tyg, godz_lek, przedm, klas, prow, sal);
 
     return (
         select id_zajec
-        from zajecia where dzien_tygodnia = dz_tyg and godzina_lekcyjna = godz_lek and klasa = klas
+        from zajecia
+        where dzien_tygodnia = dz_tyg
+          and godzina_lekcyjna = godz_lek
+          and klasa = klas
     );
 end;
 $$ language 'plpgsql';
 
 
 create or replace function usun_z_planu(id_dyr int, id_zaj int)
-returns void as $$
+    returns void as
+$$
 begin
     if klasa_spoleczna_osoby(id_dyr) != 'DYREKTORSTWO' then
         raise exception 'Ta osoba nie ma uprawnien do edycji planu zajec.';
@@ -596,7 +704,6 @@ begin
     delete from zajecia where id_zajec = id_zaj;
 end;
 $$ language 'plpgsql';
-
 
 
 
@@ -626,14 +733,16 @@ $$ language 'plpgsql';*/
 
 --TODO Odwolac instancję da się jeżeli nie ma powiązanych obecności i ocen
 create or replace function odwolaj_instancje(id_odw int, id_ins int)
-returns void as $$
+    returns void as
+$$
 begin
     if klasa_spoleczna_osoby(id_odw) != 'DYREKTORSTWO' and id_odw != (
         select prowadzacy
         from instancje_zajec
         where id_instancji = id_ins
     )
-    then raise exception 'Ta osoba nie moze odwolac tych zajec.';
+    then
+        raise exception 'Ta osoba nie moze odwolac tych zajec.';
     end if;
 
     delete from instancje_zajec where id_instancji = id_ins;
@@ -643,14 +752,16 @@ $$ language 'plpgsql';
 -- listowanie uczniow
 
 
-create or replace function dostep_do_zajec(id_naucz int, id_zajec int) returns void as $$
+create or replace function dostep_do_zajec(id_naucz int, id_zajec int) returns void as
+$$
 declare
     prow int;
 begin
     prow := coalesce((
-        select prowadzacy
-        from instancje_zajec iz where id_zajec = iz.id_instancji
-    ), -2);
+                         select prowadzacy
+                         from instancje_zajec iz
+                         where id_zajec = iz.id_instancji
+                     ), -2);
     if prow != id_naucz then
         raise exception 'Nauczyciel nie prowadził tych zajęć.';
     end if;
@@ -659,18 +770,21 @@ $$ language 'plpgsql';
 
 
 create or replace function lista_uczniow_zajecia(id_naucz int, id_zajec int)
-returns table (
-    id int,
-    imie varchar,
-    nazwisko varchar
-) as $$
+    returns table
+            (
+                id       int,
+                imie     varchar,
+                nazwisko varchar
+            )
+as
+$$
 declare
 begin
     perform dostep_do_zajec(id_naucz, id_zajec);
     return query (
         select uv.id_osoby, uv.imie, uv.nazwisko
         from instancje_zajec iz
-        join uczniowie_view uv on iz.klasa = uv.klasa
+                 join uczniowie_view uv on iz.klasa = uv.klasa
         where iz.id_instancji = id_zajec
     );
 end
@@ -679,54 +793,63 @@ $$ language 'plpgsql';
 
 --instancje zajec
 create or replace function dostan_temat(id_ins int)
-returns varchar
-as $$
+    returns varchar
+as
+$$
 begin
-    RETURN(select temat
-    from instancje_zajec
-    where instancje_zajec.id_instancji=id_ins);
+    RETURN (select temat
+            from instancje_zajec
+            where instancje_zajec.id_instancji = id_ins);
 end
 $$ language 'plpgsql';
 
-create or replace function zapisz_temat(id_ins int,temat_zajec varchar )
-returns void
-as $$
+create or replace function zapisz_temat(id_ins int, temat_zajec varchar)
+    returns void
+as
+$$
 begin
     update instancje_zajec
     set temat=temat_zajec
-    where id_instancji=id_ins;
+    where id_instancji = id_ins;
 end;
 $$ language 'plpgsql';
 
 -- util
-create or replace function klasa_instancji(id_ins int) returns int as $$
+create or replace function klasa_instancji(id_ins int) returns int as
+$$
 declare
 begin
     return (
-        select klasa from instancje_zajec where id_instancji = id_ins
-        );
+        select klasa
+        from instancje_zajec
+        where id_instancji = id_ins
+    );
 end
 $$ language 'plpgsql';
 
 
 
 /* Planowanie */
-create or replace function zaplanuj_kolejny_tydzien() returns void as $$
+create or replace function zaplanuj_kolejny_tydzien() returns void as
+$$
 declare
     data_ date = now()::date + 1;
-    dzien int = 1;
-    row record;
+    dzien int  = 1;
+    row   record;
 begin
-    while to_char(data_, 'Dy') != 'Mon' loop
-        data_ := data_ + 1;
+    while to_char(data_, 'Dy') != 'Mon'
+        loop
+            data_ := data_ + 1;
         end loop;
-    while to_char(data_, 'Dy') != 'Sat' loop
-        for row in select * from zajecia where dzien_tygodnia = dzien loop
-            insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala) values
-            (data_, row.godzina_lekcyjna, row.przedmiot, row.klasa, row.prowadzacy, row.sala);
-            end loop;
-        data_ := data_ + 1;
-        dzien := dzien + 1;
+    while to_char(data_, 'Dy') != 'Sat'
+        loop
+            for row in select * from zajecia where dzien_tygodnia = dzien
+                loop
+                    insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala)
+                    values (data_, row.godzina_lekcyjna, row.przedmiot, row.klasa, row.prowadzacy, row.sala);
+                end loop;
+            data_ := data_ + 1;
+            dzien := dzien + 1;
         end loop;
 end
 $$ language 'plpgsql';
@@ -734,19 +857,25 @@ $$ language 'plpgsql';
 /*
  Uczniowie: Funkcje
  */
-create or replace function nazwa_klasy(id integer) returns varchar as $$
+create or replace function nazwa_klasy(id integer) returns varchar as
+$$
 begin
     return (
-        select nazwa from klasy where id = id_klasy
-        );
+        select nazwa
+        from klasy
+        where id = id_klasy
+    );
 end;
 $$ language 'plpgsql';
 
-create or replace function klasa_ucznia(id_ucz integer) returns integer as $$
+create or replace function klasa_ucznia(id_ucz integer) returns integer as
+$$
 begin
     return (
-        select klasa from uczniowie_view where id_osoby = id_ucz
-        );
+        select klasa
+        from uczniowie_view
+        where id_osoby = id_ucz
+    );
 end;
 $$ language 'plpgsql';
 
@@ -754,19 +883,22 @@ $$ language 'plpgsql';
 -- zajecia
 
 create or replace function plan_ucznia(id_ucz int)
-returns table (
-    godzina text,
-    poniedzialek varchar,
-    wtorek varchar,
-    sroda varchar,
-    czwartek varchar,
-    piatek varchar
-) as $$
+    returns table
+            (
+                godzina      text,
+                poniedzialek varchar,
+                wtorek       varchar,
+                sroda        varchar,
+                czwartek     varchar,
+                piatek       varchar
+            )
+as
+$$
 declare
-    dni date[] = array[now()::date - 4, now()::date - 3, now()::date - 2, now()::date - 1,
-                  now()::date, now()::date + 1, now()::date + 2];
+    dni      date[] = array [now()::date - 4, now()::date - 3, now()::date - 2, now()::date - 1,
+        now()::date, now()::date + 1, now()::date + 2];
     poczatek date;
-    koniec date;
+    koniec   date;
 begin
     poczatek := ( -- aktualny poniedzialek
         select dzien from unnest(dni) as dzien where to_char(dzien, 'Dy') = 'Mon'
@@ -774,99 +906,115 @@ begin
     koniec := poczatek + 4; -- aktualny piatek
 
     return query (
-        select concat(gl.od, ' - ', gl."do") as godzina,
+        select concat(gl.od, ' - ', gl."do")                    as godzina,
                coalesce(nazwa_przedmiotu(iz_pon.przedmiot), '') as poniedzialek,
                coalesce(nazwa_przedmiotu(iz_wto.przedmiot), '') as wtorek,
                coalesce(nazwa_przedmiotu(iz_sro.przedmiot), '') as sroda,
                coalesce(nazwa_przedmiotu(iz_czw.przedmiot), '') as czwartek,
                coalesce(nazwa_przedmiotu(iz_pia.przedmiot), '') as piatek
         from godziny_lekcyjne gl
-        left join instancje_zajec iz_pon on gl.nr_godziny = iz_pon.godzina_lekcyjna
-        and iz_pon.klasa = klasa_ucznia(id_ucz) and iz_pon.data = poczatek
-        left join instancje_zajec iz_wto on gl.nr_godziny = iz_wto.godzina_lekcyjna
-        and iz_wto.klasa = klasa_ucznia(id_ucz) and iz_wto.data = poczatek + 1
-        left join instancje_zajec iz_sro on gl.nr_godziny = iz_sro.godzina_lekcyjna
-        and iz_sro.klasa = klasa_ucznia(id_ucz) and iz_sro.data = poczatek + 2
-        left join instancje_zajec iz_czw on gl.nr_godziny = iz_czw.godzina_lekcyjna
-        and iz_czw.klasa = klasa_ucznia(id_ucz) and iz_czw.data = poczatek + 3
-        left join instancje_zajec iz_pia on gl.nr_godziny = iz_pia.godzina_lekcyjna
-        and iz_pia.klasa = klasa_ucznia(id_ucz) and iz_pia.data = poczatek + 4
+                 left join instancje_zajec iz_pon on gl.nr_godziny = iz_pon.godzina_lekcyjna
+            and iz_pon.klasa = klasa_ucznia(id_ucz) and iz_pon.data = poczatek
+                 left join instancje_zajec iz_wto on gl.nr_godziny = iz_wto.godzina_lekcyjna
+            and iz_wto.klasa = klasa_ucznia(id_ucz) and iz_wto.data = poczatek + 1
+                 left join instancje_zajec iz_sro on gl.nr_godziny = iz_sro.godzina_lekcyjna
+            and iz_sro.klasa = klasa_ucznia(id_ucz) and iz_sro.data = poczatek + 2
+                 left join instancje_zajec iz_czw on gl.nr_godziny = iz_czw.godzina_lekcyjna
+            and iz_czw.klasa = klasa_ucznia(id_ucz) and iz_czw.data = poczatek + 3
+                 left join instancje_zajec iz_pia on gl.nr_godziny = iz_pia.godzina_lekcyjna
+            and iz_pia.klasa = klasa_ucznia(id_ucz) and iz_pia.data = poczatek + 4
         order by godzina
     );
 end
 $$ language 'plpgsql';
 
-create or replace function przyszle_zajecia_ucznia(id_ucz int) returns table (
-    data date,
-    czas text,
-    przedmiot varchar,
-    sala int
-) as $$
+create or replace function przyszle_zajecia_ucznia(id_ucz int)
+    returns table
+            (
+                data      date,
+                czas      text,
+                przedmiot varchar,
+                sala      int
+            )
+as
+$$
 declare
     today_date date = now()::date;
 begin
     return query (
         select iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, iz.sala
         from instancje_zajec iz
-        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
-        join klasy k on iz.klasa = k.id_klasy
-        join przedmioty p on iz.przedmiot = p.id_przedmiotu
-        where
-        iz.klasa = klasa_ucznia(id_ucz) and iz.data::timestamp + gl."do" >= now()
+                 join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+                 join klasy k on iz.klasa = k.id_klasy
+                 join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        where iz.klasa = klasa_ucznia(id_ucz)
+          and iz.data::timestamp + gl."do" >= now()
         order by iz.data, czas
     );
 end
 $$ language 'plpgsql';
 
 
-create or replace function przeszle_zajecia_ucznia(id_ucz int) returns table (
-    data date,
-    czas text,
-    przedmiot varchar,
-    sala int
-) as $$
+create or replace function przeszle_zajecia_ucznia(id_ucz int)
+    returns table
+            (
+                data      date,
+                czas      text,
+                przedmiot varchar,
+                sala      int
+            )
+as
+$$
 declare
     today_date date = now()::date;
 begin
     return query (
         select iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, iz.sala
         from instancje_zajec iz
-        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
-        join klasy k on iz.klasa = k.id_klasy
-        join przedmioty p on iz.przedmiot = p.id_przedmiotu
-        where
-        iz.klasa = klasa_ucznia(id_ucz) and iz.data::timestamp + gl."do" < now()
-        and iz.data >= now()::date - 14
+                 join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+                 join klasy k on iz.klasa = k.id_klasy
+                 join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        where iz.klasa = klasa_ucznia(id_ucz)
+          and iz.data::timestamp + gl."do" < now()
+          and iz.data >= now()::date - 14
         order by iz.data, czas
     );
 end
 $$ language 'plpgsql';
+
+
+
+
 
 /*
  Nauczyciele: Funkcje
  */
 
-create or replace function wychowywane_klasy(id_wych integer) returns integer[] as $$
+create or replace function wychowywane_klasy(id_wych integer) returns integer[] as
+$$
 begin
     return array((
         select id_klasy
-        from klasy where wychowawca = id_wych
-        ));
+        from klasy
+        where wychowawca = id_wych
+    ));
 end;
 $$ language 'plpgsql';
 
 
 create type funkcja_w_klasie as enum ('PRZEWODNICZACY', 'ZASTEPCA', 'SKARBNIK');
 
-create or replace function przydziel_funkcje(id_wych integer, id_ucz integer, funkcja funkcja_w_klasie) returns funkcja_w_klasie as $$
+create or replace function przydziel_funkcje(id_wych integer, id_ucz integer, funkcja funkcja_w_klasie) returns funkcja_w_klasie as
+$$
 declare
     klasa_ucz integer = klasa_ucznia(id_ucz);
 begin
     if klasa_ucz is null or klasa_ucz not in (
         select unnest(wychowywane_klasy(id_wych))
-        ) then raise exception 'Student does not belong to this teachers class';
+    ) then
+        raise exception 'Student does not belong to this teachers class';
     end if;
-    if id_ucz in (select unnest(array[klasy.przewodniczacy, klasy.wiceprzewodniczacy, klasy.skarbnik]) from klasy) then
+    if id_ucz in (select unnest(array [klasy.przewodniczacy, klasy.wiceprzewodniczacy, klasy.skarbnik]) from klasy) then
         raise exception 'This student already has a function in class.';
     end if;
     if funkcja = 'PRZEWODNICZACY' then
@@ -884,19 +1032,22 @@ $$ language 'plpgsql';
 
 -- zajęcia nauczycieli
 create or replace function plan_nauczyciela(id_naucz int)
-returns table (
-    godzina text,
-    poniedzialek text,
-    wtorek text,
-    sroda text,
-    czwartek text,
-    piatek text
-) as $$
+    returns table
+            (
+                godzina      text,
+                poniedzialek text,
+                wtorek       text,
+                sroda        text,
+                czwartek     text,
+                piatek       text
+            )
+as
+$$
 declare
-    dni date[] = array[now()::date - 4, now()::date - 3, now()::date - 2, now()::date - 1,
-                  now()::date, now()::date + 1, now()::date + 2];
+    dni      date[] = array [now()::date - 4, now()::date - 3, now()::date - 2, now()::date - 1,
+        now()::date, now()::date + 1, now()::date + 2];
     poczatek date;
-    koniec date;
+    koniec   date;
 begin
     poczatek := ( -- aktualny poniedzialek
         select dzien from unnest(dni) as dzien where to_char(dzien, 'Dy') = 'Mon'
@@ -904,73 +1055,81 @@ begin
     koniec := poczatek + 4; -- aktualny piatek
 
     return query (
-        select concat(gl.od, ' - ', gl."do") as godzina,
+        select concat(gl.od, ' - ', gl."do")                                              as godzina,
                concat(nazwa_przedmiotu(iz_pon.przedmiot), ' ', nazwa_klasy(iz_pon.klasa)) as poniedzialek,
                concat(nazwa_przedmiotu(iz_wto.przedmiot), ' ', nazwa_klasy(iz_wto.klasa)) as wtorek,
                concat(nazwa_przedmiotu(iz_sro.przedmiot), ' ', nazwa_klasy(iz_sro.klasa)) as sroda,
                concat(nazwa_przedmiotu(iz_czw.przedmiot), ' ', nazwa_klasy(iz_czw.klasa)) as czwartek,
                concat(nazwa_przedmiotu(iz_pia.przedmiot), ' ', nazwa_klasy(iz_pia.klasa)) as piatek
         from godziny_lekcyjne gl
-        left join instancje_zajec iz_pon on gl.nr_godziny = iz_pon.godzina_lekcyjna
-        and iz_pon.prowadzacy = id_naucz and iz_pon.data = poczatek
-        left join instancje_zajec iz_wto on gl.nr_godziny = iz_wto.godzina_lekcyjna
-        and iz_wto.prowadzacy = id_naucz and iz_wto.data = poczatek + 1
-        left join instancje_zajec iz_sro on gl.nr_godziny = iz_sro.godzina_lekcyjna
-        and iz_sro.prowadzacy = id_naucz and iz_sro.data = poczatek + 2
-        left join instancje_zajec iz_czw on gl.nr_godziny = iz_czw.godzina_lekcyjna
-        and iz_czw.prowadzacy = id_naucz and iz_czw.data = poczatek + 3
-        left join instancje_zajec iz_pia on gl.nr_godziny = iz_pia.godzina_lekcyjna
-        and iz_pia.prowadzacy = id_naucz and iz_pia.data = poczatek + 4
+                 left join instancje_zajec iz_pon on gl.nr_godziny = iz_pon.godzina_lekcyjna
+            and iz_pon.prowadzacy = id_naucz and iz_pon.data = poczatek
+                 left join instancje_zajec iz_wto on gl.nr_godziny = iz_wto.godzina_lekcyjna
+            and iz_wto.prowadzacy = id_naucz and iz_wto.data = poczatek + 1
+                 left join instancje_zajec iz_sro on gl.nr_godziny = iz_sro.godzina_lekcyjna
+            and iz_sro.prowadzacy = id_naucz and iz_sro.data = poczatek + 2
+                 left join instancje_zajec iz_czw on gl.nr_godziny = iz_czw.godzina_lekcyjna
+            and iz_czw.prowadzacy = id_naucz and iz_czw.data = poczatek + 3
+                 left join instancje_zajec iz_pia on gl.nr_godziny = iz_pia.godzina_lekcyjna
+            and iz_pia.prowadzacy = id_naucz and iz_pia.data = poczatek + 4
         order by godzina
     );
 end
 $$ language 'plpgsql';
 
-create or replace function przyszle_zajecia_nauczyciela(id_naucz int) returns table (
-    id_zajec int,
-    data date,
-    czas text,
-    przedmiot varchar,
-    klasa varchar,
-    sala int
-) as $$
+create or replace function przyszle_zajecia_nauczyciela(id_naucz int)
+    returns table
+            (
+                id_zajec  int,
+                data      date,
+                czas      text,
+                przedmiot varchar,
+                klasa     varchar,
+                sala      int
+            )
+as
+$$
 declare
     today_date date = now()::date;
 begin
     return query (
         select iz.id_instancji, iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
         from instancje_zajec iz
-        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
-        join klasy k on iz.klasa = k.id_klasy
-        join przedmioty p on iz.przedmiot = p.id_przedmiotu
-        where
-        iz.prowadzacy = id_naucz and iz.data::timestamp + gl."do" >= now()
+                 join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+                 join klasy k on iz.klasa = k.id_klasy
+                 join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        where iz.prowadzacy = id_naucz
+          and iz.data::timestamp + gl."do" >= now()
         order by iz.data, czas
     );
 end
 $$ language 'plpgsql';
 
 
-create or replace function przeszle_zajecia_nauczyciela(id_naucz int) returns table (
-    id_zajec int,
-    data date,
-    czas text,
-    przedmiot varchar,
-    klasa varchar,
-    sala int
-) as $$
+create or replace function przeszle_zajecia_nauczyciela(id_naucz int)
+    returns table
+            (
+                id_zajec  int,
+                data      date,
+                czas      text,
+                przedmiot varchar,
+                klasa     varchar,
+                sala      int
+            )
+as
+$$
 declare
     today_date date = now()::date;
 begin
     return query (
         select iz.id_instancji, iz.data, concat(gl.od::text, ' - ', gl."do"::text) as czas, p.nazwa, k.nazwa, iz.sala
         from instancje_zajec iz
-        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
-        join klasy k on iz.klasa = k.id_klasy
-        join przedmioty p on iz.przedmiot = p.id_przedmiotu
-        where
-        iz.prowadzacy = id_naucz and iz.data::timestamp + gl."do" < now()
-        and iz.data >= now()::date - 14
+                 join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+                 join klasy k on iz.klasa = k.id_klasy
+                 join przedmioty p on iz.przedmiot = p.id_przedmiotu
+        where iz.prowadzacy = id_naucz
+          and iz.data::timestamp + gl."do" < now()
+          and iz.data >= now()::date - 14
         order by iz.data, czas
     );
 end
@@ -979,7 +1138,8 @@ $$ language 'plpgsql';
 
 -- klasa wychowawcy
 
-create or replace function klasa_wychowawcy(id_wych int) returns int as $$
+create or replace function klasa_wychowawcy(id_wych int) returns int as
+$$
 declare
 begin
     return
@@ -988,11 +1148,12 @@ begin
             from klasy
             where wychowawca = id_wych
             limit 1
-            );
+        );
 end
 $$ language 'plpgsql';
 
-create or replace function nazwa_klasy_wychowawcy(id_wych int) returns varchar as $$
+create or replace function nazwa_klasy_wychowawcy(id_wych int) returns varchar as
+$$
 declare
 begin
     return nazwa_klasy(klasa_wychowawcy(id_wych));
@@ -1003,145 +1164,172 @@ $$ language 'plpgsql';
 --tryb: 0 -> nie wyróżniaj nikogo, 1 -> wyróżnij przewodniczącego, 2 -> wice, 3 -> skarbnika
 
 create or replace function lista_uczniow_klasy(id_wych int, tryb int = 0)
-returns table (
-    id integer,
-    imie varchar,
-    nazwisko varchar,
-    aktualny bool
-) as $$
+    returns table
+            (
+                id       integer,
+                imie     varchar,
+                nazwisko varchar,
+                aktualny bool
+            )
+as
+$$
 begin
     return query (
-        select uv.id_osoby, uv.imie, uv.nazwisko,
-        case
-        when tryb = 1 and uv.id_osoby = k.przewodniczacy then true
-        when tryb = 2 and uv.id_osoby = k.wiceprzewodniczacy then true
-        when tryb = 3 and uv.id_osoby = k.skarbnik then true
-        else false end
+        select uv.id_osoby,
+               uv.imie,
+               uv.nazwisko,
+               case
+                   when tryb = 1 and uv.id_osoby = k.przewodniczacy then true
+                   when tryb = 2 and uv.id_osoby = k.wiceprzewodniczacy then true
+                   when tryb = 3 and uv.id_osoby = k.skarbnik then true
+                   else false end
         from uczniowie_view uv
-        join klasy k on uv.klasa = k.id_klasy
+                 join klasy k on uv.klasa = k.id_klasy
         where klasa_wychowawcy(id_wych) = k.id_klasy
         order by uv.nazwisko
     );
 end
 $$ language 'plpgsql';
 
-create or replace function wypisz_uwagi_klasy(id_wychowawcy int )
-returns table(
-    data_wystawienia timestamp,
-    uczen text,
-    wystawiajacy text,
-    tresc_uwagi varchar(10000),
-    typ_uwagi text
-)as $$
+create or replace function wypisz_uwagi_klasy(id_wychowawcy int)
+    returns table
+            (
+                data_wystawienia timestamp,
+                uczen            text,
+                wystawiajacy     text,
+                tresc_uwagi      varchar(10000),
+                typ_uwagi        text
+            )
+as
+$$
 begin
     return query (
-        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko),concat(wyst_os.imie,' ',wyst_os.nazwisko), uw.tresc,
-           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
-            from uwagi uw
-        join uczniowie uc on uw.uczen = uc.osoba
-        join klasy k on uc.klasa = k.id_klasy
-        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
-        join osoby wyst_os on uw.wystawiajacy=wyst_os.id_osoby
-        where k.wychowawca=id_wychowawcy
+        SELECT uw.data_wystawienia,
+               concat(ucz_os.imie, ' ', ucz_os.nazwisko),
+               concat(wyst_os.imie, ' ', wyst_os.nazwisko),
+               uw.tresc,
+               case when uw.typ = 'P' then 'Pozytywna' else 'Negatywna' end
+        from uwagi uw
+                 join uczniowie uc on uw.uczen = uc.osoba
+                 join klasy k on uc.klasa = k.id_klasy
+                 join osoby ucz_os on uw.uczen = ucz_os.id_osoby
+                 join osoby wyst_os on uw.wystawiajacy = wyst_os.id_osoby
+        where k.wychowawca = id_wychowawcy
     );
 end
 $$ language 'plpgsql';
 
-create or replace function dodaj_uwage(id_wystawiajacego int,id_ucznia int,tresc varchar,typ char)
-returns void
-as $$
+create or replace function dodaj_uwage(id_wystawiajacego int, id_ucznia int, tresc varchar, typ char)
+    returns void
+as
+$$
 begin
     insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
-    values (id_ucznia,id_wystawiajacego, date_trunc('second',  now()), tresc, typ);
+    values (id_ucznia, id_wystawiajacego, date_trunc('second', now()), tresc, typ);
 end;
 $$ language 'plpgsql';
 
 
-create or replace function wypisz_uwagi_nauczyciela(id_nauczyciela int )
-returns table(
-    data_wystawienia timestamp,
-    uczen text,
-    tresc_uwagi varchar(10000),
-    typ_uwagi text
-)as $$
+create or replace function wypisz_uwagi_nauczyciela(id_nauczyciela int)
+    returns table
+            (
+                data_wystawienia timestamp,
+                uczen            text,
+                tresc_uwagi      varchar(10000),
+                typ_uwagi        text
+            )
+as
+$$
 begin
     return query (
-        SELECT uw.data_wystawienia, concat(ucz_os.imie,' ',ucz_os.nazwisko), uw.tresc,
-           case when uw.typ='P' then 'Pozytywna' else 'Negatywna' end
-            from uwagi uw
-        join uczniowie uc on uw.uczen = uc.osoba
-        join osoby ucz_os on uw.uczen=ucz_os.id_osoby
-        where uw.wystawiajacy=id_nauczyciela
+        SELECT uw.data_wystawienia,
+               concat(ucz_os.imie, ' ', ucz_os.nazwisko),
+               uw.tresc,
+               case when uw.typ = 'P' then 'Pozytywna' else 'Negatywna' end
+        from uwagi uw
+                 join uczniowie uc on uw.uczen = uc.osoba
+                 join osoby ucz_os on uw.uczen = ucz_os.id_osoby
+        where uw.wystawiajacy = id_nauczyciela
     );
 end
 $$ language 'plpgsql';
-
 
 
 /*
  Obecności funkcje
  */
 
- create or replace function pokaz_wszystkie_obecnosci(id_zajec int)
-returns table (
-    id_obecnosci int,
-    imie varchar,
-    nazwisko varchar,
-    status statusobecnosci)
-as $$
+create or replace function pokaz_wszystkie_obecnosci(id_zajec int)
+    returns table
+            (
+                id_obecnosci int,
+                imie         varchar,
+                nazwisko     varchar,
+                status       statusobecnosci
+            )
+as
+$$
 begin
     return query (
         select ob.id, os.imie, os.nazwisko, ob.status
-        from obecnosci ob join osoby os
-        on ob.uczen = os.id_osoby
+        from obecnosci ob
+                 join osoby os
+                      on ob.uczen = os.id_osoby
         where ob.instancja_zajecia = id_zajec
         order by 1
-        );
+    );
 end
 $$ language 'plpgsql';
 
-create or replace function wstaw_obecnosc(id_obecnosci int,wstaw_status statusobecnosci)
-returns void
-as $$
+create or replace function wstaw_obecnosc(id_obecnosci int, wstaw_status statusobecnosci)
+    returns void
+as
+$$
 begin
     update obecnosci
     SET status=wstaw_status
-    WHERE id=id_obecnosci;
+    WHERE id = id_obecnosci;
 end
 $$ language 'plpgsql';
 
 create or replace function usprawiedliw_ucznia(id_obecnosci int)
-returns void
-as $$
+    returns void
+as
+$$
 begin
     update obecnosci
     set status='NU'
-    where id=id_obecnosci;
+    where id = id_obecnosci;
 end
 $$ language 'plpgsql';
 
 create or replace function wypisz_nieobecnych(id_wychowawcy int, id_ucznia int)
-returns table (
-    id_obecnosci integer,
-    data date,
-    godzina text,
-    przedmiot varchar(200),
-    imie varchar,
-    nazwisko varchar)
-as $$
+    returns table
+            (
+                id_obecnosci integer,
+                data         date,
+                godzina      text,
+                przedmiot    varchar(200),
+                imie         varchar,
+                nazwisko     varchar
+            )
+as
+$$
 begin
     return query (
-            select ob.id, i.data, concat(g.od, ' ', g.do) , p.nazwa, os.imie, os.nazwisko
-            from obecnosci ob
-            join osoby os on ob.uczen = os.id_osoby
-            join instancje_zajec i on i.id_instancji=ob.instancja_zajecia
-            join uczniowie u on ob.uczen = u.osoba
-            join klasy k on u.klasa = k.id_klasy
-            join godziny_lekcyjne g on g.nr_godziny = i.godzina_lekcyjna
-            join przedmioty p on p.id_przedmiotu = i.przedmiot
-            where k.wychowawca = id_wychowawcy and ob.uczen = id_ucznia and ob.status = 'N'
-            order by 1
-        );
+        select ob.id, i.data, concat(g.od, ' ', g.do), p.nazwa, os.imie, os.nazwisko
+        from obecnosci ob
+                 join osoby os on ob.uczen = os.id_osoby
+                 join instancje_zajec i on i.id_instancji = ob.instancja_zajecia
+                 join uczniowie u on ob.uczen = u.osoba
+                 join klasy k on u.klasa = k.id_klasy
+                 join godziny_lekcyjne g on g.nr_godziny = i.godzina_lekcyjna
+                 join przedmioty p on p.id_przedmiotu = i.przedmiot
+        where k.wychowawca = id_wychowawcy
+          and ob.uczen = id_ucznia
+          and ob.status = 'N'
+        order by 1
+    );
 end
 $$ language 'plpgsql';
 
@@ -1149,59 +1337,66 @@ $$ language 'plpgsql';
 /*
  Statystyki dla obecności
  */
- -- obecnosci statystyki
+-- obecnosci statystyki
 
-create or replace function poczatek_semestru() returns date as $$
+create or replace function poczatek_semestru() returns date as
+$$
 declare
     czas date = now()::date;
 begin
-    while to_char(czas, 'Mon') != 'Sep' and to_char(czas, 'Mon') != 'Feb' loop
-        czas := czas - '1 Month'::interval;
-    end loop;
+    while to_char(czas, 'Mon') != 'Sep' and to_char(czas, 'Mon') != 'Feb'
+        loop
+            czas := czas - '1 Month'::interval;
+        end loop;
     return date_trunc('Month', czas)::date;
 end
 $$ language 'plpgsql';
 
-create or replace function liczba_status(id_ucznia int, status statusobecnosci) returns int as $$
+create or replace function liczba_status(id_ucznia int, status statusobecnosci) returns int as
+$$
 declare
 begin
     return (
         select count(*)
         from obecnosci o
-        join instancje_zajec iz on o.instancja_zajecia = iz.id_instancji
+                 join instancje_zajec iz on o.instancja_zajecia = iz.id_instancji
         where o.uczen = id_ucznia
-        and o.status = liczba_status.status
-        and iz.data between poczatek_semestru() and now()::date
+          and o.status = liczba_status.status
+          and iz.data between poczatek_semestru() and now()::date
     );
 end
 $$ language 'plpgsql';
 
 
-create or replace function liczba_zajec(id_ucznia int) returns int as $$
+create or replace function liczba_zajec(id_ucznia int) returns int as
+$$
 declare
 begin
     return (
         select count(*)
         from instancje_zajec iz
-        join uczniowie_view uv on iz.klasa = uv.klasa
+                 join uczniowie_view uv on iz.klasa = uv.klasa
         where uv.id_osoby = id_ucznia
-        and iz.data between poczatek_semestru() and now()::date
+          and iz.data between poczatek_semestru() and now()::date
     );
 end
 $$ language 'plpgsql';
 
 
 create or replace function zestawienie_obecnosci(id_wych int)
-returns table (
-    uczen text,
-    liczba_zajec int,
-    obecnosc_proc numeric(5, 2),
-    obecnosci int,
-    nieobecnosci int,
-    ucieczki int,
-    nieobecnosci_u int,
-    zwolnienia int
-) as $$
+    returns table
+            (
+                uczen          text,
+                liczba_zajec   int,
+                obecnosc_proc  numeric(5, 2),
+                obecnosci      int,
+                nieobecnosci   int,
+                ucieczki       int,
+                nieobecnosci_u int,
+                zwolnienia     int
+            )
+as
+$$
 declare
 begin
     return query (
@@ -1220,84 +1415,113 @@ end
 $$ language 'plpgsql';
 
 
+/*
+ Oceny: Widoki
+ */
+
+create or replace view aktualne_oceny_koncowe as
+select *
+from oceny_koncowe ok
+where ok.rok = (extract(year from poczatek_semestru()))
+  and ok.semestr = (case when to_char(poczatek_semestru(), 'Mon') = 'Sep' then 1 else 2 end);
+
+
+create or replace view nie_zdali as
+select
+from uczniowie_view uv
+         join aktualne_oceny_koncowe ok on uv.id_osoby = ok.uczen
+where ok.wartosc = 1;
 
 /*
  Oceny: Funkcje
  */
 
- create or replace function srednia_ucznia(ucz integer, przedm integer) returns numeric(3, 2) as $$
+create or replace function srednia_ucznia(ucz integer, przedm integer) returns numeric(3, 2) as
+$$
 begin
     return round((select sum(o.wartosc * o.waga) / greatest(sum(o.waga), 1)
-    from oceny o join instancje_zajec iz on o.zajecia = iz.id_instancji
-    where o.uczen = ucz and iz.przedmiot = przedm
-    and o.data_wystawienia >= poczatek_semestru()), 2);
+                  from oceny o
+                           join instancje_zajec iz on o.zajecia = iz.id_instancji
+                  where o.uczen = ucz
+                    and iz.przedmiot = przedm
+                    and o.data_wystawienia >= poczatek_semestru()), 2);
 end;
 $$ language 'plpgsql';
 
 
-create or replace function srednia_ucznia(ucz integer) returns numeric(3, 2) as $$
+create or replace function srednia_ucznia(ucz integer) returns numeric(3, 2) as
+$$
 begin
     return round((
-        select sum(sr) / greatest(count(*), 1)
-        from (
-            select iz.przedmiot, srednia_ucznia(ucz, iz.przedmiot) as sr
-            from oceny o
-            join instancje_zajec iz on o.zajecia = iz.id_instancji
-            where o.uczen = ucz
-            group by iz.przedmiot
-        ) sr_prz
-    ), 2);
+                     select sum(sr) / greatest(count(*), 1)
+                     from (
+                              select iz.przedmiot, srednia_ucznia(ucz, iz.przedmiot) as sr
+                              from oceny o
+                                       join instancje_zajec iz on o.zajecia = iz.id_instancji
+                              where o.uczen = ucz
+                              group by iz.przedmiot
+                          ) sr_prz
+                 ), 2);
 end;
 $$ language 'plpgsql';
 
-create or replace function srednia_klasy(kl integer, przedm integer) returns numeric(3, 2) as $$
+create or replace function srednia_klasy(kl integer, przedm integer) returns numeric(3, 2) as
+$$
 begin
     return round((
-        select sum(srednia_ucznia(u.osoba, przedm)) / greatest(count(*), 1)
-        from klasy k join uczniowie u on k.id_klasy = u.klasa
-        where k.id_klasy = kl
-    ), 2);
+                     select sum(srednia_ucznia(u.osoba, przedm)) / greatest(count(*), 1)
+                     from klasy k
+                              join uczniowie u on k.id_klasy = u.klasa
+                     where k.id_klasy = kl
+                 ), 2);
 end;
 $$ language 'plpgsql';
 
-create or replace function srednia_klasy(kl integer) returns numeric(3, 2) as $$
+create or replace function srednia_klasy(kl integer) returns numeric(3, 2) as
+$$
 begin
     return round((
-        select sum(srednia_ucznia(u.osoba)) / greatest(count(*), 1)
-        from klasy k join uczniowie u on k.id_klasy = u.klasa
-        where k.id_klasy = kl
-    ), 2);
+                     select sum(srednia_ucznia(u.osoba)) / greatest(count(*), 1)
+                     from klasy k
+                              join uczniowie u on k.id_klasy = u.klasa
+                     where k.id_klasy = kl
+                 ), 2);
 end;
 $$ language 'plpgsql';
 
 --TODO zrób jako tabelkę, w której widnieją wszystkie przedmioty i całościowa średnia
 create or replace view wyniki_w_nauce as
 select k.nazwa as klasa, srednia_klasy(k.id_klasy) as srednia
-from klasy k order by k.nazwa;
+from klasy k
+order by k.nazwa;
 
 
 -- taki util
-create or replace function przedmiot_instancji(id_zajec int) returns int as $$
+create or replace function przedmiot_instancji(id_zajec int) returns int as
+$$
 begin
     return (
         select przedmiot
-        from instancje_zajec where id_instancji = id_zajec
-        );
+        from instancje_zajec
+        where id_instancji = id_zajec
+    );
 end
 $$ language 'plpgsql';
 
 -- wstawianie ocen
 
-create or replace function dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int) returns void as $$
+create or replace function dostep_do_oceny(id_naucz int, id_ucz int, id_zajec int) returns void as
+$$
 declare
     kl_u int = coalesce(klasa_ucznia(id_ucz), -1);
     kl_i int;
 begin
     perform dostep_do_zajec(id_naucz, id_zajec);
     kl_i := coalesce((
-        select klasa
-        from instancje_zajec iz where id_zajec = iz.id_instancji
-    ), -3);
+                         select klasa
+                         from instancje_zajec iz
+                         where id_zajec = iz.id_instancji
+                     ), -3);
     if kl_u != kl_i then
         raise exception 'Uczen nie należy do tej klasy.';
     end if;
@@ -1306,7 +1530,8 @@ $$ language 'plpgsql';
 
 
 create or replace function ustaw_ocene(id_naucz int, id_ucz int, id_zajec int, wartosc numeric,
-                                        waga numeric, kategoria kategoriaoceny, opis varchar) returns void as $$
+                                       waga numeric, kategoria kategoriaoceny, opis varchar) returns void as
+$$
 declare
     przedm int;
 begin
@@ -1319,29 +1544,33 @@ begin
         select o.ocena
         from oceny o
         where o.uczen = id_ucz
-        and o.opis = ustaw_ocene.opis
-        and przedmiot_instancji(o.zajecia) = przedm
-        ) is not null then
+          and o.opis = ustaw_ocene.opis
+          and przedmiot_instancji(o.zajecia) = przedm
+    ) is not null then
 
-            update oceny o set wartosc = ustaw_ocene.wartosc, waga = ustaw_ocene.waga,
-                             kategoria = ustaw_ocene.kategoria
-            where o.uczen = id_ucz
-                and o.opis = ustaw_ocene.opis
-                and przedmiot_instancji(o.zajecia) = przedm;
+        update oceny o
+        set wartosc   = ustaw_ocene.wartosc,
+            waga      = ustaw_ocene.waga,
+            kategoria = ustaw_ocene.kategoria
+        where o.uczen = id_ucz
+          and o.opis = ustaw_ocene.opis
+          and przedmiot_instancji(o.zajecia) = przedm;
     else
-        insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis) values
-        (id_ucz, date_trunc('second', now()), id_zajec, ustaw_ocene.wartosc, ustaw_ocene.waga, ustaw_ocene.kategoria, ustaw_ocene.opis);
+        insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, opis)
+        values (id_ucz, date_trunc('second', now()), id_zajec, ustaw_ocene.wartosc, ustaw_ocene.waga,
+                ustaw_ocene.kategoria, ustaw_ocene.opis);
     end if;
 end
 $$ language 'plpgsql';
 
 
 -- ocena koncowa
-create or replace function ustaw_ocene_koncowa(id_zajec int, id_ucznia int, ocena int) returns void as $$
+create or replace function ustaw_ocene_koncowa(id_zajec int, id_ucznia int, ocena int) returns void as
+$$
 declare
     przedm int;
-    sem int;
-    ro numeric(4);
+    sem    int;
+    ro     numeric(4);
 begin
     przedm := przedmiot_instancji(id_zajec);
 
@@ -1352,62 +1581,74 @@ begin
         select ok.id
         from oceny_koncowe ok
         where ok.uczen = id_ucznia
-        and ok.przedmiot = przedm
+          and ok.przedmiot = przedm
     ) is not null then
-        update oceny_koncowe ok set wartosc = ocena
-        where ok.uczen = id_ucznia and ok.przedmiot = przedm;
+        update oceny_koncowe ok
+        set wartosc = ocena
+        where ok.uczen = id_ucznia
+          and ok.przedmiot = przedm;
     else
-        insert into oceny_koncowe (wartosc, uczen, przedmiot, rok, semestr) values
-        (ocena, id_ucznia, przedm, ro, sem);
+        insert into oceny_koncowe (wartosc, uczen, przedmiot, rok, semestr)
+        values (ocena, id_ucznia, przedm, ro, sem);
     end if;
 end
 $$ language 'plpgsql';
 
 -- wyswietlanie ocen (ciekawe)
 create or replace function lista_ocen_ucznia(id_ucznia int, id_zajec int)
-returns table (
-    ocena int
-              ) as $$
+    returns table
+            (
+                ocena int
+            )
+as
+$$
 begin
-    return query((
+    return query ((
         select o.ocena
         from oceny o
         where o.uczen = id_ucznia
-        and przedmiot_instancji(o.zajecia) = przedmiot_instancji(id_zajec)
-        and o.data_wystawienia >= poczatek_semestru()
+          and przedmiot_instancji(o.zajecia) = przedmiot_instancji(id_zajec)
+          and o.data_wystawienia >= poczatek_semestru()
     ));
 end
 $$ language 'plpgsql';
 
-create or replace function pokaz_oceny_nice(id_ucznia int, id_zajec int) returns text as $$
+create or replace function pokaz_oceny_nice(id_ucznia int, id_zajec int) returns text as
+$$
 declare
     oceny text;
-    row record;
+    row   record;
 begin
-    for row in select * from lista_ocen_ucznia(id_ucznia, id_zajec) loop
-        oceny := concat(oceny, (select o.opis from oceny o where o.ocena = row.ocena), ' (');
-        oceny := concat(oceny, (select o.kategoria from oceny o where o.ocena = row.ocena), ', ');
-        oceny := concat(oceny, (select o.waga from oceny o where o.ocena = row.ocena), '): ');
-        oceny := concat(oceny, (select o.wartosc from oceny o where o.ocena = row.ocena), '; ');
-    end loop;
+    for row in select * from lista_ocen_ucznia(id_ucznia, id_zajec)
+        loop
+            oceny := concat(oceny, (select o.opis from oceny o where o.ocena = row.ocena), ' (');
+            oceny := concat(oceny, (select o.kategoria from oceny o where o.ocena = row.ocena), ', ');
+            oceny := concat(oceny, (select o.waga from oceny o where o.ocena = row.ocena), '): ');
+            oceny := concat(oceny, (select o.wartosc from oceny o where o.ocena = row.ocena), '; ');
+        end loop;
     return oceny;
 end
 $$ language 'plpgsql';
 
 create or replace function tabela_ocen(id_zajec int)
-returns table (
-    uczen text,
-    oceny text,
-    srednia numeric(3,2),
-    ocena_koncowa int
-              ) as $$
+    returns table
+            (
+                uczen         text,
+                oceny         text,
+                srednia       numeric(3, 2),
+                ocena_koncowa int
+            )
+as
+$$
 
 begin
     return query (
-        select concat(uv.imie, ' ', uv.nazwisko), pokaz_oceny_nice(uv.id_osoby, id_zajec),
-               srednia_ucznia(uv.id_osoby, przedmiot_instancji(id_zajec)), ok.wartosc
+        select concat(uv.imie, ' ', uv.nazwisko),
+               pokaz_oceny_nice(uv.id_osoby, id_zajec),
+               srednia_ucznia(uv.id_osoby, przedmiot_instancji(id_zajec)),
+               ok.wartosc
         from uczniowie_view uv
-        left join oceny_koncowe ok on ok.uczen = uv.id_osoby
+                 left join oceny_koncowe ok on ok.uczen = uv.id_osoby
         where uv.klasa = (select klasa from instancje_zajec where id_instancji = id_zajec)
     );
 end
@@ -1415,21 +1656,25 @@ $$ language 'plpgsql';
 
 -- srednie z poszczegolnych przedmiotów i całościowa średnia
 create or replace function wyniki_klasy(id_wych int)
-returns table (
-    przedmiot varchar,
-    srednia numeric(3, 2)
-              ) as $$
+    returns table
+            (
+                przedmiot varchar,
+                srednia   numeric(3, 2)
+            )
+as
+$$
 declare
 begin
     return query (
-        select przedm, sredn from (
-                   select 'a', p.nazwa as przedm, srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) as sredn
-                   from przedmioty p
-                   where srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) is not null
-                   union
-                   select 'z', 'Średnia', srednia_klasy(klasa_wychowawcy(id_wych))
-                   order by 1, 2
-               ) s
+        select przedm, sredn
+        from (
+                 select 'a', p.nazwa as przedm, srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) as sredn
+                 from przedmioty p
+                 where srednia_klasy(klasa_wychowawcy(id_wych), p.id_przedmiotu) is not null
+                 union
+                 select 'z', 'Średnia', srednia_klasy(klasa_wychowawcy(id_wych))
+                 order by 1, 2
+             ) s
     );
 end
 $$ language 'plpgsql';
@@ -1437,20 +1682,24 @@ $$ language 'plpgsql';
 
 -- zestawienie ocen ucznia
 create or replace function zestawienie_ocen_ucznia(id_ucznia int)
-returns table (
-    przedmiot varchar,
-    oceny text,
-    srednia numeric(3,2),
-    ocena_koncowa int
-              ) as $$
+    returns table
+            (
+                przedmiot     varchar,
+                oceny         text,
+                srednia       numeric(3, 2),
+                ocena_koncowa int
+            )
+as
+$$
 
 begin
     return query (
         select distinct nazwa_przedmiotu(iz.przedmiot),
-               pokaz_oceny_nice(id_ucznia, iz.id_instancji),
-               srednia_ucznia(id_ucznia, iz.przedmiot), ok.wartosc
+                        pokaz_oceny_nice(id_ucznia, iz.id_instancji),
+                        srednia_ucznia(id_ucznia, iz.przedmiot),
+                        ok.wartosc
         from instancje_zajec iz
-        left join oceny_koncowe ok on ok.uczen = id_ucznia and ok.przedmiot = iz.przedmiot
+                 left join oceny_koncowe ok on ok.uczen = id_ucznia and ok.przedmiot = iz.przedmiot
         where iz.klasa = klasa_ucznia(id_ucznia)
     );
 end
@@ -1461,23 +1710,75 @@ $$ language 'plpgsql';
 /*
  Upgrade do wyższych klas
  */
-create or replace function wszyscy_maja_koncowe() returns bool as $$
+create or replace function wszyscy_maja_koncowe() returns bool as
+$$
 begin
     if (
         select ok.wartosc
-        from uczniowie_view uv join instancje_zajec iz on uv.klasa = iz.klasa
-        left join oceny_koncowe ok on ok.uczen = uv.id_osoby
-        and ok.przedmiot = iz.przedmiot
+        from uczniowie_view uv
+                 join instancje_zajec iz on uv.klasa = iz.klasa
+                 left join aktualne_oceny_koncowe ok on ok.uczen = uv.id_osoby
+            and ok.przedmiot = iz.przedmiot
         where ok.wartosc is null
-        and ok.rok = (extract(year from poczatek_semestru()))
-        and ok.semestr = (case when to_char(poczatek_semestru(), 'Mon') = 'Sep' then 1 else 2 end)
         limit 1
-        ) is null then
+    ) is null then
         return true;
     else
         return false;
     end if;
 end
+$$ language 'plpgsql';
+
+
+create or replace function awansuj_uczniow() returns void as $$
+declare
+    row record;
+begin
+    if not wszyscy_maja_koncowe() then
+        raise exception 'Nie wszyscy uczniowie mają wystawione oceny.';
+    end if;
+
+    if (
+        select id_klasy
+        from klasy
+        where nazwa = 'Absolwenci'
+        ) is null then
+        insert into klasy (nazwa) values ('Absolwenci');
+    end if;
+    update uczniowie u set klasa = (
+        select id_klasy
+        from klasy where nazwa = 'Absolwenci'
+        ) where substr(nazwa_klasy(u.klasa), 1, 1) = '8';
+
+        for row in select * from uczniowie_view uv loop
+            if nazwa_klasy(row.klasa) = 'Absolwenci' then
+                continue;
+            end if;
+            if (
+                select k.id_klasy
+                from klasy k
+                where k.nazwa = concat((substr(nazwa_klasy(row.klasa), 1, 1)::int + 1)::text, substr(nazwa_klasy(row.klasa), 2))
+                ) is null then
+                insert into klasy (nazwa) values
+                (concat((substr(nazwa_klasy(row.klasa), 1, 1)::int + 1)::text, substr(nazwa_klasy(row.klasa), 2)));
+            end if;
+            update uczniowie set klasa = (
+                select k.id_klasy
+                from klasy k where k.nazwa = concat((substr(nazwa_klasy(row.klasa), 1, 1)::int + 1)::text, substr(nazwa_klasy(row.klasa), 2))
+                limit 1
+                ) where osoba = row.id_osoby;
+            end loop;
+
+    update uczniowie u2 set klasa = (
+        select k2.id_klasy
+        from klasy k2
+        where substr(k2.nazwa, 1, 1) = (row.klasa::int - 1)::text
+        limit 1
+    ) where u2.osoba in (
+        select osoba
+        from nie_zdali
+        );
+end;
 $$ language 'plpgsql';
 
 
