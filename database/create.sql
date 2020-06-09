@@ -132,13 +132,15 @@ create table obecnosci
  Indexy
  */
 
-create index os_nazwa on osoby (nazwisko, imie);
-create index data_zaj on instancje_zajec (data);
-create index data_wyst on oceny (data_wystawienia);
+create index nazwa_os on osoby (nazwisko, imie);
+create index data_ins on instancje_zajec (data);
+create index data_ocen on oceny (data_wystawienia);
 create index uczen_ocen on oceny (uczen);
 create index uczen_ocen_konc on oceny_koncowe (uczen);
 create index uczen_ob on obecnosci (uczen);
 create index uczen_ins on obecnosci (instancja_zajecia);
+create index uczen_uw on uwagi (uczen);
+create index data_uw on uwagi (data_wystawienia);
 
 /*
  Osoby: Triggery
