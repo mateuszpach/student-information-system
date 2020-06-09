@@ -430,6 +430,54 @@ create trigger brak_zajec_weekend
     for each row
 execute procedure brak_zajec_weekend();
 
+-- Można dodać instancje zajęć jedynie zgodne z tabelą zajecia.
+create or replace function instancje_check() returns trigger as $$
+declare
+    dni text[] = array['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+begin
+    if (
+        select z.id_zajec
+        from zajecia z
+        where z.klasa = new.klasa
+        and z.sala = new.sala
+        and z.prowadzacy = new.prowadzacy
+        and z.godzina_lekcyjna = new.godzina_lekcyjna
+        and dni[z.dzien_tygodnia - 1] = to_char(new.data, 'Dy')
+        and z.przedmiot = new.przedmiot
+        limit 1
+        ) is null then
+        raise exception 'Próba wstawienia zajęć niezgodnych z planem';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+
+create trigger instancje_check before insert on instancje_zajec
+    for each row execute procedure instancje_check();
+
+
+create or replace function wlasciwy_prowadzacy() returns trigger as $$
+declare
+begin
+    if (
+        select np.nauczyciel
+        from nauczyciele_przedmioty np
+        where np.przedmiot = new.przedmiot
+        and np.nauczyciel = new.prowadzacy
+        ) is null then
+        raise exception 'Ten nauczyciel nie może prowadzić tych zajęć.';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger wlasciwy_prowadzacy before insert or update on instancje_zajec
+    for each row execute procedure wlasciwy_prowadzacy();
+
+create trigger wlasciwy_prowadzacy before insert or update on zajecia
+    for each row execute procedure wlasciwy_prowadzacy();
+
 
 /*
  Obecności: Triggery
