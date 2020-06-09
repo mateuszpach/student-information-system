@@ -39,7 +39,7 @@ Following steps assume that server uses APT.
       ```
       psql < database/create.sql
       ```
-  6. In file ``/etc/apache2/sites-available/000-default.conf`` replace ``DocumentRoot /var/www/html`` with ``DocumentRoot <path to repo>/student-information-system/``.
+  6. In file ``/etc/apache2/sites-available/000-default.conf`` replace ``DocumentRoot /var/www/html`` with ``DocumentRoot <path to repo>/student-information-system/website``.
   7. In file ``/etc/apache2/apache2.conf`` replace
       ```
       <Directory /var/www/html/>
@@ -50,7 +50,7 @@ Following steps assume that server uses APT.
       ``` 
       with
       ```
-      <Directory <path to repo>/website/ >
+      <Directory <path to repo>/student-information-system/website/ >
       Options Indexes FollowSymLinks
       AllowOverride None
       Require all granted
