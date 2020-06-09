@@ -233,10 +233,10 @@ insert into klasy (nazwa)
 ('8l'),
 ('8n');
 
-insert into dyrektorstwo (osoba, wyksztalcenie)
+/*insert into dyrektorstwo (osoba, wyksztalcenie)
  values (1,'Magister'),
 (2,'Doktor'),
-(3,'Doktor');
+(3,'Doktor');*/
 
 insert into nauczyciele (osoba, wyksztalcenie)
  values (4,'Magister'),
@@ -883,7 +883,7 @@ insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
 (146,12,date_trunc('second',now()-interval '248596 seconds'),'bmigultccryymorbffgw','P'),
 (84,23,date_trunc('second',now()-interval '1508485 seconds'),'tfwgpgibrovckzgdzfpq','P'),
 (119,28,date_trunc('second',now()-interval '439033 seconds'),'rmvxslsxiymqgpjxmljm','P');
- 
+
 insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala, temat)
  values (date_trunc('second',now()-interval '342989 seconds'),8,12,8,11,816,'ddzvyhvrutqmeilojafr'),
 (date_trunc('second',now()-interval '4892644 seconds'),9,13,9,27,834,'eczsyndzqjynhgjbccto'),
@@ -1185,4 +1185,3 @@ insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzac
 (date_trunc('second',now()-interval '957620 seconds'),4,3,14,17,221,'dbixepdvndjaxzpvwxdg'),
 (date_trunc('second',now()-interval '1185730 seconds'),5,14,5,28,313,'jmxiohrpnsxkymouctfe'),
 (date_trunc('second',now()-interval '1026224 seconds'),3,12,13,11,493,'ncrtjnlbzxyhmiybvszf');
- 

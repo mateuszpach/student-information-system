@@ -94,7 +94,7 @@ create trigger email before insert or update on osoby
     for each row execute procedure email_check();
 
 
-create or replace function name_check() returns trigger as $$
+/*create or replace function name_check() returns trigger as $$
 declare
 begin
     if new.imie !~ '^[A-Z][a-z]+$' then
@@ -112,8 +112,4 @@ $$ language 'plpgsql';
 
 
 create trigger name_check before insert or update on osoby
-    for each row execute procedure name_check();
-
-insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu) VALUES
-('99040319100', 'J1n@ww', 'Jn', 'Jn', 'Jn', 'hehe', '3+31342');
-
+    for each row execute procedure name_check();*/

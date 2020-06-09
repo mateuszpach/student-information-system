@@ -2,9 +2,11 @@ create or replace function srednia_ucznia(ucz integer, przedm integer) returns n
 begin
     return round((select sum(o.wartosc * o.waga) / greatest(sum(o.waga), 1)
     from oceny o join instancje_zajec iz on o.zajecia = iz.id_instancji
-    where o.uczen = ucz and iz.przedmiot = przedm), 2);
+    where o.uczen = ucz and iz.przedmiot = przedm
+    and o.data_wystawienia >= poczatek_semestru()), 2);
 end;
 $$ language 'plpgsql';
+
 
 create or replace function srednia_ucznia(ucz integer) returns numeric(3, 2) as $$
 begin
@@ -145,6 +147,7 @@ begin
         from oceny o
         where o.uczen = id_ucznia
         and przedmiot_instancji(o.zajecia) = przedmiot_instancji(id_zajec)
+        and o.data_wystawienia >= poczatek_semestru()
     ));
 end
 $$ language 'plpgsql';

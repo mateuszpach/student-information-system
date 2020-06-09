@@ -58,6 +58,7 @@ begin
         from oceny o
         where o.uczen = new.uczen
         and przedmiot_instancji(o.zajecia) = new.przedmiot
+        and o.data_wystawienia >= poczatek_semestru()
         limit 1
         ) is null then
         raise exception 'Nie można wpisać oceny końcowej bez żadnej oceny cząstkowej.';
