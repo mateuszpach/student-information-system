@@ -49,6 +49,64 @@ obowiązkowy (wychodzący czyli kraniec krawędzi jest bez strzałki). Po stroie
 (W przyszłości mogą się pojawić nowe ograniczenia co do obowiązkowości, gdy zajmiemy się wyzwalaczami, 
 na przykład związki osoby:X prawdopodobnie staną się obustronnie obowiązkowe).
 
+Instrukcja instalacji:
+Zakładamy, że serwer używa APT.
+
+  1. Pobierz pakiety.
+      
+      sudo apt update && sudo apt upgrade
+      sudo apt install apache2 apache2-utils
+      sudo apt install php php-pgsql libapache2-mod-php
+      sudo apt install postgresql libpq5 postgresql-9.5 postgresql-client-9.5 postgresql-client-common postgresql-contrib
+      
+  2. Stwórz usera i bazę.
+      
+      sudo -i -u postgres
+      psql
+      # CREATE USER <UNIX username> WITH PASSWORD '<password>';
+      # CREATE DATABASE "sisdb";
+      # GRANT ALL ON DATABASE "sisdb" TO <UNIX username>
+      # \q
+      exit
+      
+  3. Rozpakuj pliki źródłowe.
+      
+      mkdir student-information-system
+      cd student-information-system/
+      tar -xvf ../src.tar
+      
+  4. W plikach website/student/connection/database.ini i website/teacher/connection/database.ini zamień
+      
+      user=
+      password=
+      
+      z
+      
+      user=<UNIX username>
+      password=<password to db>
+      
+  5. Zbuduj bazę.
+      
+      psql < ../create.sql
+      
+  6. W pliku /etc/apache2/sites-available/000-default.conf zamień DocumentRoot /var/www/html z DocumentRoot <path to project>/student-information-system/website.
+  7. W pliku /etc/apache2/apache2.conf zamień
+    
+      <Directory /var/www/html/>
+      Options Indexes FollowSymLinks
+      AllowOverride None
+      Require all granted
+      </Directory>
+      
+      z
+
+      <Directory <path to project>/student-information-system/website/ >
+      Options Indexes FollowSymLinks
+      AllowOverride None
+      Require all granted
+      </Directory>
+
+  8. Wpisz localhost:80/student lub localhost:80/teacher do przeglądarki.
 
 
 Nad projektem pracują:

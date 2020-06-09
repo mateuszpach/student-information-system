@@ -1,12 +1,59 @@
 # student-information-system
 Student Information System designed for polish schools.
 
-Follow steps in the tutorial to setup lapp for local app testing:
-[https://medium.com/@Riverside/how-to-install-apache-php-postgresql-lapp-on-ubuntu-16-04-adb00042c45d](https://medium.com/@Riverside/how-to-install-apache-php-postgresql-lapp-on-ubuntu-16-04-adb00042c45d)
+### Setup
+Following steps assume that server uses APT.
 
-Instead of step 9 do the following (probably second answer):
-[https://stackoverflow.com/questions/5891802/how-do-i-change-the-root-directory-of-an-apache-server](https://stackoverflow.com/questions/5891802/how-do-i-change-the-root-directory-of-an-apache-server)
-
-In folder connection adjust file database.ini accordingly to your postgres setup.
-It's preferred to pass credentials to database.ini from your computer user account instead using postgres account.
-It is also preferred to use the same name for login, password and database name.
+  1. Download needed packages.
+      ```
+      sudo apt update && sudo apt upgrade
+      sudo apt install apache2 apache2-utils
+      sudo apt install php php-pgsql libapache2-mod-php
+      sudo apt install postgresql libpq5 postgresql-9.5 postgresql-client-9.5 postgresql-client-common postgresql-contrib
+      ```
+  2. Create user and database.
+      ```
+      sudo -i -u postgres
+      psql
+      # CREATE USER <UNIX username> WITH PASSWORD '<password>';
+      # CREATE DATABASE "sisdb";
+      # GRANT ALL ON DATABASE "sisdb" TO <UNIX username>
+      # \q
+      exit
+      ```
+  3. Clone the repo.
+      ```
+      git clone https://github.com/mateuszpach/student-information-system
+      ```
+  4. In files ``website/student/connection/database.ini``and ``website/teacher/connection/database.ini`` replace
+      ```
+      user=
+      password=
+      ``` 
+      with
+      ```
+      user=<UNIX username>
+      password=<password to db>
+      ``` 
+  5. Build the database.
+      ```
+      psql < database/create.sql
+      ```
+  6. In file ``/etc/apache2/sites-available/000-default.conf`` replace ``DocumentRoot /var/www/html`` with ``DocumentRoot <path to repo>/student-information-system/website``.
+  7. In file ``/etc/apache2/apache2.conf`` replace
+      ```
+      <Directory /var/www/html/>
+      Options Indexes FollowSymLinks
+      AllowOverride None
+      Require all granted
+      </Directory>
+      ``` 
+      with
+      ```
+      <Directory <path to repo>/student-information-system/website/ >
+      Options Indexes FollowSymLinks
+      AllowOverride None
+      Require all granted
+      </Directory>
+      ```
+  8. Type ``localhost:80/student`` or ``localhost:80/teacher`` in your browser.
