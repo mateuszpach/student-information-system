@@ -106,6 +106,22 @@ Zakładamy, że serwer używa APT.
   8. Wpisz localhost:80/student lub localhost:80/teacher do przeglądarki.
 
 
+Przykładowe dane do logowania, do użytku aplikacji: (hasło można wpisać dowolne)
+
+	Aby zalogować się na konto nauczycielskie, należy wejść w folder teacher na localhost.
+
+	Bartosz.Filipowicz.4@gmail.com : Wychowawca klasy 1i, nauczyciel angielskiego
+	Dajmir.GolkaGombrowicz.10@gmail.com : Wychowawca klasy 3y, uczy historii.
+	Korneli.Gekon.28@gmail.com : Nie jest wychowawcą żadnej klasy (nie będzie się u niego nic wyświetlać w zakładce Klasa), uczy przyrody.
+
+
+	Aby zalogować się na konto uczniowskie, należy wejść w folder student na localhost.
+
+	Sobiesław.Hejda.40@gmail.com : Uczeń klasy 1i wychowywanej przez Bartosza Filipowicza. Przewodniczący klasy.
+	Kryspin.Trelus.30@gmail.com : Uczeń (losowy)
+	Bernard.Woźny.161@gmail.com : Uczeń (losowy)
+
+
 Nad projektem pracują:
 
 Łukasz Gniecki
