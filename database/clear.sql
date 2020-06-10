@@ -35,6 +35,7 @@ drop function if exists email_check();
 drop function if exists pesel_check();
 drop function if exists student_lesson_check();
 drop function if exists telefon_check();
+drop function if exists name_check();
 
 --administracyjne
 drop function if exists dodaj_ucznia(id_wstawiajacego integer, pesel_ char, email_ varchar, imie_ varchar, drugie_imie_ varchar,
@@ -62,6 +63,8 @@ drop function if exists nazwa_klasy_wychowawcy(id_wych int);
 drop function if exists wypisz_uwagi_klasy(id_wychowawcy int);
 drop function if exists dodaj_uwage(id_wystawiajacego integer, id_ucznia integer, tresc varchar, typ char);
 drop function if exists wypisz_uwagi_nauczyciela(id_nauczyciela integer);
+drop function if exists wlasciwy_prowadzacy();
+drop function if exists klasa_check();
 
 --zajecia
 drop function if exists nazwa_przedmiotu(id integer);
@@ -97,15 +100,27 @@ drop function if exists pokaz_oceny_nice(id_ucznia int, id_zajec int);
 drop function if exists tabela_ocen(id_zajec int);
 drop function if exists wyniki_klasy(id_wych integer);
 drop function if exists zestawienie_ocen_ucznia(id_ucznia integer);
+drop function if exists oceny_koncowe_check();
 
 --instancje_zajec
 drop function if exists dostan_temat(id_ins integer);
 drop function if exists zapisz_temat(id_ins integer, temat_zajec varchar);
 drop function if exists klasa_instancji(id_ins integer);
 drop function if exists zajecia_ucznia();
+drop function if exists instancje_check();
 
 --obecnosci
 drop function if exists wypisz_nieobecnych(id_wychowawcy integer, id_ucznia integer);
 drop function if exists brak_zajec_weekend();
 drop function if exists nie_edytuj_obecnosci();
 drop function if exists wstaw_puste_obecnosci();
+
+--końcowo-roczne
+drop function if exists awansuj_uczniow();
+drop function if exists wszyscy_maja_koncowe();
+drop function if exists zaplanuj_kolejny_tydzien();
+
+
+
+
+

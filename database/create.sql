@@ -131,7 +131,7 @@ create table obecnosci
 /*
  Indexy
  */
-
+create index abc on obecnosci(id);
 create index nazwa_os on osoby (nazwisko, imie);
 create index data_ins on instancje_zajec (data);
 create index data_ocen on oceny (data_wystawienia);
@@ -454,7 +454,7 @@ begin
           and z.sala = new.sala
           and z.prowadzacy = new.prowadzacy
           and z.godzina_lekcyjna = new.godzina_lekcyjna
-          and dni[z.dzien_tygodnia - 1] = to_char(new.data, 'Dy')
+          and dni[z.dzien_tygodnia] = to_char(new.data, 'Dy')
           and z.przedmiot = new.przedmiot
         limit 1
     ) is null then
