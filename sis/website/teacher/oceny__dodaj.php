@@ -52,9 +52,11 @@ echo '  <option>1</option>
 echo ' </select> </div>
 <div class="form-group">
     <label for="waga">Waga</label>
-    <input type="number" min="1" max="9" id="waga" name="waga" class="form-control">
+    <input type="number" min="0" max="9" id="waga" name="waga" class="form-control">
     <small id="passwordHelpBlock" class="form-text text-muted">
-        Poprawny zakres: 1-9.
+        Poprawny zakres: 0-9. Ustawia wagę dla wszystkich ocen o tym opisie.
+        
+       <!-- TODO ile dokaldnie -->
         </small>
     </div>
 <div class="form-group">
@@ -69,6 +71,9 @@ echo '
         <option value="inne">Inne</option>
         ';
 echo ' </select>
+<small id="passwordHelpBlock" class="form-text text-muted">
+        Ustawia kategorię dla wszystkich ocen o tym opisie.
+        </small>
     </div>
 <div class="form-group">
     <label for="opis">Opis</label>
