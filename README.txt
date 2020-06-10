@@ -20,10 +20,7 @@ Status w tabeli obecności może byś ustawiony na 'O'-obecny, 'N'-nieobecny, 'U
 
 W godziny_lekcyjne planujemy zrobic trigger pilnujący by nie było nakładających się godzin
 
-Hasła finalnie nie będą w plaintext, a zastąpią je hasze.
 Zarówno projekt bazy jak i implementacja została wykonana wspólnie podczas spotkania.
-
-
 
 Opis związków:
 
@@ -89,7 +86,7 @@ Zakładamy, że serwer używa APT.
       
       psql < ../create.sql
       
-  6. W pliku /etc/apache2/sites-available/000-default.conf zamień DocumentRoot /var/www/html z DocumentRoot <path to project>/student-information-system/website.
+  6. W pliku /etc/apache2/sites-available/000-default.conf zamień DocumentRoot /var/www/html z DocumentRoot <path to project>/student-information-system/website
   7. W pliku /etc/apache2/apache2.conf zamień
     
       <Directory /var/www/html/>
