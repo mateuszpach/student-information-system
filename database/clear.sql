@@ -122,5 +122,5 @@ drop function if exists zaplanuj_kolejny_tydzien();
 
 
 
-
-
+drop function if exists przedwczesne_wstawienie_ob();
+drop function if exists przedwczesne_wstawienie_oc();

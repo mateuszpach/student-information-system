@@ -1834,17 +1834,7 @@ insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzac
 ,('2020-6-9',7,6,17,20,145,'Donec pulvinar risus. Donec elementum.')
 ,('2020-6-9',8,7,18,21,862,'Cras adipiscing risus in wisi.')
 ,('2020-6-9',9,8,19,22,592,'Cum sociis natoque penatibus et.')
-,('2020-6-9',10,9,20,23,862,'Lorem ipsum dolor sit.')
-,('2020-6-10',1,10,1,24,855,'Proin volutpat tempus arcu. Vivamus.')
-,('2020-6-10',2,11,2,25,691,'Curae, Integer hendrerit magna ante.')
-,('2020-6-10',3,12,3,26,855,'Maecenas ante. Vestibulum metus eleifend.')
-,('2020-6-10',4,13,4,27,862,'Pellentesque malesuada fames ac lacus.')
-,('2020-6-10',5,14,5,28,395,'Nulla facilisi. Nullam risus auctor.')
-,('2020-6-10',6,5,6,4,211,'Proin adipiscing sollicitudin. Cras at.')
-,('2020-6-10',7,6,7,5,691,'Pellentesque ornare nisl, sollicitudin leo.')
-,('2020-6-10',8,7,8,6,273,'In neque quis enim. Sed.')
-,('2020-6-10',9,8,9,7,691,'Nulla eu auctor quis, venenatis.')
-,('2020-6-10',10,9,10,8,691,'Etiam at ultrices posuere cubilia.');
+,('2020-6-9',10,9,20,23,862,'Lorem ipsum dolor sit.');
  
 --update obecnosci: 8112
 update obecnosci
@@ -5432,35 +5422,7 @@ insert into oceny (uczen, data_wystawienia, zajecia, wartosc, waga, kategoria, o
 ,(124,'2020-6-9 21:49:52',920,6.00,3,'zadanie','Proin adipiscing sollicitudin. Cras at.')
 ,(153,'2020-6-9 22:26:58',920,2.00,1,'aktywnosc','Pellentesque ornare nisl, sollicitudin leo.')
 ,(163,'2020-6-9 18:59:40',920,5.00,2,'odpowiedz','In neque quis enim. Sed.')
-,(194,'2020-6-9 21:48:4',920,6.00,2,'kartkowka','Nulla eu auctor quis, venenatis.')
-,(40,'2020-6-10 22:8:53',921,5.00,2,'odpowiedz','Etiam at ultrices posuere cubilia.')
-,(60,'2020-6-10 19:53:20',921,3.50,3,'zadanie','Maecenas facilisis hendrerit. Maecenas nunc.')
-,(80,'2020-6-10 20:55:39',921,4.50,1,'aktywnosc','Nunc ultricies pretium. Vestibulum ante.')
-,(90,'2020-6-10 19:1:29',921,4.50,1,'aktywnosc','Quisque sed ante ipsum primis.')
-,(101,'2020-6-10 18:14:48',921,3.00,2,'kartkowka','Nam scelerisque odio non mattis.')
-,(116,'2020-6-10 20:19:45',921,5.00,2,'kartkowka','Etiam sit amet tellus. Curabitur.')
-,(133,'2020-6-10 21:16:38',921,4.50,1,'inne','Aliquam ut tortor. Proin ornare.')
-,(149,'2020-6-10 19:11:4',921,3.50,3,'sprawdzian','Donec pulvinar risus. Donec elementum.')
-,(162,'2020-6-10 18:26:18',921,4.50,3,'zadanie','Cras adipiscing risus in wisi.')
-,(176,'2020-6-10 18:41:54',921,6.00,2,'kartkowka','Cum sociis natoque penatibus et.')
-,(179,'2020-6-10 23:6:21',921,1.50,2,'kartkowka','Lorem ipsum dolor sit.')
-,(191,'2020-6-10 21:36:12',921,4.50,1,'aktywnosc','Proin volutpat tempus arcu. Vivamus.')
-,(44,'2020-6-10 19:19:25',925,5.50,2,'kartkowka','Curae, Integer hendrerit magna ante.')
-,(64,'2020-6-10 21:46:44',925,6.00,1,'aktywnosc','Maecenas ante. Vestibulum metus eleifend.')
-,(84,'2020-6-10 19:37:6',925,6.00,2,'kartkowka','Pellentesque malesuada fames ac lacus.')
-,(106,'2020-6-10 22:52:40',925,3.50,3,'sprawdzian','Nulla facilisi. Nullam risus auctor.')
-,(131,'2020-6-10 23:14:15',925,6.00,1,'inne','Proin adipiscing sollicitudin. Cras at.')
-,(147,'2020-6-10 18:36:45',925,3.00,3,'sprawdzian','Pellentesque ornare nisl, sollicitudin leo.')
-,(170,'2020-6-10 22:12:16',925,6.00,3,'sprawdzian','In neque quis enim. Sed.')
-,(171,'2020-6-10 21:47:9',925,3.00,2,'kartkowka','Nulla eu auctor quis, venenatis.')
-,(172,'2020-6-10 20:46:25',925,5.50,3,'zadanie','Etiam at ultrices posuere cubilia.')
-,(178,'2020-6-10 19:49:38',925,3.50,1,'aktywnosc','Maecenas facilisis hendrerit. Maecenas nunc.')
-,(46,'2020-6-10 18:42:58',927,3.50,1,'aktywnosc','Nunc ultricies pretium. Vestibulum ante.')
-,(66,'2020-6-10 20:10:37',927,6.00,3,'sprawdzian','Quisque sed ante ipsum primis.')
-,(86,'2020-6-10 18:45:41',927,1.00,2,'kartkowka','Nam scelerisque odio non mattis.')
-,(107,'2020-6-10 22:47:14',927,2.50,2,'odpowiedz','Etiam sit amet tellus. Curabitur.')
-,(117,'2020-6-10 20:59:41',927,1.50,2,'odpowiedz','Aliquam ut tortor. Proin ornare.')
-,(139,'2020-6-10 21:9:29',927,3.50,2,'kartkowka','Donec pulvinar risus. Donec elementum.');
+,(194,'2020-6-9 21:48:4',920,6.00,2,'kartkowka','Nulla eu auctor quis, venenatis.');
  
 insert into oceny_koncowe (wartosc,uczen,przedmiot,rok,semestr)
  values(4,29,9,2020,2)
@@ -5658,3 +5620,14 @@ insert into oceny_koncowe (wartosc,uczen,przedmiot,rok,semestr)
 ,(4,200,3,2020,1)
 ,(3,200,8,2020,2);
  
+insert into instancje_zajec (data, godzina_lekcyjna, przedmiot, klasa, prowadzacy, sala, temat) values
+('2020-6-10',1,10,1,24,855,'Proin volutpat tempus arcu. Vivamus.')
+,('2020-6-10',2,11,2,25,691,'Curae, Integer hendrerit magna ante.')
+,('2020-6-10',3,12,3,26,855,'Maecenas ante. Vestibulum metus eleifend.')
+,('2020-6-10',4,13,4,27,862,'Pellentesque malesuada fames ac lacus.')
+,('2020-6-10',5,14,5,28,395,'Nulla facilisi. Nullam risus auctor.')
+,('2020-6-10',6,5,6,4,211,'Proin adipiscing sollicitudin. Cras at.')
+,('2020-6-10',7,6,7,5,691,'Pellentesque ornare nisl, sollicitudin leo.')
+,('2020-6-10',8,7,8,6,273,'In neque quis enim. Sed.')
+,('2020-6-10',9,8,9,7,691,'Nulla eu auctor quis, venenatis.')
+,('2020-6-10',10,9,10,8,691,'Etiam at ultrices posuere cubilia.');

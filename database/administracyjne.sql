@@ -1,4 +1,4 @@
-/*
+
 create or replace function dodaj_ucznia(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
                                         nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), klasa_ integer) returns integer as $$
 declare
@@ -49,4 +49,4 @@ begin
     end if;
     raise exception 'This person has no permission to add this teacher.';
 end;
-$$ language 'plpgsql';*/
+$$ language 'plpgsql';

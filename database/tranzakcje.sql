@@ -14,15 +14,14 @@ begin;
 
 select awansuj_uczniow();
 delete from obecnosci where true;
+delete from oceny where true;
 delete from zajecia where true;
 delete from instancje_zajec where true;
-delete from oceny where true;
-delete from klasy where (
-    select
+delete from klasy k where k.id_klasy not in (
+    select distinct k.id_klasy
     from klasy k
     join uczniowie_view uv
     on k.id_klasy = uv.klasa
-    and
-                            )
+                            );
 
 commit;

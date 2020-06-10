@@ -546,6 +546,40 @@ create trigger nie_edytuj_obecnosci
 execute procedure nie_edytuj_obecnosci();
 
 
+create or replace function przedwczesne_wstawienie_ob() returns trigger as $$
+declare
+begin
+    if new.status is null then
+        return new;
+    end if;
+    if now()::date < (
+        select iz.data
+        from instancje_zajec iz
+        where iz.id_instancji = new.instancja_zajecia
+        ) then
+        raise exception 'Zajęcia jeszcze się nie odbyły.';
+    end if;
+    if now()::date = (
+        select iz.data
+        from instancje_zajec iz
+        where iz.id_instancji = new.instancja_zajecia
+        ) and
+       now()::time < (
+        select gl.od
+        from instancje_zajec iz
+        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+        where iz.id_instancji = new.instancja_zajecia
+        ) then
+        raise exception 'Zajęcia jeszcze się nie odbyły.';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger przedwczesne_wstawienie_ob before insert or update on obecnosci
+    for each row execute procedure przedwczesne_wstawienie_ob();
+
+
 /*
  Dodanie instancji zajęć od razu wypełnia na pusto tabele obecności.
  */
@@ -637,6 +671,35 @@ create trigger rowna_waga_ins
 execute procedure insert_waga_kategoria();
 
 
+create or replace function przedwczesne_wstawienie_oc() returns trigger as $$
+declare
+begin
+    if new.data_wystawienia::date < (
+        select iz.data
+        from instancje_zajec iz
+        where iz.id_instancji = new.zajecia
+        ) then
+        raise exception 'Zajęcia jeszcze się nie odbyły.';
+    end if;
+    if new.data_wystawienia::date = (
+        select iz.data
+        from instancje_zajec iz
+        where iz.id_instancji = new.zajecia
+        ) and
+       new.data_wystawienia::time < (
+        select gl.od
+        from instancje_zajec iz
+        join godziny_lekcyjne gl on iz.godzina_lekcyjna = gl.nr_godziny
+        where iz.id_instancji = new.zajecia
+        ) then
+        raise exception 'Zajęcia jeszcze się nie odbyły.';
+    end if;
+    return new;
+end
+$$ language 'plpgsql';
+
+create trigger przedwczesne_wstawienie_oc before insert on oceny
+    for each row execute procedure przedwczesne_wstawienie_oc();
 
 /*
  Ocenę końcową można wpisać tylko wtedy gdy istnieje jakaś ocena cząstkowa
@@ -1286,13 +1349,13 @@ begin
 end
 $$ language 'plpgsql';
 
-create or replace function dodaj_uwage(id_wystawiajacego int, id_ucznia int, tresc varchar, typ char)
+create or replace function dodaj_uwage(id_wystawiajacego int, id_ucznia int, tresc varchar, typ typUwagi)
     returns void
 as
 $$
 begin
     insert into uwagi (uczen, wystawiajacy, data_wystawienia, tresc, typ)
-    values (id_ucznia, id_wystawiajacego, date_trunc('second', now()), tresc, typ);
+    values (id_ucznia, id_wystawiajacego, date_trunc('second', now()), dodaj_uwage.tresc, dodaj_uwage.typ);
 end;
 $$ language 'plpgsql';
 
@@ -1469,7 +1532,7 @@ begin
     return query (
         select concat(uv.imie, ' ', uv.nazwisko),
                liczba_zajec(uv.id_osoby),
-               liczba_status(uv.id_osoby, 'O')::numeric / greatest(liczba_zajec(uv.id_osoby), 1)::numeric * 100,
+               round (liczba_status(uv.id_osoby, 'O')::numeric / greatest(liczba_zajec(uv.id_osoby), 1)::numeric * 100, 2),
                liczba_status(uv.id_osoby, 'O'),
                liczba_status(uv.id_osoby, 'N'),
                liczba_status(uv.id_osoby, 'U'),
@@ -1494,7 +1557,7 @@ where ok.rok = (extract(year from poczatek_semestru()))
 
 
 create or replace view nie_zdali as
-select
+select distinct uv.id_osoby
 from uczniowie_view uv
          join aktualne_oceny_koncowe ok on uv.id_osoby = ok.uczen
 where ok.wartosc = 1;
@@ -1781,7 +1844,7 @@ create or replace function wszyscy_maja_koncowe() returns bool as
 $$
 begin
     if (
-        select ok.wartosc
+        select uv.id_osoby
         from uczniowie_view uv
                  join instancje_zajec iz on uv.klasa = iz.klasa
                  left join aktualne_oceny_koncowe ok on ok.uczen = uv.id_osoby
@@ -1844,23 +1907,72 @@ begin
                       concat((substr(nazwa_klasy(row.klasa), 1, 1)::int + 1)::text, substr(nazwa_klasy(row.klasa), 2))
                 limit 1
             )
-            where osoba = row.id_osoby;
+            where osoba = row.id_osoby
+            and osoba not in (
+                select *
+                from nie_zdali
+                );
         end loop;
-
-    update uczniowie u2
-    set klasa = (
-        select k2.id_klasy
-        from klasy k2
-        where substr(k2.nazwa, 1, 1) = (row.klasa::int - 1)::text
-        limit 1
-    )
-    where u2.osoba in (
-        select osoba
-        from nie_zdali
-    );
 end;
 $$ language 'plpgsql';
 
+
+/*
+ Administracyjne: Funkcje
+ */
+
+
+create or replace function dodaj_ucznia(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
+                                        nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), klasa_ integer) returns integer as $$
+declare
+    grupa klasa_spoleczna = klasa_spoleczna_osoby(id_wstawiajacego);
+    id_os integer;
+begin
+    if grupa = 'DYREKTORSTWO' or
+       (grupa = 'NAUCZYCIELE' and klasa_ in (
+        select unnest(wychowywane_klasy(id_wstawiajacego))
+        )) then
+
+        insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu) values
+        (pesel_, email_, imie_, drugie_imie_, nazwisko_, haslo_, nr_telefonu_);
+
+        id_os = (
+                   select id_osoby
+                   from osoby
+                   where pesel = pesel_
+               );
+
+        insert into uczniowie (osoba, klasa) values (id_os, klasa_);
+        return id_os;
+    end if;
+    raise exception 'This person has no permission to add this student.';
+end;
+$$ language 'plpgsql';
+
+
+create or replace function dodaj_nauczyciela(id_wstawiajacego integer, pesel_ char(11), email_ varchar(1000), imie_ varchar(1000), drugie_imie_ varchar(1000),
+                                            nazwisko_ varchar(1000), haslo_ varchar(1000), nr_telefonu_ varchar(15), wyksztalcenie_ varchar(100) = null)
+                                            returns integer as $$
+declare
+    grupa klasa_spoleczna = klasa_spoleczna_osoby(id_wstawiajacego);
+    id_os integer;
+begin
+    if grupa = 'DYREKTORSTWO' then
+        insert into osoby (pesel, email, imie, drugie_imie, nazwisko, haslo, nr_telefonu) values
+        (pesel_, email_, imie_, drugie_imie_, nazwisko_, haslo_, nr_telefonu_);
+
+        id_os = (
+                   select id_osoby
+                   from osoby
+                   where pesel = pesel_
+               );
+
+        insert into nauczyciele (osoba, wyksztalcenie) values (id_os, wyksztalcenie_);
+        return id_os;
+    end if;
+    raise exception 'This person has no permission to add this teacher.';
+end;
+$$ language 'plpgsql';
 
 -- dane oceny
 /*select uv.imie, uv.nazwisko, p.nazwa, o.wartosc, o.kategoria, o.opis, o.waga, o.data_wystawienia
@@ -1869,3 +1981,44 @@ join uczniowie_view uv on o.uczen = uv.id_osoby
 join instancje_zajec iz on o.zajecia = iz.id_instancji
 join przedmioty p on iz.przedmiot = p.id_przedmiotu
 where o.ocena = 'Tu argument';*/
+
+
+/*
+ Uczniowie: Widoki
+ */
+
+ create or replace view najlepsi_uczniowie as
+    select concat(uv.imie, ' ', uv.nazwisko) as uczen, nazwa_klasy(uv.klasa) as klasa, srednia_ucznia(uv.id_osoby) as srednia
+    from uczniowie_view uv
+    order by srednia desc
+    limit 10;
+
+
+create or replace view zagrozeni_uczniowie as
+    select distinct concat(uv.imie, ' ', uv.nazwisko) as uczen, nazwa_klasy(uv.klasa) as klasa,
+                    nazwa_przedmiotu(iz.przedmiot) as przedmiot,
+                    srednia_ucznia(uv.id_osoby, iz.przedmiot) as srednia
+    from uczniowie_view uv
+    join instancje_zajec iz on uv.klasa = iz.klasa
+    where srednia_ucznia(uv.id_osoby, iz.przedmiot) < 2
+    order by srednia;
+
+
+create or replace view najgrzeczniejsi_uczniowie as
+    select concat(uv.imie, ' ', uv.nazwisko) as uczen, count(*) as pozytywne_uwagi
+    from uczniowie_view uv
+    join uwagi u on uv.id_osoby = u.uczen
+    where u.typ = 'P'
+    group by uv.id_osoby, uv.imie, uv.nazwisko
+    order by pozytywne_uwagi desc
+    limit 10;
+
+
+create or replace view najniegrzeczniejsi_uczniowie as
+    select concat(uv.imie, ' ', uv.nazwisko) as uczen, count(*) as negatywne_uwagi
+    from uczniowie_view uv
+    join uwagi u on uv.id_osoby = u.uczen
+    where u.typ = 'N'
+    group by uv.id_osoby, uv.imie, uv.nazwisko
+    order by negatywne_uwagi desc
+    limit 10;
