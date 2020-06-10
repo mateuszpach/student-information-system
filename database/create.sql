@@ -103,7 +103,7 @@ create table oceny
     data_wystawienia timestamp                                                                         not null,
     zajecia          integer references instancje_zajec (id_instancji)                                 not null,
     wartosc          numeric(3, 2) check (wartosc between 1.00 and 6.00) check ( wartosc * 2 % 1 = 0 ) not null,
-    waga             numeric(1, 0)                                                                     not null,
+    waga             numeric(1, 0) check ( waga > 0 )                                                  not null,
     kategoria        kategoriaOceny                                                                    not null,
     opis             varchar(50)
 );
