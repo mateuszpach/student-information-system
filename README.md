@@ -7,12 +7,12 @@ Website designed for managing school data (grades, timetables, attendance) by te
 </kbd>
 
 ### Features
-  - Student and teacher access
+  - Student and teacher access.
   - Grading system with weights and final grades.
-  - Timetables
+  - Timetables.
   - Attendance reports with possibility to justify student absence as a form tutor.
   - Automatic classes updating every year (only students with positive grades advance). 
-  - Notes system (reprehensions and praises)
+  - Notes system (reprehensions and praises).
   
 ### Database scheme
 <kbd>
