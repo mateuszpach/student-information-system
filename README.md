@@ -1,7 +1,25 @@
 # student-information-system
-Student Information System designed for polish schools.
+## About
+Website designed for managing school data (grades, timetables, attendance) by teachers and reading it by students. Designed in polish.
 
-### Setup
+<kbd>
+    <img src="pictures/teacher/Screenshot from 2020-06-06 22-52-56.png">
+</kbd>
+
+### Features
+  - Student and teacher access
+  - Grading system with weights and final grades.
+  - Timetables
+  - Attendance reports with possibility to justify student absence as a form tutor.
+  - Automatic classes updating every year (only students with positive grades advance). 
+  - Notes system (reprehensions and praises)
+  
+### Database scheme
+<kbd>
+    <img src="diagram.png">
+</kbd>
+
+## Setup
 Following steps assume that server uses APT.
 
   1. Download needed packages.
